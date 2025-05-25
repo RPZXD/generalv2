@@ -40,9 +40,23 @@ try {
         'other3Details', 'other3Count', 'other3Damage'
     ];
     
+    // Define numeric fields that should be converted to NULL if empty
+    $numericFields = [
+        'doorCount', 'windowCount', 'tablestCount', 'chairstCount', 'tabletaCount', 'chairtaCount',
+        'other1Count', 'tvCount', 'audioCount', 'hdmiCount', 'projectorCount', 'other2Count',
+        'fanCount', 'lightCount', 'airCount', 'swCount', 'swfanCount', 'plugCount', 'other3Count'
+    ];
+    
     $updateData = ['id' => $data['id']];
     foreach ($fields as $field) {
-        $updateData[$field] = isset($data[$field]) ? $data[$field] : null;
+        $value = isset($data[$field]) ? $data[$field] : null;
+        
+        // Convert empty strings to NULL for numeric fields
+        if (in_array($field, $numericFields) && $value === '') {
+            $value = null;
+        }
+        
+        $updateData[$field] = $value;
     }
 
     $controller = new ReportRepairController();
