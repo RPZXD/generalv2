@@ -13,7 +13,7 @@ try {
     $id = isset($input['id']) ? $input['id'] : null;
 
 
-    if (!$id || !$teacher_id) {
+    if (!$id ) {
         echo json_encode(['success' => false, 'message' => 'ข้อมูลไม่ครบถ้วน']);
         exit;
     }
