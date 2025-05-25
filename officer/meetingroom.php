@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.status-filter-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       currentStatusFilter = this.dataset.status;
-      console.log('Filter clicked:', currentStatusFilter);
+    //   console.log('Filter clicked:', currentStatusFilter);
       
       // ไฮไลท์ปุ่มที่เลือก
       document.querySelectorAll('.status-filter-btn').forEach(b => {
@@ -218,12 +218,12 @@ function fetchAllBookings(date = '', location = '', status = undefined) {
   }
   url += params.toString();
   
-  console.log('Fetching URL:', url);
+//   console.log('Fetching URL:', url);
 
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      console.log('Received data:', data);
+    //   console.log('Received data:', data);
       const list = Array.isArray(data.list) ? data.list : [];
       const bookingList = document.getElementById('bookingList');
       bookingList.innerHTML = '';
@@ -277,7 +277,7 @@ function fetchAllBookings(date = '', location = '', status = undefined) {
         
         editBtn.addEventListener('click', function() {
           const bookingId = this.dataset.id;
-          console.log('Edit button clicked for booking ID:', bookingId);
+        //   console.log('Edit button clicked for booking ID:', bookingId);
           fetch('../teacher/api/fetch_booking_detail.php?id=' + encodeURIComponent(bookingId))
             .then(res => res.json())
             .then(data => {
