@@ -30,22 +30,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@200;300;400;500;600;700&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        /* เพิ่ม animation เล็กน้อย */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg);}
+            50% { transform: rotate(5deg);}
+        }
+        .wiggle {
+            animation: wiggle 1s infinite;
+        }
+        .fade-in {
+            animation: fadeIn 1.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0;}
+            to { opacity: 1;}
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-r from-blue-500 to-purple-600 font-sans" style="font-family: 'Mali', sans-serif;">
-
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md" data-aos="fade-up">
+        <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md border-t-8 border-blue-400 fade-in" data-aos="zoom-in">
             <div class="flex flex-col items-center mb-4">
                 <?php if (!empty($pageConfig['logoLink'])): ?>
-                    <img src="dist/img/<?php echo htmlspecialchars($pageConfig['logoLink']); ?>" alt="logo" class="h-14 w-14 mb-2 rounded-full bg-white p-1 shadow" />
+                    <img src="dist/img/<?php echo htmlspecialchars($pageConfig['logoLink']); ?>" alt="logo"
+                        class="h-16 w-16 mb-2 rounded-full bg-white p-1 shadow-lg border-2 border-blue-200 hover:scale-110 transition-transform duration-300 wiggle" />
                 <?php endif; ?>
-                <span class="text-blue-700 font-bold text-lg"><?php echo htmlspecialchars($pageConfig['nameschool']); ?></span>
+                <span class="text-blue-700 font-extrabold text-xl tracking-wide drop-shadow"><?php echo htmlspecialchars($pageConfig['nameschool']); ?></span>
             </div>
-            <h2 class="text-3xl font-bold text-center text-blue-600 mb-6"><?php echo htmlspecialchars($pageConfig['pageTitle']); ?> 🌟</h2>
-
+            <h2 class="text-3xl font-extrabold text-center text-blue-600 mb-6 tracking-wide flex items-center justify-center gap-2">
+                <span class="animate-bounce">🔐</span>
+                <?php echo htmlspecialchars($pageConfig['pageTitle']); ?>
+                <span class="animate-pulse">🌟</span>
+            </h2>
             <?php if (isset($error) && $error !== 'success') { ?>
                 <script>
                 Swal.fire({
@@ -57,16 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
                 </script>
             <?php } ?>
-
-            <form action="login.php" method="POST">
-                <div class="mb-4">
-                    <label for="username" class="block text-lg font-medium text-gray-700">ชื่อผู้ใช้ 👤</label>
-                    <input type="text" name="username" id="username" class="mt-1 p-3 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกชื่อผู้ใช้" required>
+            <form action="login.php" method="POST" class="space-y-5">
+                <div>
+                    <label for="username" class="block text-lg font-medium text-gray-700 mb-1">ชื่อผู้ใช้ <span class="ml-1">👤</span></label>
+                    <input type="text" name="username" id="username"
+                        class="mt-1 p-3 w-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition"
+                        placeholder="กรอกชื่อผู้ใช้" required autocomplete="username">
                 </div>
-                <div class="mb-6">
-                    <label for="password" class="block text-lg font-medium text-gray-700">รหัสผ่าน 🔒</label>
+                <div>
+                    <label for="password" class="block text-lg font-medium text-gray-700 mb-1">รหัสผ่าน <span class="ml-1">🔒</span></label>
                     <div class="relative">
-                        <input type="password" name="password" id="password" class="mt-1 p-3 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12" placeholder="กรอกรหัสผ่าน" required>
+                        <input type="password" name="password" id="password"
+                            class="mt-1 p-3 w-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 pr-12 shadow-sm transition"
+                            placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
                         <button type="button" id="togglePassword" tabindex="-1"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 focus:outline-none"
                             aria-label="แสดง/ซ่อนรหัสผ่าน">
@@ -78,26 +101,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </button>
                     </div>
                 </div>
-                <div class="mb-4">
-                    <label for="role" class="block text-lg font-medium text-gray-700">เลือกบทบาท 🛡️</label>
-                    <select name="role" id="role" class="mt-1 p-3 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <div>
+                    <label for="role" class="block text-lg font-medium text-gray-700 mb-1">เลือกบทบาท <span class="ml-1">🛡️</span></label>
+                    <select name="role" id="role"
+                        class="mt-1 p-3 w-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition"
+                        required>
                         <option value="">-- เลือกบทบาท --</option>
-                        <option value="ครู" selected>ครู</option>
-                        <option value="นักเรียน">นักเรียน</option>
-                        <option value="เจ้าหน้าที่">เจ้าหน้าที่</option>
-                        <option value="ผู้บริหาร">ผู้บริหาร</option>
-                        <option value="admin">admin</option>
+                        <option value="ครู" selected>👨‍🏫 ครู</option>
+                        <option value="นักเรียน">👩‍🎓 นักเรียน</option>
+                        <option value="เจ้าหน้าที่">🧑‍💼 เจ้าหน้าที่</option>
+                        <option value="ผู้บริหาร">👔 ผู้บริหาร</option>
+                        <option value="admin">🛠️ admin</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg text-xl font-semibold hover:bg-blue-700 transition duration-300 transform hover:scale-105">เข้าสู่ระบบ</button>
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-blue-600 to-purple-500 text-white py-3 rounded-xl text-xl font-bold hover:bg-blue-700 hover:scale-105 transition-all duration-200 shadow-lg flex items-center justify-center gap-2">
+                    🚀 <span>เข้าสู่ระบบ</span>
+                </button>
             </form>
-
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-500">ยังไม่มีบัญชี? <a href="#" class="text-blue-500 hover:underline">ให้ติดต่อผู้ดูแลระบบ</a></p>
             </div>
+            <div class="mt-8 text-center text-gray-400 text-xs animate-fade-in">
+                <span class="mr-1">🤝</span> Powered by General Management System <span class="ml-1">🎉</span>
+            </div>
         </div>
     </div>
-
     <footer class="w-full text-center text-white text-xs mt-8 mb-2">
         <p>&copy; <?=date('Y')?> <?php echo htmlspecialchars($pageConfig['nameschool']); ?>. All rights reserved. | <?php echo htmlspecialchars($pageConfig['footerCredit']); ?></p>
     </footer>
