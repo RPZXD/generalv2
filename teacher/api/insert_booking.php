@@ -78,7 +78,8 @@ try {
     // ถ้า insert สำเร็จ ส่งไลน์แจ้งเตือนผ่าน Messaging API (Flex)
     if (!empty($result['success'])) {
         $channelAccessToken = '3K7fh1bhbCn0uPjgNoGQpN3jNgpwpSoMA0QaE6m4dOMJkly+SeGyDyS73+EV6wSVuLoB6M/+FwdbxRWlY6ZGuQymNTYSrFzA5xQ7AhwlwOufu+et60PnAnYK2vpyvUyy3ye0yBe7cTu+PoiFDxsmmgdB04t89/1O/w1cDnyilFU=';
-        $groupId = 'U9e0d2e5050696fef1168a9fcb9ca5a3f';
+        $groupId = 'Cafbcad04d9e78bbee85b2447ee768baf';
+        // $groupId = 'U9e0d2e5050696fef1168a9fcb9ca5a3f'; // สำหรับทดสอบในกลุ่มส่วนตัว
 
         // ดึงชื่อครูจาก DatabaseUsers
         $userDb = new \App\DatabaseUsers();
