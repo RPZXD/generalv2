@@ -38,7 +38,7 @@ try {
     }
 
     // Add missing status field
-    $insertData['status'] = 'รอดำเนินการ';
+    $insertData['status'] = '0';
 
     $controller = new ReportRepairController();
     $success = $controller->create($insertData);
