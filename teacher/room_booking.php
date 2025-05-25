@@ -839,16 +839,16 @@ document.getElementById('bookingForm').onsubmit = function(e) {
   const formData = new FormData(this);
 
   // ตรวจสอบข้อมูลในฟอร์ม
-  console.log('Form data:');
-  for (let [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
+  // console.log('Form data:');
+  // for (let [key, value] of formData.entries()) {
+  //   console.log(key, value);
+  // }
 
   fetch('api/insert_booking.php', {
     method: 'POST',
     body: formData
   }).then(res => res.json()).then(result => {
-    console.log('Server response:', result);
+    // console.log('Server response:', result);
     if (result.success) {
       Swal.fire('สำเร็จ! 🎉', 'จองห้องประชุมเรียบร้อย', 'success');
       this.reset();
@@ -880,7 +880,7 @@ document.getElementById('editBookingForm').onsubmit = function(e) {
     method: 'POST',
     body: formData
   }).then(res => res.json()).then(result => {
-    console.log('Update response:', result);
+    // console.log('Update response:', result);
     if (result.success) {
       Swal.fire('สำเร็จ! 🎉', 'แก้ไขการจองเรียบร้อย', 'success');
       document.getElementById('editModal').classList.add('hidden');
@@ -916,7 +916,7 @@ document.addEventListener('click', function(e) {
           },
           body: JSON.stringify({ id: bookingId })
         }).then(res => res.json()).then(result => {
-          console.log('Delete response:', result);
+          // console.log('Delete response:', result);
           if (result.success) {
             Swal.fire('ลบสำเร็จ!', 'การจองถูกลบเรียบร้อยแล้ว', 'success');
             fetchBookings();
