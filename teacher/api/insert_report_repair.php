@@ -23,9 +23,11 @@ try {
         'other3Details', 'other3Count', 'other3Damage',
         'teach_id', 'term', 'pee'
     ];
+    
     $insertData = [];
     foreach ($fields as $f) {
-        $insertData[$f] = isset($data[$f]) ? $data[$f] : null;
+        // Convert empty strings to null, but keep all fields
+        $insertData[$f] = isset($data[$f]) && $data[$f] !== '' ? $data[$f] : null;
     }
 
     // ใช้ TermPee หากไม่ได้ส่ง term/pee มา
@@ -35,10 +37,13 @@ try {
         $insertData['pee'] = $termPee->pee;
     }
 
+    // Add missing status field
+    $insertData['status'] = 'รอดำเนินการ';
+
     $controller = new ReportRepairController();
     $success = $controller->create($insertData);
 
     echo json_encode(['success' => $success]);
 } catch (\Throwable $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => $e->getMessage(), 'debug' => array_keys($insertData ?? [])]);
 }
