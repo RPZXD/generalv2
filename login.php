@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         required>
                         <option value="">-- เลือกบทบาท --</option>
                         <option value="ครู" selected>👨‍🏫 ครู</option>
-                        <option value="นักเรียน">👩‍🎓 นักเรียน</option>
+                        <!-- <option value="นักเรียน">👩‍🎓 นักเรียน</option> -->
                         <option value="เจ้าหน้าที่">🧑‍💼 เจ้าหน้าที่</option>
                         <option value="ผู้บริหาร">👔 ผู้บริหาร</option>
                         <option value="admin">🛠️ admin</option>

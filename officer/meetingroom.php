@@ -262,6 +262,7 @@ function fetchAllBookings(date = '', location = '', status = undefined) {
               ${getStatusBadge(item.status)}
             </div>
             <div class="flex flex-col gap-2 ml-4">
+              <button class="detail-btn bg-lime-400 text-blue-800 px-3 py-1 rounded hover:bg-lime-800 text-sm" data-id="${item.id}">🔍 แสดงรายละเอียด</button>
               <button class="edit-btn bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm" data-id="${item.id}">✏️ แก้ไข</button>
               <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 text-sm" data-id="${item.id}">🗑️ ลบ</button>
               <button class="status-btn bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm" data-id="${item.id}" data-status="${item.status}">อัปเดตสถานะ</button>
@@ -271,10 +272,80 @@ function fetchAllBookings(date = '', location = '', status = undefined) {
         bookingList.appendChild(card);
         
         // Add event listeners immediately after creating the card
+        const detailBtn = card.querySelector('.detail-btn');
         const editBtn = card.querySelector('.edit-btn');
         const deleteBtn = card.querySelector('.delete-btn');
         const statusBtn = card.querySelector('.status-btn');
-        
+
+        // ปุ่มแสดงรายละเอียด
+        detailBtn.addEventListener('click', function() {
+          const bookingId = this.dataset.id;
+          fetch('../teacher/api/fetch_booking_detail.php?id=' + encodeURIComponent(bookingId))
+            .then(res => res.json())
+            .then(data => {
+              if (data.success && data.booking) {
+                const b = data.booking;
+                Swal.fire({
+                  title: 'รายละเอียดการจอง',
+                  html: `
+                    <div class="text-left space-y-2">
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-blue-100 text-blue-700 rounded-full px-2 py-1 text-xs">📅</span>
+                        <span class="font-semibold">วันที่:</span>
+                        <span>${b.date ? b.date.substring(0,10) : '-'}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-indigo-100 text-indigo-700 rounded-full px-2 py-1 text-xs">⏰</span>
+                        <span class="font-semibold">เวลา:</span>
+                        <span>${(b.time_start || '-').substring(0,5)} - ${(b.time_end || '-').substring(0,5)}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-green-100 text-green-700 rounded-full px-2 py-1 text-xs">🏢</span>
+                        <span class="font-semibold">สถานที่:</span>
+                        <span>${b.location || '-'}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-yellow-100 text-yellow-700 rounded-full px-2 py-1 text-xs">📝</span>
+                        <span class="font-semibold">วัตถุประสงค์:</span>
+                        <span>${b.purpose || '-'}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-pink-100 text-pink-700 rounded-full px-2 py-1 text-xs">🎛️</span>
+                        <span class="font-semibold">อุปกรณ์ที่ต้องการ:</span>
+                        <span>${b.media || '-'}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-orange-100 text-orange-700 rounded-full px-2 py-1 text-xs">📞</span>
+                        <span class="font-semibold">เบอร์โทรติดต่อ:</span>
+                        <span>${b.phone || '-'}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="inline-block bg-purple-100 text-purple-700 rounded-full px-2 py-1 text-xs">👤</span>
+                        <span class="font-semibold">ผู้จอง:</span>
+                        <span>${b.teacher_name || b.teach_id || '-'}</span>
+                      </div>
+                      <div class="flex items-center gap-2 mt-2">
+                        <span class="font-semibold">สถานะ:</span>
+                        <span>${getStatusBadge(b.status)}</span>
+                      </div>
+                    </div>
+                  `,
+                  showConfirmButton: false,
+                  showCloseButton: true,
+                  customClass: {
+                    popup: 'max-w-4xl !w-full' // ปรับขนาด modal ให้กว้างขึ้น
+                  }
+                });
+              } else {
+                Swal.fire('ผิดพลาด! ❌', 'ไม่สามารถโหลดข้อมูลการจองได้', 'error');
+              }
+            })
+            .catch(() => {
+              Swal.fire('ผิดพลาด! ❌', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+            });
+        });
+
+        // แก้ไขการจอง
         editBtn.addEventListener('click', function() {
           const bookingId = this.dataset.id;
         //   console.log('Edit button clicked for booking ID:', bookingId);
@@ -302,6 +373,7 @@ function fetchAllBookings(date = '', location = '', status = undefined) {
             });
         });
         
+        // ลบการจอง
         deleteBtn.addEventListener('click', function() {
           const bookingId = this.dataset.id;
           Swal.fire({
@@ -336,6 +408,7 @@ function fetchAllBookings(date = '', location = '', status = undefined) {
           });
         });
         
+        // อัปเดตสถานะการจอง
         statusBtn.addEventListener('click', function() {
           const bookingId = this.dataset.id;
           const currentStatus = parseInt(this.dataset.status);
