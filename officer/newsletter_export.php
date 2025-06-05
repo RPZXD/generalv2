@@ -68,7 +68,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>จดหมายข่าว | <?php echo htmlspecialchars($news['title']); ?></title>
+    <title>จดหมายข่าว | ฉบับที่ <?php echo $issue_no; ?> | หัวเรื่อง <?php echo htmlspecialchars($news['title']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
