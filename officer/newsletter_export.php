@@ -362,6 +362,10 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
         }
+        .image-grid.cols-9 { 
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+        }
         
         
         .photo-item {
@@ -624,7 +628,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             <?php if ($images): ?>
             <?php 
             $imageCount = count($images);
-            $gridClass = 'cols-' . min($imageCount, 8);
+            $gridClass = 'cols-' . min($imageCount, 9);
             ?>
             <div class="photo-section">
                 <div class="photo-title">
@@ -632,7 +636,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                 </div>
                 <div class="image-grid <?php echo $gridClass; ?>">
                     <?php foreach ($images as $index => $img): ?>
-                        <?php if ($index < 8): ?>
+                        <?php if ($index < 9): ?>
                         <div class="photo-item">
                             <img src="../<?php echo htmlspecialchars(preg_replace('/^teacher\//', '', $img)); ?>" 
                                  alt="รูปภาพข่าว <?php echo $index + 1; ?>">
