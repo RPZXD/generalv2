@@ -27,8 +27,8 @@ try {
     $images = $_FILES['images'];
 
     // ตรวจสอบจำนวนไฟล์ภาพ
-    if (!isset($images['name']) || count($images['name']) < 4 || count($images['name']) > 8) {
-        echo json_encode(['success' => false, 'message' => 'กรุณาอัปโหลดรูปภาพ 4-8 รูป']);
+    if (!isset($images['name']) || count($images['name']) < 6 || count($images['name']) > 9) {
+        echo json_encode(['success' => false, 'message' => 'กรุณาอัปโหลดรูปภาพ 6-9 รูป']);
         exit;
     }
 
@@ -49,8 +49,8 @@ try {
         }
     }
 
-    if (count($imagePaths) < 4) {
-        echo json_encode(['success' => false, 'message' => 'อัปโหลดรูปภาพไม่สำเร็จอย่างน้อย 4 รูป']);
+    if (count($imagePaths) < 6) {
+        echo json_encode(['success' => false, 'message' => 'อัปโหลดรูปภาพไม่สำเร็จอย่างน้อย 6 รูป']);
         exit;
     }
 

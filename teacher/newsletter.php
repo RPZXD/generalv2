@@ -47,10 +47,10 @@ require_once('header.php');
                                     <input type="date" id="news_date" name="news_date" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-semibold mb-2">อัปโหลดรูปภาพ (4-8 รูป) <span class="text-red-500">*</span></label>
+                                    <label class="block text-gray-700 font-semibold mb-2">อัปโหลดรูปภาพ (6-9 รูป) <span class="text-red-500">*</span></label>
                                     <div id="imageInputs" class="space-y-2">
-                                        <!-- ช่องเลือกไฟล์ภาพ 5 ช่องเริ่มต้น -->
-                                        <?php for ($i = 1; $i <= 4; $i++): ?>
+                                        <!-- ช่องเลือกไฟล์ภาพ 6 ช่องเริ่มต้น -->
+                                        <?php for ($i = 1; $i <= 6; $i++): ?>
                                         <div class="flex items-center gap-3">
                                             <input type="file" name="images[]" accept="image/*" required class="single-image-input block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                                             <img src="" alt="" class="preview-img w-16 h-16 object-cover rounded border hidden" />
@@ -59,7 +59,7 @@ require_once('header.php');
                                         <?php endfor; ?>
                                     </div>
                                     <button type="button" id="addImageInput" class="mt-2 bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 transition text-sm">+ เพิ่มรูปภาพ</button>
-                                    <div class="text-xs text-gray-400 mt-1">เลือกได้ 4-8 รูป (ไฟล์ .jpg, .jpeg, .png, .gif)</div>
+                                    <div class="text-xs text-gray-400 mt-1">เลือกได้ 6-9 รูป (ไฟล์ .jpg, .jpeg, .png, .gif)</div>
                                     <div id="imageInputError" class="text-red-500 text-sm mt-1"></div>
                                 </div>
                                 <div>
@@ -122,24 +122,24 @@ function updateImageInputStates() {
     // ซ่อนปุ่มลบถ้ามี <= 5 ช่อง, แสดงถ้ามี > 5 ช่อง
     const imageInputs = document.querySelectorAll('#imageInputs .single-image-input');
     const removeBtns = document.querySelectorAll('#imageInputs .remove-image-btn');
-    removeBtns.forEach(btn => btn.classList.toggle('hidden', imageInputs.length <= 4));
+    removeBtns.forEach(btn => btn.classList.toggle('hidden', imageInputs.length <= 6));
     // ปิดปุ่มเพิ่มถ้าครบ 9 ช่อง
-    document.getElementById('addImageInput').disabled = imageInputs.length >= 8;
+    document.getElementById('addImageInput').disabled = imageInputs.length >= 9;
 }
 
 function validateImageInputs() {
     const imageInputs = document.querySelectorAll('#imageInputs .single-image-input');
     let valid = true;
     let error = '';
-    // ต้องมีอย่างน้อย 4 ช่องที่มีไฟล์
+    // ต้องมีอย่างน้อย 6 ช่องที่มีไฟล์
     const filled = Array.from(imageInputs).filter(input => input.files.length > 0);
-    if (filled.length < 4) {
+    if (filled.length < 6) {
         valid = false;
-        error = 'กรุณาเลือกรูปภาพอย่างน้อย 4 รูป';
+        error = 'กรุณาเลือกรูปภาพอย่างน้อย 6 รูป';
     }
-    if (imageInputs.length > 8) {
+    if (imageInputs.length > 9) {
         valid = false;
-        error = 'เลือกได้สูงสุด 8 รูป';
+        error = 'เลือกได้สูงสุด 9 รูป';
     }
     document.getElementById('imageInputError').textContent = error;
     return valid;
@@ -165,7 +165,7 @@ function handleImagePreview(input, previewImg) {
 // เพิ่มช่อง input รูปภาพ
 document.getElementById('addImageInput').addEventListener('click', function() {
     const imageInputs = document.querySelectorAll('#imageInputs .single-image-input');
-    if (imageInputs.length >= 8) return;
+    if (imageInputs.length >= 9) return;
     const div = document.createElement('div');
     div.className = "flex items-center gap-3";
     div.innerHTML = `

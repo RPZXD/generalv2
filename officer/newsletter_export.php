@@ -146,12 +146,17 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
         
         /* Theme-based Header Design */
         .header-bg {
-            background: linear-gradient(135deg, 
+            /* background: linear-gradient(135deg, 
                 var(--primary-start) 0%, 
                 var(--primary-mid) 50%, 
                 var(--primary-end) 100%);
             position: relative;
-            height: 40mm;
+            height: 30mm;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact; */
+            background: url('../dist/img/header_newlatter.png') no-repeat center/cover;
+            height: 30mm;
+            position: relative;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -258,7 +263,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
         }
         
         .content-text {
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.8;
             color: #1f2937;
             text-align: justify;
@@ -426,7 +431,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             padding: 12px 20px;
             border-top: 2px solid;
             border-image: linear-gradient(90deg, var(--primary-start), var(--primary-mid), var(--primary-end)) 1;
-            height: 40mm;
+            height: 35mm;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -435,7 +440,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
         
         .school-info {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 3px;
         }
         
         .school-name {
@@ -588,7 +593,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                     <div class="school-logo">
                         <img src="../dist/img/logo-phicha.png" alt="โลโก้โรงเรียน" class="w-15 h-15 rounded-full object-cover">
                     </div>
-                    <div class="text-white">
+                    <div class="text-gray-800">
                         <div class="text-xl font-bold font-prompt mb-1 drop-shadow-lg"><?php echo htmlspecialchars($school); ?></div>
                         <div class="text-base opacity-95 mb-1 drop-shadow-md font-medium">จดหมายข่าวโรงเรียน</div>
                         <div class="text-xs opacity-90 tracking-wider drop-shadow-sm font-medium">PHICHAI SCHOOL NEWSLETTER</div>
@@ -646,7 +651,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                 <div class="school-name">โรงเรียนพิชัย</div>
                 <div class="school-details">
                     9/9 หมู่ 3 ต.ในเมือง อ.พิชัย จ.อุตรดิตถ์ 53120<br>
-                    สังกัดสำนักงานเขตพื้นที่การศึกษามัธยมศึกษาพิษณุโลก อุตรดิตถ์<br>
+                    สังกัดสำนักงานเขตพื้นที่การศึกษามัธยมศึกษาพิษณุโลก อุตรดิตถ์
                     สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน กระทรวงศึกษาธิการ
                 </div>
             </div>

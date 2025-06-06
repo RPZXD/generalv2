@@ -84,9 +84,9 @@ function updateImageInputStates() {
     // ซ่อนปุ่มลบถ้ามี <= 4 ช่อง, แสดงถ้ามี > 4 ช่อง
     const imageInputs = document.querySelectorAll('#addImageInputs .single-image-input');
     const removeBtns = document.querySelectorAll('#addImageInputs .remove-image-btn');
-    removeBtns.forEach(btn => btn.classList.toggle('hidden', imageInputs.length <= 4));
+    removeBtns.forEach(btn => btn.classList.toggle('hidden', imageInputs.length <= 6));
     // ปิดปุ่มเพิ่มถ้าครบ 8 ช่อง
-    document.getElementById('addMoreImageInput').disabled = imageInputs.length >= 8;
+    document.getElementById('addMoreImageInput').disabled = imageInputs.length >= 9;
 }
 
 function validateImageInputs() {
@@ -95,13 +95,13 @@ function validateImageInputs() {
     let error = '';
     // ต้องมีอย่างน้อย 4 ช่องที่มีไฟล์
     const filled = Array.from(imageInputs).filter(input => input.files.length > 0);
-    if (filled.length < 4) {
+    if (filled.length < 6) {
         valid = false;
-        error = 'กรุณาเลือกรูปภาพอย่างน้อย 4 รูป';
+        error = 'กรุณาเลือกรูปภาพอย่างน้อย 6 รูป';
     }
-    if (imageInputs.length > 8) {
+    if (imageInputs.length > 9) {
         valid = false;
-        error = 'เลือกได้สูงสุด 8 รูป';
+        error = 'เลือกได้สูงสุด 9 รูป';
     }
     document.getElementById('addImageInputError').textContent = error;
     return valid;
@@ -408,9 +408,19 @@ if (!document.getElementById('addNewsletterModal')) {
                     <input type="date" id="addNewsletterDate" name="news_date" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400">
                 </div>
                 <div>
-                    <label class="block text-gray-700 font-semibold mb-2">อัปโหลดรูปภาพ (4-8 รูป) <span class="text-red-500">*</span></label>
+                    <label class="block text-gray-700 font-semibold mb-2">อัปโหลดรูปภาพ (6-9 รูป) <span class="text-red-500">*</span></label>
                     <div id="addImageInputs" class="space-y-2">
-                        <!-- ช่องเลือกไฟล์ภาพ 4 ช่องเริ่มต้น -->
+                        <!-- ช่องเลือกไฟล์ภาพ 6 ช่องเริ่มต้น -->
+                        <div class="flex items-center gap-3">
+                            <input type="file" name="images[]" accept="image/*" required class="single-image-input block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                            <img src="" alt="" class="preview-img w-16 h-16 object-cover rounded border hidden" />
+                            <button type="button" class="remove-image-btn text-red-500 hover:text-red-700 text-lg hidden" title="ลบรูปภาพนี้">✖</button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="file" name="images[]" accept="image/*" required class="single-image-input block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                            <img src="" alt="" class="preview-img w-16 h-16 object-cover rounded border hidden" />
+                            <button type="button" class="remove-image-btn text-red-500 hover:text-red-700 text-lg hidden" title="ลบรูปภาพนี้">✖</button>
+                        </div>
                         <div class="flex items-center gap-3">
                             <input type="file" name="images[]" accept="image/*" required class="single-image-input block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
                             <img src="" alt="" class="preview-img w-16 h-16 object-cover rounded border hidden" />
@@ -433,7 +443,7 @@ if (!document.getElementById('addNewsletterModal')) {
                         </div>
                     </div>
                     <button type="button" id="addMoreImageInput" class="mt-2 bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 transition text-sm">+ เพิ่มรูปภาพ</button>
-                    <div class="text-xs text-gray-400 mt-1">เลือกได้ 4-8 รูป (ไฟล์ .jpg, .jpeg, .png, .gif)</div>
+                    <div class="text-xs text-gray-400 mt-1">เลือกได้ 6-9 รูป (ไฟล์ .jpg, .jpeg, .png, .gif)</div>
                     <div id="addImageInputError" class="text-red-500 text-sm mt-1"></div>
                 </div>
                 <div>
@@ -502,7 +512,7 @@ $(document).on('click', '#addNewsletterBtn', function() {
 // เพิ่มช่อง input รูปภาพใน modal
 $(document).on('click', '#addMoreImageInput', function() {
     const imageInputs = document.querySelectorAll('#addImageInputs .single-image-input');
-    if (imageInputs.length >= 8) return;
+    if (imageInputs.length >= 9) return;
     
     const div = document.createElement('div');
     div.className = "flex items-center gap-3";
