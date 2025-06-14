@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'เจ้าหน้าที่') {
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'ครู') {
     header('Location: ../login.php');
     exit;
 }
@@ -519,7 +519,7 @@ function fetchBookings() {
                     </td>
                     <td class="py-4 px-4 border-b text-center">${statusBadge}</td>
                     <td class="py-4 px-4 border-b text-center">
-                        <div class="flex justify-center gap-1">${editBtn}${statusBtn}${deleteBtn}</div>
+                        <div class="flex justify-center gap-1">${editBtn}${deleteBtn}</div>
                     </td>
                 </tr>
             `);
