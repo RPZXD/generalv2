@@ -1,9 +1,26 @@
 {
-  "global": {
-    "pageTitle": "ระบบบริหารงานทั่วไป",
-    "nameschool": "โรงเรียนพิชัย",
-    "nameTitle": "GENERAL",
-    "footerCredit": "by ICT @Phichai school. พัฒนาระบบโดย นายทิวา เรืองศรี ทีมงาน ICT โรงเรียนพิชัย",
-    "logoLink": "logo-phicha.png"
-  }
+    "global": {
+        "pageTitle": "ระบบบริหารงานทั่วไป",
+        "nameschool": "โรงเรียนพิชัย",
+        "nameTitle": "GENERAL",
+        "footerCredit": "by ICT @Phichai school. พัฒนาระบบโดย นายทิวา เรืองศรี ทีมงาน ICT โรงเรียนพิชัย",
+        "logoLink": "logo-phicha.png",
+        "address": "",
+        "phone": "",
+        "email": ""
+    },
+    "meeting": {
+        "start_time": "08:00",
+        "end_time": "17:00",
+        "advance_days": 14,
+        "min_hours": 1
+    },
+    "car": {
+        "advance_days": 15,
+        "require_approval": true
+    },
+    "repair": {
+        "default_days": 7,
+        "email_notification": true
+    }
 }

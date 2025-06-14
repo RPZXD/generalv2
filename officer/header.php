@@ -58,7 +58,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
 
 
     <style>
