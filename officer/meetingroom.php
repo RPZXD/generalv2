@@ -30,24 +30,44 @@ require_once('header.php');
             <!-- รายการจองห้องประชุม (ซ้าย) -->
             <div class="w-full">
                 <!-- Date Picker และ Filter Section -->
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-blue-700 flex items-center gap-2">📋 รายการจองห้องประชุม</h3>
-                    <div class="flex gap-2">
-                        <button class="status-filter-btn bg-yellow-100 text-yellow-800 px-3 py-1 rounded hover:bg-yellow-200 text-sm" data-status="0">
-                            ⏳ รอการอนุมัติ
-                        </button>
-                        <button class="status-filter-btn bg-green-100 text-green-800 px-3 py-1 rounded hover:bg-green-200 text-sm" data-status="1">
-                            ✅ อนุมัติแล้ว
-                        </button>
-                        <button class="status-filter-btn bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200 text-sm" data-status="2">
-                            ❌ ยกเลิกแล้ว
-                        </button>
-                        <button class="status-filter-btn bg-gray-100 text-gray-800 px-3 py-1 rounded hover:bg-gray-200 text-sm" data-status="">
-                            ทั้งหมด
-                        </button>
-                        <button id="refreshList" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 transition">รีเฟรช 🔄</button>
-                    </div>
-                </div>
+                <div class="mb-6">
+                  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <h3 class="text-lg font-bold text-blue-700 flex items-center gap-2">
+                          📋 รายการจองห้องประชุม
+                      </h3>
+                      
+                      <!-- Filter Buttons -->
+                      <div class="flex flex-col sm:flex-row gap-2">
+                          <div class="flex flex-wrap gap-2">
+                              <button class="status-filter-btn bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg hover:bg-yellow-200 text-sm font-medium transition-all duration-200 flex items-center gap-1" data-status="0">
+                                  <span class="text-lg">⏳</span>
+                                  <span>รอการอนุมัติ</span>
+                              </button>
+                              <button class="status-filter-btn bg-green-100 text-green-800 px-4 py-2 rounded-lg hover:bg-green-200 text-sm font-medium transition-all duration-200 flex items-center gap-1" data-status="1">
+                                  <span class="text-lg">✅</span>
+                                  <span>อนุมัติแล้ว</span>
+                              </button>
+                              <button class="status-filter-btn bg-red-100 text-red-800 px-4 py-2 rounded-lg hover:bg-red-200 text-sm font-medium transition-all duration-200 flex items-center gap-1" data-status="2">
+                                  <span class="text-lg">❌</span>
+                                  <span>ยกเลิกแล้ว</span>
+                              </button>
+                              <button class="status-filter-btn bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200 text-sm font-medium transition-all duration-200 flex items-center gap-1" data-status="">
+                                  <span class="text-lg">📋</span>
+                                  <span>ทั้งหมด</span>
+                              </button>
+                          </div>
+                          <div class="flex gap-2">
+                              <button id="refreshList" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2 font-medium shadow-md">
+                                  <span class="text-lg">🔄</span>
+                                  <span>รีเฟรช</span>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <!-- Separator Line -->
+                  <div class="mt-4 border-b border-gray-200"></div>
+              </div>
                 <div id="bookingList" class="space-y-4 max-h-96 overflow-y-auto">
                     <!-- JS will render cards here -->
                 </div>
