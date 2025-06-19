@@ -74,7 +74,70 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            <?php if ($theme === 'blue-cyan'): ?>
+            <?php if ($theme === 'sunday-red'): ?>
+            --primary-start: #dc2626;
+            --primary-mid: #ef4444;
+            --primary-end: #f87171;
+            --accent-light: #fecaca;
+            --accent-bg: #fef2f2;
+            --text-primary: #dc2626;
+            --border-color: rgba(220, 38, 38, 0.15);
+            --badge-text: #dc2626;
+            <?php elseif ($theme === 'monday-yellow'): ?>
+            --primary-start: #ca8a04;
+            --primary-mid: #eab308;
+            --primary-end: #facc15;
+            --accent-light: #fef3c7;
+            --accent-bg: #fffbeb;
+            --text-primary: #ca8a04;
+            --border-color: rgba(234, 179, 8, 0.15);
+            --badge-text: #ca8a04;
+            <?php elseif ($theme === 'tuesday-pink'): ?>
+            --primary-start: #be185d;
+            --primary-mid: #ec4899;
+            --primary-end: #f472b6;
+            --accent-light: #fce7f3;
+            --accent-bg: #fdf2f8;
+            --text-primary: #be185d;
+            --border-color: rgba(236, 72, 153, 0.15);
+            --badge-text: #be185d;
+            <?php elseif ($theme === 'wednesday-green'): ?>
+            --primary-start: #14532d;
+            --primary-mid: #16a34a;
+            --primary-end: #22c55e;
+            --accent-light: #dcfce7;
+            --accent-bg: #f0fdf4;
+            --text-primary: #14532d;
+            --border-color: rgba(34, 197, 94, 0.15);
+            --badge-text: #14532d;
+            <?php elseif ($theme === 'thursday-orange'): ?>
+            --primary-start: #c2410c;
+            --primary-mid: #ea580c;
+            --primary-end: #fb923c;
+            --accent-light: #fed7aa;
+            --accent-bg: #fff7ed;
+            --text-primary: #c2410c;
+            --border-color: rgba(234, 88, 12, 0.15);
+            --badge-text: #c2410c;
+            <?php elseif ($theme === 'friday-blue'): ?>
+            --primary-start: #1e3a8a;
+            --primary-mid: #3b82f6;
+            --primary-end: #60a5fa;
+            --accent-light: #dbeafe;
+            --accent-bg: #eff6ff;
+            --text-primary: #1e3a8a;
+            --border-color: rgba(59, 130, 246, 0.15);
+            --badge-text: #1e3a8a;
+            <?php elseif ($theme === 'saturday-purple'): ?>
+            --primary-start: #581c87;
+            --primary-mid: #7c3aed;
+            --primary-end: #a855f7;
+            --accent-light: #ede9fe;
+            --accent-bg: #f5f3ff;
+            --text-primary: #581c87;
+            --border-color: rgba(124, 58, 237, 0.15);
+            --badge-text: #581c87;
+            <?php elseif ($theme === 'blue-cyan'): ?>
             --primary-start: #1e3a8a;
             --primary-mid: #3b82f6;
             --primary-end: #06b6d4;
@@ -82,6 +145,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             --accent-bg: #f0f9ff;
             --text-primary: #1e40af;
             --border-color: rgba(59, 130, 246, 0.15);
+            --badge-text: #1e40af;
             <?php elseif ($theme === 'green-emerald'): ?>
             --primary-start: #14532d;
             --primary-mid: #16a34a;
@@ -90,6 +154,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             --accent-bg: #ecfdf5;
             --text-primary: #065f46;
             --border-color: rgba(34, 197, 94, 0.15);
+            --badge-text: #065f46;
             <?php elseif ($theme === 'purple-violet'): ?>
             --primary-start: #581c87;
             --primary-mid: #7c3aed;
@@ -98,6 +163,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             --accent-bg: #f5f3ff;
             --text-primary: #6b21a8;
             --border-color: rgba(139, 92, 246, 0.15);
+            --badge-text: #6b21a8;
             <?php elseif ($theme === 'orange-amber'): ?>
             --primary-start: #c2410c;
             --primary-mid: #ea580c;
@@ -106,6 +172,61 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             --accent-bg: #fffbeb;
             --text-primary: #c2410c;
             --border-color: rgba(234, 88, 12, 0.15);
+            --badge-text: #c2410c;
+            <?php elseif ($theme === 'pink-rose'): ?>
+            --primary-start: #be185d;
+            --primary-mid: #ec4899;
+            --primary-end: #f43f5e;
+            --accent-light: #fce7f3;
+            --accent-bg: #fdf2f8;
+            --text-primary: #be185d;
+            --border-color: rgba(236, 72, 153, 0.15);
+            --badge-text: #be185d;
+            <?php elseif ($theme === 'indigo-blue'): ?>
+            --primary-start: #312e81;
+            --primary-mid: #4f46e5;
+            --primary-end: #3b82f6;
+            --accent-light: #e0e7ff;
+            --accent-bg: #eef2ff;
+            --text-primary: #312e81;
+            --border-color: rgba(79, 70, 229, 0.15);
+            --badge-text: #312e81;
+            <?php elseif ($theme === 'teal-cyan'): ?>
+            --primary-start: #134e4a;
+            --primary-mid: #0d9488;
+            --primary-end: #06b6d4;
+            --accent-light: #ccfbf1;
+            --accent-bg: #f0fdfa;
+            --text-primary: #134e4a;
+            --border-color: rgba(13, 148, 136, 0.15);
+            --badge-text: #134e4a;
+            <?php elseif ($theme === 'lime-green'): ?>
+            --primary-start: #365314;
+            --primary-mid: #65a30d;
+            --primary-end: #84cc16;
+            --accent-light: #ecfccb;
+            --accent-bg: #f7fee7;
+            --text-primary: #365314;
+            --border-color: rgba(101, 163, 13, 0.15);
+            --badge-text: #365314;
+            <?php elseif ($theme === 'yellow-orange'): ?>
+            --primary-start: #a16207;
+            --primary-mid: #eab308;
+            --primary-end: #f97316;
+            --accent-light: #fef3c7;
+            --accent-bg: #fffbeb;
+            --text-primary: #a16207;
+            --border-color: rgba(234, 179, 8, 0.15);
+            --badge-text: #a16207;
+            <?php elseif ($theme === 'slate-gray'): ?>
+            --primary-start: #1e293b;
+            --primary-mid: #475569;
+            --primary-end: #64748b;
+            --accent-light: #f1f5f9;
+            --accent-bg: #f8fafc;
+            --text-primary: #1e293b;
+            --border-color: rgba(71, 85, 105, 0.15);
+            --badge-text: #1e293b;
             <?php else: // red-yellow default ?>
             --primary-start: #dc2626;
             --primary-mid: #f97316;
@@ -114,6 +235,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             --accent-bg: #fefce8;
             --text-primary: #dc2626;
             --border-color: rgba(220, 38, 38, 0.15);
+            --badge-text: #dc2626;
             <?php endif; ?>
         }
 
@@ -213,6 +335,11 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             padding: 10px 16px;
             box-shadow: 0 6px 25px rgba(0,0,0,0.15);
             text-align: center;
+        }
+        
+        .issue-badge .text-gray-700 {
+            color: var(--badge-text) !important;
+            font-weight: 600;
         }
         
         /* Enhanced Typography */
@@ -501,10 +628,11 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             left: 20px;
             background: rgba(255,255,255,0.95);
             border-radius: 12px;
-            padding: 12px;
+            padding: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             z-index: 1000;
             backdrop-filter: blur(10px);
+            max-width: 280px;
         }
         
         .theme-selector h3 {
@@ -512,12 +640,30 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             font-weight: 700;
             margin-bottom: 8px;
             color: #374151;
+            text-align: center;
+        }
+        
+        .theme-section {
+            margin-bottom: 12px;
+        }
+        
+        .theme-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 6px;
+            text-align: center;
         }
         
         .theme-options {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        
+        .theme-options.week-colors {
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
         }
         
         .theme-btn {
@@ -528,6 +674,12 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .theme-btn.week-btn {
+            width: 28px;
+            height: 28px;
         }
         
         .theme-btn:hover {
@@ -540,11 +692,27 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             transform: scale(1.15);
         }
         
+        /* Thai Day Colors */
+        .theme-sunday-red { background: #dc2626; }
+        .theme-monday-yellow { background: #eab308; }
+        .theme-tuesday-pink { background: #ec4899; }
+        .theme-wednesday-green { background: #16a34a; }
+        .theme-thursday-orange { background: #ea580c; }
+        .theme-friday-blue { background: #3b82f6; }
+        .theme-saturday-purple { background: #7c3aed; }
+        
+        /* Additional Theme Colors */
         .theme-red-yellow { background: linear-gradient(45deg, #dc2626, #f59e0b); }
         .theme-blue-cyan { background: linear-gradient(45deg, #1e3a8a, #06b6d4); }
         .theme-green-emerald { background: linear-gradient(45deg, #14532d, #10b981); }
         .theme-purple-violet { background: linear-gradient(45deg, #581c87, #8b5cf6); }
         .theme-orange-amber { background: linear-gradient(45deg, #c2410c, #f59e0b); }
+        .theme-pink-rose { background: linear-gradient(45deg, #be185d, #f43f5e); }
+        .theme-indigo-blue { background: linear-gradient(45deg, #312e81, #3b82f6); }
+        .theme-teal-cyan { background: linear-gradient(45deg, #134e4a, #06b6d4); }
+        .theme-lime-green { background: linear-gradient(45deg, #365314, #84cc16); }
+        .theme-yellow-orange { background: linear-gradient(45deg, #a16207, #f97316); }
+        .theme-slate-gray { background: linear-gradient(45deg, #1e293b, #64748b); }
         
         /* Print Button with theme colors */
         .print-button {
@@ -575,17 +743,55 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
     <!-- Theme Selector -->
     <div class="theme-selector no-print">
         <h3>เลือกโทนสี</h3>
-        <div class="theme-options">
-            <div class="theme-btn theme-red-yellow <?php echo $theme === 'red-yellow' ? 'active' : ''; ?>" 
-                 onclick="changeTheme('red-yellow')" title="แดง-เหลือง"></div>
-            <div class="theme-btn theme-blue-cyan <?php echo $theme === 'blue-cyan' ? 'active' : ''; ?>" 
-                 onclick="changeTheme('blue-cyan')" title="น้ำเงิน-ฟ้า"></div>
-            <div class="theme-btn theme-green-emerald <?php echo $theme === 'green-emerald' ? 'active' : ''; ?>" 
-                 onclick="changeTheme('green-emerald')" title="เขียว-มรกต"></div>
-            <div class="theme-btn theme-purple-violet <?php echo $theme === 'purple-violet' ? 'active' : ''; ?>" 
-                 onclick="changeTheme('purple-violet')" title="ม่วง-ไวโอเลต"></div>
-            <div class="theme-btn theme-orange-amber <?php echo $theme === 'orange-amber' ? 'active' : ''; ?>" 
-                 onclick="changeTheme('orange-amber')" title="ส้ม-เหลืองอำพัน"></div>
+        
+        <!-- Thai 7-Day Colors -->
+        <div class="theme-section">
+            <div class="theme-section-title">สีประจำวัน</div>
+            <div class="theme-options week-colors">
+                <div class="theme-btn week-btn theme-sunday-red <?php echo $theme === 'sunday-red' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('sunday-red')" title="อาทิตย์ - แดง"></div>
+                <div class="theme-btn week-btn theme-monday-yellow <?php echo $theme === 'monday-yellow' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('monday-yellow')" title="จันทร์ - เหลือง"></div>
+                <div class="theme-btn week-btn theme-tuesday-pink <?php echo $theme === 'tuesday-pink' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('tuesday-pink')" title="อังคาร - ชมพู"></div>
+                <div class="theme-btn week-btn theme-wednesday-green <?php echo $theme === 'wednesday-green' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('wednesday-green')" title="พุธ - เขียว"></div>
+                <div class="theme-btn week-btn theme-thursday-orange <?php echo $theme === 'thursday-orange' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('thursday-orange')" title="พฤหัส - ส้ม"></div>
+                <div class="theme-btn week-btn theme-friday-blue <?php echo $theme === 'friday-blue' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('friday-blue')" title="ศุกร์ - ฟ้า"></div>
+                <div class="theme-btn week-btn theme-saturday-purple <?php echo $theme === 'saturday-purple' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('saturday-purple')" title="เสาร์ - ม่วง"></div>
+            </div>
+        </div>
+        
+        <!-- Additional Color Themes -->
+        <div class="theme-section">
+            <div class="theme-section-title">โทนสีเพิ่มเติม</div>
+            <div class="theme-options">
+                <div class="theme-btn theme-red-yellow <?php echo $theme === 'red-yellow' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('red-yellow')" title="แดง-เหลือง"></div>
+                <div class="theme-btn theme-blue-cyan <?php echo $theme === 'blue-cyan' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('blue-cyan')" title="น้ำเงิน-ฟ้า"></div>
+                <div class="theme-btn theme-green-emerald <?php echo $theme === 'green-emerald' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('green-emerald')" title="เขียว-มรกต"></div>
+                <div class="theme-btn theme-purple-violet <?php echo $theme === 'purple-violet' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('purple-violet')" title="ม่วง-ไวโอเลต"></div>
+                <div class="theme-btn theme-orange-amber <?php echo $theme === 'orange-amber' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('orange-amber')" title="ส้ม-เหลืองอำพัน"></div>
+                <div class="theme-btn theme-pink-rose <?php echo $theme === 'pink-rose' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('pink-rose')" title="ชมพู-กุหลาบ"></div>
+                <div class="theme-btn theme-indigo-blue <?php echo $theme === 'indigo-blue' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('indigo-blue')" title="คราม-น้ำเงิน"></div>
+                <div class="theme-btn theme-teal-cyan <?php echo $theme === 'teal-cyan' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('teal-cyan')" title="เขียวน้ำทะเล-ฟ้า"></div>
+                <div class="theme-btn theme-lime-green <?php echo $theme === 'lime-green' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('lime-green')" title="เขียวมะนาว"></div>
+                <div class="theme-btn theme-yellow-orange <?php echo $theme === 'yellow-orange' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('yellow-orange')" title="เหลือง-ส้ม"></div>
+                <div class="theme-btn theme-slate-gray <?php echo $theme === 'slate-gray' ? 'active' : ''; ?>" 
+                     onclick="changeTheme('slate-gray')" title="เทา-ชาร์โคล"></div>
+            </div>
         </div>
     </div>
 
