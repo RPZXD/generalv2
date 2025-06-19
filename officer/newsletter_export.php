@@ -605,7 +605,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                 </div>
                 <div class="issue-badge text-white">
                     <div class="text-xs font-semibold mb-1 text-gray-700">ฉบับที่</div>
-                    <div class="text-xl font-bold mb-1 text-white"><?php echo $issue_no; ?></div>
+                    <div class="text-xl font-bold mb-1 text-gray-700"><?php echo $issue_no; ?></div>
                     <div class="text-xs text-gray-700 font-medium"><?php echo $date; ?></div>
                 </div>
             </div>
