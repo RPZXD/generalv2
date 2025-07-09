@@ -64,16 +64,21 @@ try {
         'create_by' => $create_by
     ]);
 
+            // ดึงชื่อครูจาก DatabaseUsers
+    $userDb = new \App\DatabaseUsers();
+    $teacher = $userDb->getTeacherByUsername($data['teach_id']);
+    $teacherName = $teacher ? $teacher['Teach_name'] : $data['teach_id'];
+
     if ($result) {
         // แจ้งเตือน Discord
-        $webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL'; // เปลี่ยนเป็น Webhook URL ของคุณ
+        $webhookUrl = 'https://discord.com/api/webhooks/1392376891129991209/p3LCdf5yzza9WZNnllylwlE5f7jpg82Q2rG2Ri2x2NiaR9T29VKd3IyRJ6AtFZ2RoJy0'; // เปลี่ยนเป็น Webhook URL ของคุณ
 
         $msg = "📰 **อัปโหลดจดหมายข่าวใหม่!**\n"
             . "-----------------------------\n"
             . "📌 **หัวข้อ:** {$title}\n"
             . "📅 **วันที่:** {$news_date}\n"
             . "📝 **รายละเอียด:** " . (mb_strlen($detail) > 200 ? mb_substr($detail, 0, 200) . '...' : $detail) . "\n"
-            . "👤 **ผู้สร้าง:** {$create_by}\n"
+            . "👤 **ผู้สร้าง:** {$teacherName}\n"
             . "🖼️ **จำนวนรูป:** " . count($imagePaths);
 
         $payload = json_encode(['content' => $msg]);

@@ -101,13 +101,18 @@ try {
 
     $stmt = $db->query($sql, $params);
 
+            // ดึงชื่อครูจาก DatabaseUsers
+    $userDb = new \App\DatabaseUsers();
+    $teacher = $userDb->getTeacherByUsername($data['teach_id']);
+    $teacherName = $teacher ? $teacher['Teach_name'] : $data['teach_id'];
+
     if ($stmt && $stmt->rowCount() > 0) {
         // แจ้งเตือน Discord
         $webhookUrl = 'https://discord.com/api/webhooks/1392375583215714334/DBG1syD7eINQWBEYXhcOf2ctFh0Qo71N51V2jkZ9g-Lx4DKFZHy3S_w4FcWbyRf1B0xe'; // เปลี่ยนเป็น Webhook URL ของคุณ
 
         $msg = "🚗 **มีการจองรถใหม่!**\n"
             . "-----------------------------\n"
-            . "👤 **ผู้จอง:** {$teacher_name} ({$teacher_position})\n"
+            . "👤 **ผู้จอง:** {$teacherName} ({$teacher_position})\n"
             . "📞 **เบอร์โทร:** {$teacher_phone}\n"
             . "🆔 **รหัสผู้จอง:** {$teacher_id}\n"
             . "🚘 **รถ:** {$car_id}\n"

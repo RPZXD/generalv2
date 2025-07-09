@@ -43,6 +43,12 @@ try {
     $controller = new ReportRepairController();
     $success = $controller->create($insertData);
 
+        // ดึงชื่อครูจาก DatabaseUsers
+    $userDb = new \App\DatabaseUsers();
+    $teacher = $userDb->getTeacherByUsername($data['teach_id']);
+    $teacherName = $teacher ? $teacher['Teach_name'] : $data['teach_id'];
+
+
     // แจ้งเตือน Discord เมื่อบันทึกสำเร็จ
     if ($success) {
         $webhookUrl = 'https://discord.com/api/webhooks/1392374493686665226/_Sl9fYw2L193asCqZpxyJkw7ApioLhrPBlmImGwFvTY_L6I-kfvzK93W6yJqicbmlF09'; // เปลี่ยนเป็น Webhook URL ของคุณ
@@ -114,7 +120,7 @@ try {
             . "-----------------------------\n"
             . "🏫 **สถานที่:** {$location}\n"
             . "📅 **วันที่:** {$date}\n"
-            . "👤 **ผู้แจ้ง:** {$teacher}\n"
+            . "👤 **ผู้แจ้ง:** {$teacherName}\n"
             . "-----------------------------\n"
             . (count($details) > 0 ? implode("\n", $details) : "ไม่มีรายละเอียดอุปกรณ์ที่แจ้งซ่อม");
 
