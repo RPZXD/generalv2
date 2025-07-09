@@ -607,11 +607,12 @@ try {
         // ส่งการแจ้งเตือนไปยัง Discord (สามารถ uncomment เพื่อใช้งานจริง)
         
         $discordWebhookUrl = 'https://discord.com/api/webhooks/1392369288953856052/y1BfeY9KlMjHyhQ1P5lFKROa2yWaWQQxzAAK6NZLjheGm6nOtjSTuukr2cE7uX3tBtXF';
-        $discordMessage = "🎉 มีการจองห้องประชุมใหม่โดยคุณ {$teacherName}\n" .
+        $discordMessage = "🎉 มีการจองห้องประชุมใหม่โดย {$teacherName}\n" .
                           "📅 วันที่: " . thai_date($data['date']) . "\n" .
                           "⏰ เวลา: " . substr($data['time_start'], 0, 5) . " - " . substr($data['time_end'], 0, 5) . " น.\n" .
                           "🏢 สถานที่: " . $data['location'] . "\n" .
                           "🎯 วัตถุประสงค์: " . $data['purpose'] . "\n" .
+                          "🛠️ อุปกรณ์: " . (!empty($data['media']) ? $data['media'] : "-") . "\n" .
                           "📞 ติดต่อสอบถาม: เจ้าหน้าที่บริหารงานทั่วไป";
         
         $discordResult = send_discord_notification($discordWebhookUrl, $discordMessage);
