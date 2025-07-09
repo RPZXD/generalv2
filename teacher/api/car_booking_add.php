@@ -1,6 +1,9 @@
 <?php
 session_start();
 require_once '../../classes/DatabaseGeneral.php';
+require_once '../../classes/DatabaseUsers.php';
+
+use App\DatabaseUsers;
 
 header('Content-Type: application/json');
 
@@ -101,10 +104,10 @@ try {
 
     $stmt = $db->query($sql, $params);
 
-            // ดึงชื่อครูจาก DatabaseUsers
-    $userDb = new \App\DatabaseUsers();
-    $teacher = $userDb->getTeacherByUsername($data['teach_id']);
-    $teacherName = $teacher ? $teacher['Teach_name'] : $data['teach_id'];
+    // ดึงชื่อครูจาก DatabaseUsers
+    $userDb = new DatabaseUsers();
+    $teacher = $userDb->getTeacherByUsername($teacher_id);
+    $teacherName = $teacher ? $teacher['Teach_name'] : $teacher_id;
 
     if ($stmt && $stmt->rowCount() > 0) {
         // แจ้งเตือน Discord

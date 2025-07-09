@@ -591,15 +591,35 @@ $(document).on('click', '.change-status-btn', function() {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    Swal.fire('สำเร็จ!', 'อัปเดตสถานะเรียบร้อย', 'success');
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'อัปเดตสถานะเรียบร้อย',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
                     fetchBookings();
-                    window.location.reload(); // รีเฟรชหน้าเพื่ออัปเดตสถานะ
                 } else {
-                    Swal.fire('ผิดพลาด!', data.message || 'เกิดข้อผิดพลาด', 'error');
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message || 'เกิดข้อผิดพลาด',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
                 }
             })
             .catch(() => {
-                Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
             });
         }
     });
@@ -628,15 +648,35 @@ $(document).on('click', '.delete-booking-btn', function() {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    Swal.fire('ลบสำเร็จ!', 'การจองถูกลบเรียบร้อยแล้ว', 'success');
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'การจองถูกลบเรียบร้อยแล้ว',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
                     fetchBookings();
-                    window.location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
                 } else {
-                    Swal.fire('ผิดพลาด!', data.message || 'เกิดข้อผิดพลาด', 'error');
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.message || 'เกิดข้อผิดพลาด',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
                 }
             })
             .catch(() => {
-                Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์',
+                    showConfirmButton: false,
+                    timer: 2500
+                });
             });
         }
     });
@@ -685,11 +725,12 @@ if (!document.getElementById('addBookingModal')) {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">วันเวลาเริ่มต้น <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" name="start_datetime" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400">
+                            <input type="datetime-local" name="start_datetime" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400"
+                                value="<?= date('Y-m-d\TH:i') ?>">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">วันเวลาสิ้นสุด <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" name="end_datetime" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400">
+                            <input type="datetime-local" name="end_datetime" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400" value="">
                         </div>
                     </div>
 
@@ -995,17 +1036,37 @@ $(document).on('submit', '#addBookingForm', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            Swal.fire('สำเร็จ!', 'บันทึกการจองเรียบร้อยแล้ว', 'success');
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'บันทึกการจองเรียบร้อยแล้ว',
+                showConfirmButton: false,
+                timer: 2000
+            });
             $('#addBookingModal').addClass('hidden');
             this.reset();
             fetchBookings();
-            window.location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
         } else {
-            Swal.fire('ผิดพลาด!', data.message || 'เกิดข้อผิดพลาด', 'error');
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: data.message || 'เกิดข้อผิดพลาด',
+                showConfirmButton: false,
+                timer: 2500
+            });
         }
     })
     .catch(() => {
-        Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์',
+            showConfirmButton: false,
+            timer: 2500
+        });
     })
     .finally(() => {
         isSubmitting = false;
@@ -1064,16 +1125,36 @@ $(document).on('submit', '#editBookingForm', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            Swal.fire('สำเร็จ!', 'บันทึกการแก้ไขเรียบร้อยแล้ว', 'success');
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'บันทึกการแก้ไขเรียบร้อยแล้ว',
+                showConfirmButton: false,
+                timer: 2000
+            });
             $('#editBookingModal').addClass('hidden');
             fetchBookings();
-            window.location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
         } else {
-            Swal.fire('ผิดพลาด!', data.message || 'เกิดข้อผิดพลาด', 'error');
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: data.message || 'เกิดข้อผิดพลาด',
+                showConfirmButton: false,
+                timer: 2500
+            });
         }
     })
     .catch(() => {
-        Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์',
+            showConfirmButton: false,
+            timer: 2500
+        });
     })
     .finally(() => {
         isSubmitting = false;
