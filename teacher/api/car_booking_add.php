@@ -102,6 +102,34 @@ try {
     $stmt = $db->query($sql, $params);
 
     if ($stmt && $stmt->rowCount() > 0) {
+        // แจ้งเตือน Discord
+        $webhookUrl = 'https://discord.com/api/webhooks/1392375583215714334/DBG1syD7eINQWBEYXhcOf2ctFh0Qo71N51V2jkZ9g-Lx4DKFZHy3S_w4FcWbyRf1B0xe'; // เปลี่ยนเป็น Webhook URL ของคุณ
+
+        $msg = "🚗 **มีการจองรถใหม่!**\n"
+            . "-----------------------------\n"
+            . "👤 **ผู้จอง:** {$teacher_name} ({$teacher_position})\n"
+            . "📞 **เบอร์โทร:** {$teacher_phone}\n"
+            . "🆔 **รหัสผู้จอง:** {$teacher_id}\n"
+            . "🚘 **รถ:** {$car_id}\n"
+            . "📅 **วันที่เดินทาง:** {$booking_date}\n"
+            . "⏰ **เวลา:** " . date('H:i', strtotime($start_time)) . " - " . date('H:i', strtotime($end_time)) . "\n"
+            . "📍 **ปลายทาง:** {$destination}\n"
+            . "🎯 **วัตถุประสงค์:** {$purpose}\n"
+            . "🧑‍🤝‍🧑 **จำนวนผู้โดยสาร:** {$passenger_count}\n"
+            . "🎓 **นักเรียน:** {$student_count}\n"
+            . "📝 **รายละเอียดผู้โดยสาร:** {$passengers_detail}\n"
+            . "🗒️ **หมายเหตุ:** {$notes}";
+
+        $payload = json_encode(['content' => $msg]);
+
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
+
         echo json_encode(['success' => true, 'message' => 'บันทึกการจองเรียบร้อยแล้ว']);
     } else {
         // เพิ่ม error log
