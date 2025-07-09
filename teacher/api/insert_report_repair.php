@@ -50,28 +50,65 @@ try {
         $date = $insertData['AddDate'] ?? '-';
         $teacher = $insertData['teach_id'] ?? '-';
 
-        // รายการรายละเอียด
-        $details = [
-            "🚪 ประตู: {$insertData['doorCount']} | เสีย: {$insertData['doorDamage']}",
-            "🪟 หน้าต่าง: {$insertData['windowCount']} | เสีย: {$insertData['windowDamage']}",
-            "🪑 โต๊ะนักเรียน: {$insertData['tablestCount']} | เสีย: {$insertData['tablestDamage']}",
-            "💺 เก้าอี้นักเรียน: {$insertData['chairstCount']} | เสีย: {$insertData['chairstDamage']}",
-            "🧑‍💻 โต๊ะอาจารย์: {$insertData['tabletaCount']} | เสีย: {$insertData['tabletaDamage']}",
-            "👨‍🏫 เก้าอี้อาจารย์: {$insertData['chairtaCount']} | เสีย: {$insertData['chairtaDamage']}",
-            "📝 อื่นๆ1: {$insertData['other1Details']} | จำนวน: {$insertData['other1Count']} | เสีย: {$insertData['other1Damage']}",
-            "📺 ทีวี: {$insertData['tvCount']} | เสีย: {$insertData['tvDamage']}",
-            "🔊 เครื่องเสียง: {$insertData['audioCount']} | เสีย: {$insertData['audioDamage']}",
-            "🔌 HDMI: {$insertData['hdmiCount']} | เสีย: {$insertData['hdmiDamage']}",
-            "📽️ โปรเจคเตอร์: {$insertData['projectorCount']} | เสีย: {$insertData['projectorDamage']}",
-            "📝 อื่นๆ2: {$insertData['other2Details']} | จำนวน: {$insertData['other2Count']} | เสีย: {$insertData['other2Damage']}",
-            "🌀 พัดลม: {$insertData['fanCount']} | เสีย: {$insertData['fanDamage']}",
-            "💡 ไฟ: {$insertData['lightCount']} | เสีย: {$insertData['lightDamage']}",
-            "❄️ แอร์: {$insertData['airCount']} | เสีย: {$insertData['airDamage']}",
-            "🔘 สวิตช์ไฟ: {$insertData['swCount']} | เสีย: {$insertData['swDamage']}",
-            "🔘 สวิตช์พัดลม: {$insertData['swfanCount']} | เสีย: {$insertData['swfanDamage']}",
-            "🔌 ปลั๊กไฟ: {$insertData['plugCount']} | เสีย: {$insertData['plugDamage']}",
-            "📝 อื่นๆ3: {$insertData['other3Details']} | จำนวน: {$insertData['other3Count']} | เสีย: {$insertData['other3Damage']}",
-        ];
+        // รายการรายละเอียด (แสดงเฉพาะที่มีข้อมูล)
+        $details = [];
+        if (!empty($insertData['doorCount']) || !empty($insertData['doorDamage'])) {
+            $details[] = "🚪 ประตู: {$insertData['doorCount']} | เสีย: {$insertData['doorDamage']}";
+        }
+        if (!empty($insertData['windowCount']) || !empty($insertData['windowDamage'])) {
+            $details[] = "🪟 หน้าต่าง: {$insertData['windowCount']} | เสีย: {$insertData['windowDamage']}";
+        }
+        if (!empty($insertData['tablestCount']) || !empty($insertData['tablestDamage'])) {
+            $details[] = "🪑 โต๊ะนักเรียน: {$insertData['tablestCount']} | เสีย: {$insertData['tablestDamage']}";
+        }
+        if (!empty($insertData['chairstCount']) || !empty($insertData['chairstDamage'])) {
+            $details[] = "💺 เก้าอี้นักเรียน: {$insertData['chairstCount']} | เสีย: {$insertData['chairstDamage']}";
+        }
+        if (!empty($insertData['tabletaCount']) || !empty($insertData['tabletaDamage'])) {
+            $details[] = "🧑‍💻 โต๊ะอาจารย์: {$insertData['tabletaCount']} | เสีย: {$insertData['tabletaDamage']}";
+        }
+        if (!empty($insertData['chairtaCount']) || !empty($insertData['chairtaDamage'])) {
+            $details[] = "👨‍🏫 เก้าอี้อาจารย์: {$insertData['chairtaCount']} | เสีย: {$insertData['chairtaDamage']}";
+        }
+        if (!empty($insertData['other1Details']) || !empty($insertData['other1Count']) || !empty($insertData['other1Damage'])) {
+            $details[] = "📝 อื่นๆ1: {$insertData['other1Details']} | จำนวน: {$insertData['other1Count']} | เสีย: {$insertData['other1Damage']}";
+        }
+        if (!empty($insertData['tvCount']) || !empty($insertData['tvDamage'])) {
+            $details[] = "📺 ทีวี: {$insertData['tvCount']} | เสีย: {$insertData['tvDamage']}";
+        }
+        if (!empty($insertData['audioCount']) || !empty($insertData['audioDamage'])) {
+            $details[] = "🔊 เครื่องเสียง: {$insertData['audioCount']} | เสีย: {$insertData['audioDamage']}";
+        }
+        if (!empty($insertData['hdmiCount']) || !empty($insertData['hdmiDamage'])) {
+            $details[] = "🔌 HDMI: {$insertData['hdmiCount']} | เสีย: {$insertData['hdmiDamage']}";
+        }
+        if (!empty($insertData['projectorCount']) || !empty($insertData['projectorDamage'])) {
+            $details[] = "📽️ โปรเจคเตอร์: {$insertData['projectorCount']} | เสีย: {$insertData['projectorDamage']}";
+        }
+        if (!empty($insertData['other2Details']) || !empty($insertData['other2Count']) || !empty($insertData['other2Damage'])) {
+            $details[] = "📝 อื่นๆ2: {$insertData['other2Details']} | จำนวน: {$insertData['other2Count']} | เสีย: {$insertData['other2Damage']}";
+        }
+        if (!empty($insertData['fanCount']) || !empty($insertData['fanDamage'])) {
+            $details[] = "🌀 พัดลม: {$insertData['fanCount']} | เสีย: {$insertData['fanDamage']}";
+        }
+        if (!empty($insertData['lightCount']) || !empty($insertData['lightDamage'])) {
+            $details[] = "💡 ไฟ: {$insertData['lightCount']} | เสีย: {$insertData['lightDamage']}";
+        }
+        if (!empty($insertData['airCount']) || !empty($insertData['airDamage'])) {
+            $details[] = "❄️ แอร์: {$insertData['airCount']} | เสีย: {$insertData['airDamage']}";
+        }
+        if (!empty($insertData['swCount']) || !empty($insertData['swDamage'])) {
+            $details[] = "🔘 สวิตช์ไฟ: {$insertData['swCount']} | เสีย: {$insertData['swDamage']}";
+        }
+        if (!empty($insertData['swfanCount']) || !empty($insertData['swfanDamage'])) {
+            $details[] = "🔘 สวิตช์พัดลม: {$insertData['swfanCount']} | เสีย: {$insertData['swfanDamage']}";
+        }
+        if (!empty($insertData['plugCount']) || !empty($insertData['plugDamage'])) {
+            $details[] = "🔌 ปลั๊กไฟ: {$insertData['plugCount']} | เสีย: {$insertData['plugDamage']}";
+        }
+        if (!empty($insertData['other3Details']) || !empty($insertData['other3Count']) || !empty($insertData['other3Damage'])) {
+            $details[] = "📝 อื่นๆ3: {$insertData['other3Details']} | จำนวน: {$insertData['other3Count']} | เสีย: {$insertData['other3Damage']}";
+        }
 
         $msg = "📢 **แจ้งซ่อมใหม่!**\n"
             . "-----------------------------\n"
@@ -79,7 +116,7 @@ try {
             . "📅 **วันที่:** {$date}\n"
             . "👤 **ผู้แจ้ง:** {$teacher}\n"
             . "-----------------------------\n"
-            . implode("\n", $details);
+            . (count($details) > 0 ? implode("\n", $details) : "ไม่มีรายละเอียดอุปกรณ์ที่แจ้งซ่อม");
 
         $payload = json_encode(['content' => $msg]);
 

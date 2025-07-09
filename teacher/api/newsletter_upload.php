@@ -65,6 +65,27 @@ try {
     ]);
 
     if ($result) {
+        // แจ้งเตือน Discord
+        $webhookUrl = 'YOUR_DISCORD_WEBHOOK_URL'; // เปลี่ยนเป็น Webhook URL ของคุณ
+
+        $msg = "📰 **อัปโหลดจดหมายข่าวใหม่!**\n"
+            . "-----------------------------\n"
+            . "📌 **หัวข้อ:** {$title}\n"
+            . "📅 **วันที่:** {$news_date}\n"
+            . "📝 **รายละเอียด:** " . (mb_strlen($detail) > 200 ? mb_substr($detail, 0, 200) . '...' : $detail) . "\n"
+            . "👤 **ผู้สร้าง:** {$create_by}\n"
+            . "🖼️ **จำนวนรูป:** " . count($imagePaths);
+
+        $payload = json_encode(['content' => $msg]);
+
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
+
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'บันทึกข้อมูลไม่สำเร็จ']);
