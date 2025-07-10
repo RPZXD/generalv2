@@ -95,7 +95,6 @@ require_once('header.php');
                 <div id="tableView" class="overflow-x-auto">
                     <table id="bookingTable" class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
                         <thead>                            <tr class="bg-blue-100 text-blue-700">
-                                <th class="py-3 px-4 border-b text-center">#</th>
                                 <th class="py-3 px-4 border-b text-left">ผู้จอง</th>
                                 <th class="py-3 px-4 border-b text-left">รถยนต์</th>
                                 <th class="py-3 px-4 border-b text-center">วันที่จอง</th>
@@ -455,7 +454,6 @@ function fetchBookings() {
             
             $tbody.append(`
                 <tr class="hover:bg-blue-50 transition-all duration-200">
-                    <td class="py-4 px-4 border-b text-center font-semibold text-gray-600">${idx + 1}</td>
                     <td class="py-4 px-4 border-b">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -511,13 +509,13 @@ function fetchBookings() {
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/th.json'
                 },
-                order: [[3, 'desc']], // เรียงตามวันที่สร้าง
+                order: [[2, 'desc']], // เรียงตามวันที่สร้าง
                 pageLength: 25,
                 responsive: true,
                 dom: '<"flex justify-between items-center mb-4"<"flex items-center gap-2"l><"flex items-center gap-2"f>>rt<"flex justify-between items-center mt-4"ip>',
                 columnDefs: [
-                    { orderable: false, targets: [9] }, // ปิดการเรียงปุ่มจัดการ
-                    { className: "text-center", targets: [0, 3, 4, 7, 8, 9] }
+                    { orderable: false, targets: [8] }, // ปิดการเรียงปุ่มจัดการ
+                    { className: "text-center", targets: [0, 2, 3, 6, 7, 8] }
                 ]
             });
         } else {
@@ -526,13 +524,13 @@ function fetchBookings() {
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/th.json'
                 },
-                order: [[3, 'desc']],
+                order: [[2, 'desc']],
                 pageLength: 25,
                 responsive: true,
                 dom: '<"flex justify-between items-center mb-4"<"flex items-center gap-2"l><"flex items-center gap-2"f>>rt<"flex justify-between items-center mt-4"ip>',
                 columnDefs: [
-                    { orderable: false, targets: [9] },
-                    { className: "text-center", targets: [0, 3, 4, 7, 8, 9] }
+                    { orderable: false, targets: [8] },
+                    { className: "text-center", targets: [0, 2, 3, 6, 7, 8] }
                 ]
             });
         }
