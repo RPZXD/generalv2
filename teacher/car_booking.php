@@ -383,7 +383,9 @@ function fetchBookings() {
     $.get('api/car_booking_list.php', function(res) {
         let data = [];
         if (res && res.list) {
-            data = res.list;
+            // กรองเฉพาะรายการของตัวเอง
+            const myTeacherId = "<?php echo $teacher_id; ?>";
+            data = res.list.filter(item => String(item.teacher_id) === String(myTeacherId));
         }
         
         // อัปเดตสถิติ
@@ -1184,6 +1186,7 @@ function initCalendar() {
   fetch('api/car_booking_list.php')
     .then(res => res.json())
     .then(data => {
+      // ไม่ต้องกรอง แสดงทั้งหมด
       const events = bookingsToEvents(data.list || []);
       const calendarEl = document.getElementById('carBookingCalendar');
       const calendar = new FullCalendar.Calendar(calendarEl, {

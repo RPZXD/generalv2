@@ -14,23 +14,13 @@ try {
     $dbGeneral = new App\DatabaseGeneral();
     $dbUsers = new App\DatabaseUsers();
 
-    // ดึง teacher_id จาก session
-    $user = $_SESSION['user'] ?? [];
-    $teacher_id = $user['Teach_id'] ?? ($_SESSION['Teach_id'] ?? null);
-
-    if (!$teacher_id) {
-        echo json_encode(['success' => false, 'message' => 'ไม่พบข้อมูลผู้ใช้']);
-        exit;
-    }
-
-    // ดึงเฉพาะข้อมูลการจองของตัวเอง
+    // ดึงข้อมูลการจองทั้งหมด (ไม่กรอง teacher_id)
     $sql = "SELECT cb.*, 
                    c.car_model, c.license_plate, c.car_type, c.capacity
             FROM car_bookings cb
             LEFT JOIN cars c ON cb.car_id = c.id
-            WHERE cb.teacher_id = ?
             ORDER BY cb.created_at DESC";
-    $stmt = $dbGeneral->query($sql, [$teacher_id]);
+    $stmt = $dbGeneral->query($sql);
     $bookings = $stmt->fetchAll();
     
     // ดึงข้อมูลครูแยกต่างหากและเพิ่มเข้าไปในผลลัพธ์
