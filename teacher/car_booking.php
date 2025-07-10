@@ -278,27 +278,6 @@ require_once('header.php');
   background: linear-gradient(180deg, #2563eb, #1e40af);
 }
 
-/* Floating action button */
-.fab {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  color: white;
-  border: none;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 1000;
-}
-.fab:hover {
-  transform: scale(1.1) rotate(360deg);
-  box-shadow: 0 12px 35px rgba(59, 130, 246, 0.6);
-}
-
 /* Tooltip */
 .tooltip {
   position: relative;
