@@ -31,11 +31,11 @@ require_once('header.php');
         <!-- /.content-header -->
 
         <section class="content">
-            <div class="container mx-auto max-w-full bg-white rounded-xl shadow-xl p-8 mt-8 border-l-8 border-blue-400 animate-fade-in">
+            <div class="container mx-auto max-w-6xl bg-white rounded-xl shadow-xl p-4 md:p-8 mt-8 border-l-8 border-blue-400 animate-fade-in">
                 <div class="flex flex-col lg:flex-row gap-8">
                     <!-- ซ้าย: ฟอร์มบันทึกจดหมายข่าว -->
                     <div class="w-full lg:w-1/2">
-                        <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow p-6 border border-blue-100">
+                        <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow p-4 md:p-6 border border-blue-100">
                             <h2 class="text-2xl font-bold text-blue-700 mb-6 flex items-center gap-2">📰 สร้างจดหมายข่าวใหม่</h2>
                             <form id="newsletterForm" method="POST" enctype="multipart/form-data" class="space-y-6">
                                 <div>
@@ -51,24 +51,26 @@ require_once('header.php');
                                     <div id="imageInputs" class="space-y-2">
                                         <!-- ช่องเลือกไฟล์ภาพ 6 ช่องเริ่มต้น -->
                                         <?php for ($i = 1; $i <= 6; $i++): ?>
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                                             <input type="file" name="images[]" accept="image/*" required class="single-image-input block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                                            <img src="" alt="" class="preview-img w-16 h-16 object-cover rounded border hidden" />
+                                            <img src="" alt="" class="preview-img w-20 h-20 object-cover rounded border hidden" />
                                             <button type="button" class="remove-image-btn text-red-500 hover:text-red-700 text-lg hidden" title="ลบรูปภาพนี้">✖</button>
                                         </div>
                                         <?php endfor; ?>
                                     </div>
-                                    <button type="button" id="addImageInput" class="mt-2 bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 transition text-sm">+ เพิ่มรูปภาพ</button>
-                                    <div class="text-xs text-gray-400 mt-1">เลือกได้ 6-9 รูป (ไฟล์ .jpg, .jpeg, .png, .gif)</div>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <button type="button" id="addImageInput" class="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 transition text-sm">+ เพิ่มรูปภาพ</button>
+                                        <span class="text-xs text-gray-400">เลือกได้ 6-9 รูป (ไฟล์ .jpg, .jpeg, .png, .gif)</span>
+                                    </div>
                                     <div id="imageInputError" class="text-red-500 text-sm mt-1"></div>
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-semibold mb-2" for="detail">รายละเอียดข่าว <span class="text-red-500">*</span></label>
                                     <textarea id="detail" name="detail" rows="6" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="รายละเอียดข่าว..."></textarea>
                                 </div>
-                                <div class="flex justify-end">
-                                    <span class="text-red-500">ข้อมูลจะถูกเจ้าหน้าที่คัดกรองอีกทีหากมีปัญหาเจ้าหน้าที่จะติดต่อกลับไป</span>
-                                    <button type="submit" class="bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 px-8 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-green-600 transition-all flex items-center gap-2 shadow-lg transform hover:scale-105">
+                                <div class="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2">
+                                    <span class="text-red-500 text-xs md:text-sm">ข้อมูลจะถูกเจ้าหน้าที่คัดกรองอีกที หากมีปัญหาเจ้าหน้าที่จะติดต่อกลับไป</span>
+                                    <button type="submit" class="bg-gradient-to-r from-blue-600 to-green-500 text-white py-3 px-8 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-green-600 transition-all flex items-center gap-2 shadow-lg transform hover:scale-105 mt-2 md:mt-0">
                                         <span>บันทึกข่าว</span> <span>🚀</span>
                                     </button>
                                 </div>
@@ -77,7 +79,7 @@ require_once('header.php');
                     </div>
                     <!-- ขวา: ตารางรายการจดหมายข่าว -->
                     <div class="w-full lg:w-1/2">
-                        <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl shadow p-6 border border-green-100">
+                        <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl shadow p-4 md:p-6 border border-green-100">
                             <h2 class="text-2xl font-bold text-blue-700 mb-6 flex items-center gap-2">📋 รายการจดหมายข่าวของคุณ</h2>
                             <div class="overflow-x-auto">
                                 <table id="newsletterTable" class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
@@ -113,17 +115,33 @@ require_once('header.php');
   to { opacity: 1; transform: translateY(0);}
 }
 .animate-fade-in { animation: fade-in 1s ease-out; }
+/* Responsive tweaks */
+@media (max-width: 1024px) {
+  .container.mx-auto.max-w-6xl { padding: 0.5rem !important; }
+  .flex.flex-col.lg\:flex-row.gap-8 { gap: 1.5rem !important; }
+}
+@media (max-width: 768px) {
+  .container.mx-auto.max-w-6xl { padding: 0.25rem !important; }
+  .flex.flex-col.lg\:flex-row.gap-8 { flex-direction: column !important; gap: 1rem !important; }
+  .w-full.lg\:w-1\/2 { width: 100% !important; }
+  .p-4.md\:p-6 { padding: 1rem !important; }
+}
+@media (max-width: 640px) {
+  .p-4.md\:p-6 { padding: 0.5rem !important; }
+  .rounded-xl { border-radius: 0.5rem !important; }
+  .text-2xl { font-size: 1.25rem !important; }
+  .py-3 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+  .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
+}
 </style>
 <script>
 // เพิ่มตัวแปรป้องกันการส่งซ้ำ
 let isSubmitting = false;
 
 function updateImageInputStates() {
-    // ซ่อนปุ่มลบถ้ามี <= 5 ช่อง, แสดงถ้ามี > 5 ช่อง
     const imageInputs = document.querySelectorAll('#imageInputs .single-image-input');
     const removeBtns = document.querySelectorAll('#imageInputs .remove-image-btn');
     removeBtns.forEach(btn => btn.classList.toggle('hidden', imageInputs.length <= 6));
-    // ปิดปุ่มเพิ่มถ้าครบ 9 ช่อง
     document.getElementById('addImageInput').disabled = imageInputs.length >= 9;
 }
 
@@ -131,7 +149,6 @@ function validateImageInputs() {
     const imageInputs = document.querySelectorAll('#imageInputs .single-image-input');
     let valid = true;
     let error = '';
-    // ต้องมีอย่างน้อย 6 ช่องที่มีไฟล์
     const filled = Array.from(imageInputs).filter(input => input.files.length > 0);
     if (filled.length < 6) {
         valid = false;
@@ -145,7 +162,6 @@ function validateImageInputs() {
     return valid;
 }
 
-// แสดง preview รูป
 function handleImagePreview(input, previewImg) {
     input.addEventListener('change', function() {
         if (input.files && input.files[0]) {
@@ -167,28 +183,26 @@ document.getElementById('addImageInput').addEventListener('click', function() {
     const imageInputs = document.querySelectorAll('#imageInputs .single-image-input');
     if (imageInputs.length >= 9) return;
     const div = document.createElement('div');
-    div.className = "flex items-center gap-3";
+    div.className = "flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3";
     div.innerHTML = `
         <input type="file" name="images[]" accept="image/*" required class="single-image-input block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-        <img src="" alt="" class="preview-img w-16 h-16 object-cover rounded border hidden" />
+        <img src="" alt="" class="preview-img w-20 h-20 object-cover rounded border hidden" />
         <button type="button" class="remove-image-btn text-red-500 hover:text-red-700 text-lg" title="ลบรูปภาพนี้">✖</button>
     `;
     document.getElementById('imageInputs').appendChild(div);
     updateImageInputStates();
 
-    // preview
     const input = div.querySelector('.single-image-input');
     const previewImg = div.querySelector('.preview-img');
     handleImagePreview(input, previewImg);
 
-    // remove
     div.querySelector('.remove-image-btn').addEventListener('click', function() {
         div.remove();
         updateImageInputStates();
     });
 });
 
-// จัดการ preview และ remove สำหรับ 5 ช่องแรก
+// จัดการ preview และ remove สำหรับ 6 ช่องแรก
 document.querySelectorAll('#imageInputs .flex').forEach(div => {
     const input = div.querySelector('.single-image-input');
     const previewImg = div.querySelector('.preview-img');
@@ -202,20 +216,12 @@ document.querySelectorAll('#imageInputs .flex').forEach(div => {
 
 updateImageInputStates();
 
-// ส่งข้อมูลแบบ AJAX (adddata) - ปรับปรุงเพิ่มการหน่วงเวลา
+// ส่งข้อมูลแบบ AJAX (adddata)
 document.getElementById('newsletterForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
-    // ป้องกันการส่งซ้ำ
-    if (isSubmitting) {
-        return false;
-    }
-    
-    if (!validateImageInputs()) {
-        return false;
-    }
+    if (isSubmitting) return false;
+    if (!validateImageInputs()) return false;
 
-    // ตั้งสถานะกำลังส่ง
     isSubmitting = true;
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
@@ -224,11 +230,8 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
 
     const form = this;
     const formData = new FormData(form);
-
-    // เพิ่ม create_by (teacher_id) ใน formData
     formData.append('create_by', "<?php echo $teacher_id; ?>");
 
-    // หน่วงเวลา 1 วินาทีก่อนส่งข้อมูล
     setTimeout(() => {
         fetch('api/newsletter_upload.php', {
             method: 'POST',
@@ -239,18 +242,16 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
             if (result.success) {
                 Swal.fire('สำเร็จ!', 'เผยแพร่จดหมายข่าวเรียบร้อยแล้ว', 'success').then(() => {
                     form.reset();
-                    // ล้าง preview รูป
                     document.querySelectorAll('.preview-img').forEach(img => {
                         img.src = '';
                         img.classList.add('hidden');
                     });
-                    // รีเซ็ตวันที่เป็นวันนี้
                     var dateInput = document.getElementById('news_date');
                     if (dateInput) {
                         const today = new Date();
                         dateInput.value = today.toISOString().split('T')[0];
                     }
-                    fetchNewsletters(); // โหลดรายการใหม่
+                    fetchNewsletters();
                 });
             } else {
                 Swal.fire('ผิดพลาด!', result.message || 'เกิดข้อผิดพลาด', 'error');
@@ -260,12 +261,11 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
             Swal.fire('ผิดพลาด!', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
         })
         .finally(() => {
-            // คืนสถานะปุ่มและอนุญาตให้ส่งได้อีก
             isSubmitting = false;
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         });
-    }, 1000); // หน่วงเวลา 1 วินาที
+    }, 500); // ลดเวลาหน่วงเหลือ 0.5 วินาที
 });
 
 // ตั้งค่าวันที่ปัจจุบันเป็นค่า default
@@ -298,7 +298,6 @@ function fetchNewsletters() {
             let imgHtml = images.length
                 ? `<img src="../${images[0]}" class="w-12 h-12 object-cover rounded border inline-block" alt="img">`
                 : '';
-            // สถานะ: 0=draft, 1=published, 2=archived
             let statusText = '';
             let status = (typeof item.status !== 'undefined') ? item.status : 0;
             if (status == 1 || status === '1') {
@@ -407,4 +406,5 @@ $(document).on('click', '.delete-newsletter-btn', function() {
 </script>
 <?php require_once('script.php'); ?>
 </body>
+</html>
 </html>

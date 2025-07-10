@@ -2,8 +2,10 @@
 require_once __DIR__ . '/../../classes/DatabaseGeneral.php';
 require_once __DIR__ . '/../../models/Newsletter.php';
 require_once __DIR__ . '/../../controllers/NewsletterController.php';
+require_once __DIR__ . '/../../classes/DatabaseUsers.php'; // เพิ่มบรรทัดนี้
 
 use Controllers\NewsletterController;
+use App\DatabaseUsers; // เพิ่มบรรทัดนี้
 
 header('Content-Type: application/json');
 
@@ -64,10 +66,10 @@ try {
         'create_by' => $create_by
     ]);
 
-            // ดึงชื่อครูจาก DatabaseUsers
-    $userDb = new \App\DatabaseUsers();
-    $teacher = $userDb->getTeacherByUsername($data['teach_id']);
-    $teacherName = $teacher ? $teacher['Teach_name'] : $data['teach_id'];
+    // ดึงชื่อครูจาก DatabaseUsers
+    $userDb = new DatabaseUsers();
+    $teacher = $userDb->getTeacherByUsername($create_by); // แก้จาก $data['teach_id'] เป็น $create_by
+    $teacherName = $teacher ? $teacher['Teach_name'] : $create_by;
 
     if ($result) {
         // แจ้งเตือน Discord

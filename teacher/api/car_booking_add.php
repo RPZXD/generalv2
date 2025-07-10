@@ -104,29 +104,58 @@ try {
 
     $stmt = $db->query($sql, $params);
 
+    // ฟังก์ชันแปลงวันเวลาเป็นภาษาไทย
+    function thaiDatetime($datetime) {
+        if (!$datetime) return '-';
+        $months = [
+            1 => 'มกราคม', 2 => 'กุมภาพันธ์', 3 => 'มีนาคม', 4 => 'เมษายน',
+            5 => 'พฤษภาคม', 6 => 'มิถุนายน', 7 => 'กรกฎาคม', 8 => 'สิงหาคม',
+            9 => 'กันยายน', 10 => 'ตุลาคม', 11 => 'พฤศจิกายน', 12 => 'ธันวาคม'
+        ];
+        $dt = new DateTime($datetime);
+        $day = $dt->format('j');
+        $month = $months[(int)$dt->format('n')];
+        $year = $dt->format('Y') + 543;
+        $time = $dt->format('H:i');
+        return "{$day} {$month} {$year} เวลา {$time} น.";
+    }
+
     // ดึงชื่อครูจาก DatabaseUsers
     $userDb = new DatabaseUsers();
     $teacher = $userDb->getTeacherByUsername($teacher_id);
     $teacherName = $teacher ? $teacher['Teach_name'] : $teacher_id;
 
+    // ดึงข้อมูลรถ
+    $carInfo = null;
+    $carSql = "SELECT car_model, license_plate, car_type, capacity FROM cars WHERE id = ?";
+    $carStmt = $db->query($carSql, [$car_id]);
+    if ($carStmt) {
+        $carInfo = $carStmt->fetch(\PDO::FETCH_ASSOC);
+    }
+    $carDesc = $carInfo
+        ? "{$carInfo['car_model']} ({$carInfo['license_plate']}) | {$carInfo['car_type']} | {$carInfo['capacity']} ที่นั่ง"
+        : $car_id;
+
     if ($stmt && $stmt->rowCount() > 0) {
         // แจ้งเตือน Discord
         $webhookUrl = 'https://discord.com/api/webhooks/1392375583215714334/DBG1syD7eINQWBEYXhcOf2ctFh0Qo71N51V2jkZ9g-Lx4DKFZHy3S_w4FcWbyRf1B0xe'; // เปลี่ยนเป็น Webhook URL ของคุณ
 
-        $msg = "🚗 **มีการจองรถใหม่!**\n"
+        $msg = "-----------------------------\n"
+            . "🚗 **มีการจองรถใหม่!**\n"
             . "-----------------------------\n"
             . "👤 **ผู้จอง:** {$teacherName} ({$teacher_position})\n"
             . "📞 **เบอร์โทร:** {$teacher_phone}\n"
             . "🆔 **รหัสผู้จอง:** {$teacher_id}\n"
-            . "🚘 **รถ:** {$car_id}\n"
-            . "📅 **วันที่เดินทาง:** {$booking_date}\n"
-            . "⏰ **เวลา:** " . date('H:i', strtotime($start_time)) . " - " . date('H:i', strtotime($end_time)) . "\n"
+            . "🚘 **รถ:** {$carDesc}\n"
+            . "📅 **วันที่เดินทาง:** " . thaiDatetime($start_time) . "\n"
+            . "🏁 **สิ้นสุดการเดินทาง:** " . thaiDatetime($end_time) . "\n"
             . "📍 **ปลายทาง:** {$destination}\n"
             . "🎯 **วัตถุประสงค์:** {$purpose}\n"
             . "🧑‍🤝‍🧑 **จำนวนผู้โดยสาร:** {$passenger_count}\n"
             . "🎓 **นักเรียน:** {$student_count}\n"
             . "📝 **รายละเอียดผู้โดยสาร:** {$passengers_detail}\n"
-            . "🗒️ **หมายเหตุ:** {$notes}";
+            . "🗒️ **หมายเหตุ:** {$notes}\n"
+            . "-----------------------------";
 
         $payload = json_encode(['content' => $msg]);
 
