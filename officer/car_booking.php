@@ -1387,10 +1387,10 @@ function loadEditPassengersList(passengersJson) {
         const passengers = passengersJson ? JSON.parse(passengersJson) : [];
         
         if (passengers.length === 0) {
-            // ถ้าไม่มีข้อมูล ให้ใส่แค่หัวหน้าคณะ
+            // ถ้าไม่มีข้อมูล ให้ใส่แค่หัวหน้าคณะ (ใช้ชื่อจาก booking หรือว่าง)
             container.innerHTML = `
                 <div class="passenger-item flex gap-2">
-                    <input type="text" name="passengers[]" class="flex-1 p-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="ชื่อ-นามสกุล ครู/เจ้าหน้าที่" value="<?=$TeacherData['Teach_name']?>" readonly>
+                    <input type="text" name="passengers[]" class="flex-1 p-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="ชื่อ-นามสกุล ครู/เจ้าหน้าที่" value="" readonly>
                     <span class="px-3 py-2 bg-gray-100 text-gray-500 rounded-lg">หัวหน้าคณะ</span>
                 </div>
             `;
@@ -1420,10 +1420,10 @@ function loadEditPassengersList(passengersJson) {
         }
     } catch (e) {
         console.error('Error parsing passengers data:', e);
-        // ถ้าเกิดข้อผิดพลาด ให้ใส่แค่หัวหน้าคณะ
+        // ถ้าเกิดข้อผิดพลาด ให้ใส่แค่หัวหน้าคณะ (ว่าง)
         container.innerHTML = `
             <div class="passenger-item flex gap-2">
-                <input type="text" name="passengers[]" class="flex-1 p-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="ชื่อ-นามสกุล ครู/เจ้าหน้าที่" value="<?=$TeacherData['Teach_name']?>" readonly>
+                <input type="text" name="passengers[]" class="flex-1 p-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400" placeholder="ชื่อ-นามสกุล ครู/เจ้าหน้าที่" value="" readonly>
                 <span class="px-3 py-2 bg-gray-100 text-gray-500 rounded-lg">หัวหน้าคณะ</span>
             </div>
         `;
