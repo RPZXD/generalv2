@@ -533,7 +533,7 @@ try {
                     ],
                     [
                         "type" => "text",
-                        "text" => "📞 ติดต่อสอบถาม: เจ้าหน้าที่บริหารงานทั่วไป",
+                        "text" => "📞 ติดต่อสอบถาม: " . (!empty($data['phone']) ? $data['phone'] : "-"),
                         "size" => "xs",
                         "color" => "#9ca3af",
                         "align" => "center",
@@ -564,7 +564,7 @@ try {
                                "🏢 สถานที่: " . $data['location'] . "\n" .
                                "🎯 วัตถุประสงค์: " . $data['purpose'] . "\n" .
                                "👨‍🏫 ผู้จอง: " . $teacherName . "\n" .
-                               "📞 ติดต่อสอบถาม: เจ้าหน้าที่บริหารงานทั่วไป"
+                               "📞 โทร: " . (!empty($data['phone']) ? $data['phone'] : "-")
                     ]
                 ]
             ];
@@ -591,7 +591,7 @@ try {
                             "🛠️ **อุปกรณ์:** " . (!empty($data['media']) ? $data['media'] : "-") . "\n" .
                             "👨‍🏫 **ผู้จอง:** " . $teacherName . "\n" .
                             "⏳ **สถานะ:** รอการอนุมัติ\n\n" .
-                            "📞 ติดต่อสอบถาม: เจ้าหน้าที่บริหารงานทั่วไป";
+                            "📞 โทร: " . (!empty($data['phone']) ? $data['phone'] : "-");
             
             $discordResult = send_discord_notification($discordWebhookUrl, $discordMessage);
             

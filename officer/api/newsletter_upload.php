@@ -66,6 +66,44 @@ try {
     ]);
 
     if ($result) {
+        // แจ้งเตือน Discord
+        $webhookUrl = 'https://discord.com/api/webhooks/1392376891129991209/p3LCdf5yzza9WZNnllylwlE5f7jpg82Q2rG2Ri2x2NiaR9T29VKd3IyRJ6AtFZ2RoJy0'; // เปลี่ยนเป็น Webhook URL ของคุณ
+
+        // ฟังก์ชันแปลงวันเวลาเป็นภาษาไทย
+        function thaiDate($date) {
+            if (!$date) return '-';
+            $months = [
+                1 => 'มกราคม', 2 => 'กุมภาพันธ์', 3 => 'มีนาคม', 4 => 'เมษายน',
+                5 => 'พฤษภาคม', 6 => 'มิถุนายน', 7 => 'กรกฎาคม', 8 => 'สิงหาคม',
+                9 => 'กันยายน', 10 => 'ตุลาคม', 11 => 'พฤศจิกายน', 12 => 'ธันวาคม'
+            ];
+            $dt = new DateTime($date);
+            $day = $dt->format('j');
+            $month = $months[(int)$dt->format('n')];
+            $year = $dt->format('Y') + 543;
+            return "{$day} {$month} {$year}";
+        }
+
+        $msg = "-----------------------------\n"
+            . "📰 **เจ้าหน้าที่อัปโหลดข่าวสารใหม่!**\n"
+            . "-----------------------------\n"
+            . "📌 **หัวข้อข่าว:** {$title}\n"
+            . "📅 **วันที่ข่าว:** " . thaiDate($news_date) . "\n"
+            . "📝 **รายละเอียด:** " . (mb_strlen($detail) > 100 ? mb_substr($detail, 0, 100) . '...' : $detail) . "\n"
+            . "👤 **ผู้สร้าง:** {$create_by}\n"
+            . "🖼️ **จำนวนรูปภาพ:** " . count($imagePaths) . "\n"
+            . "-----------------------------";
+
+        $payload = json_encode(['content' => $msg]);
+
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
+
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'บันทึกข้อมูลไม่สำเร็จ']);
