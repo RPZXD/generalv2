@@ -613,7 +613,7 @@ try {
                           "🏢 สถานที่: " . $data['location'] . "\n" .
                           "🎯 วัตถุประสงค์: " . $data['purpose'] . "\n" .
                           "🛠️ อุปกรณ์: " . (!empty($data['media']) ? $data['media'] : "-") . "\n" .
-                          "📞 ติดต่อสอบถาม: เจ้าหน้าที่บริหารงานทั่วไป";
+                          "📞 ติดต่อสอบถาม: " . (!empty($data['phone']) ? $data['phone'] : "-");
         
         $discordResult = send_discord_notification($discordWebhookUrl, $discordMessage);
         if ($discordResult['success']) {
