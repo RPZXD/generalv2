@@ -338,6 +338,16 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             position: relative;
             padding: 0 20px;
         }
+
+        /* Title font size classes */
+        .titlefont-small { font-size: 15px !important; }
+        .titlefont-medium { font-size: 18px !important; }
+        .titlefont-large { font-size: 24px !important; }
+
+        /* Content font size classes */
+        .contentfont-small { font-size: 13px !important; }
+        .contentfont-medium { font-size: 16px !important; }
+        .contentfont-large { font-size: 20px !important; }
         
         .news-title::after {
             content: '';
@@ -447,31 +457,30 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             display: grid;
             gap: 8px;
         }
-        
-        /* Responsive grid based on image count */
-        .image-grid.cols-4 { 
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+
+        /* จำนวนคอลัมน์ที่เลือก */
+        .imggrid-cols-1 {
+            grid-template-columns: 1fr;
         }
-        .image-grid.cols-5 { 
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+        .imggrid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
         }
-        .image-grid.cols-6 { 
+        .imggrid-cols-3 {
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
         }
-        .image-grid.cols-7 { 
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+        .imggrid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
         }
-        .image-grid.cols-8 { 
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
+
+        /* ขนาดรูปภาพที่เลือก */
+        .imgsize-small .photo-item {
+            max-height: 90px;
         }
-        .image-grid.cols-9 { 
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
+        .imgsize-medium .photo-item {
+            max-height: 140px;
+        }
+        .imgsize-large .photo-item {
+            max-height: 220px;
         }
         
         
@@ -773,6 +782,48 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                      onclick="changeTheme('slate-gray')" title="เทา-ชาร์โคล"></div>
             </div>
         </div>
+            <!-- Dropdown เลือกจำนวนรูป -->
+            <div class="theme-section">
+                <div class="theme-section-title">จำนวนรูปภาพที่แสดง</div>
+                <select id="maximg-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeMaxImg(this.value)">
+                    <option value="3">3 รูป</option>
+                    <option value="6">6 รูป</option>
+                    <option value="9">9 รูป</option>
+                    <option value="all">ทั้งหมด</option>
+                </select>
+            </div>
+
+
+                <!-- Dropdown เลือกขนาดเนื้อหา -->
+                <div class="theme-section">
+                    <div class="theme-section-title">ขนาดเนื้อหา</div>
+                    <select id="contentfontsize-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeContentFontSize(this.value)">
+                        <option value="small">เล็ก</option>
+                        <option value="medium">กลาง</option>
+                        <option value="large">ใหญ่</option>
+                    </select>
+                </div>
+
+            <!-- Dropdown เลือกขนาดรูปภาพ -->
+            <div class="theme-section">
+                <div class="theme-section-title">ขนาดรูปภาพ</div>
+                <select id="imgsize-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeImgSize(this.value)">
+                    <option value="small">เล็ก</option>
+                    <option value="medium">กลาง</option>
+                    <option value="large">ใหญ่</option>
+                </select>
+            </div>
+
+            <!-- Dropdown เลือกจำนวนรูปต่อแถว -->
+            <div class="theme-section">
+                <div class="theme-section-title">จำนวนรูปต่อแถว</div>
+                <select id="imgcols-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeImgCols(this.value)">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
     </div>
 
     <div class="content-area">
@@ -781,9 +832,13 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
 
         <!-- Content Section -->
         <div class="news-content ">
-            <h1 class="news-title"><?php echo htmlspecialchars($news['title']); ?></h1>
+            <?php 
+                $titlefontsize = isset($_GET['titlefontsize']) ? $_GET['titlefontsize'] : 'medium';
+                $contentfontsize = isset($_GET['contentfontsize']) ? $_GET['contentfontsize'] : 'medium';
+            ?>
+            <h1 class="news-title titlefont-<?php echo $titlefontsize; ?>"><?php echo htmlspecialchars($news['title']); ?></h1>
             
-            <div class="content-text">
+            <div class="content-text contentfont-<?php echo $contentfontsize; ?>">
                 <?php 
                 // รักษาช่องว่างและการขึ้นบรรทัดใหม่ตามต้นฉบับ
                 $content = htmlspecialchars($news['detail']);
@@ -795,21 +850,34 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             
             <?php if ($images): ?>
             <?php 
-            $imageCount = count($images);
-            $gridClass = 'cols-' . min($imageCount, 9);
+                $maximg = isset($_GET['maximg']) ? $_GET['maximg'] : '6';
+                $imgsize = isset($_GET['imgsize']) ? $_GET['imgsize'] : 'medium';
+                $imgcols = isset($_GET['imgcols']) ? $_GET['imgcols'] : '3';
+                if ($maximg === 'all') {
+                    $maxImages = count($images);
+                } else {
+                    $maxImages = max(1, intval($maximg));
+                }
+                $imageCount = min(count($images), $maxImages);
+                $gridClass = 'imggrid-cols-' . $imgcols . ' imgsize-' . $imgsize;
             ?>
             <div class="photo-section">
-                <div class="image-grid <?php echo $gridClass; ?>">
-                    <?php foreach ($images as $index => $img): ?>
-                        <?php if ($index < 9): ?>
-                        <div class="photo-item">
-                            <img src="../<?php echo htmlspecialchars(preg_replace('/^teacher\//', '', $img)); ?>" 
-                                 alt="รูปภาพข่าว <?php echo $index + 1; ?>">
-                            <div class="photo-number"><?php echo $index + 1; ?></div>
-                        </div>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </div>
+                    <div class="image-grid <?php echo $gridClass; ?>">
+                        <?php foreach ($images as $index => $img): ?>
+                            <?php if ($index < $maxImages): ?>
+                            <div class="photo-item">
+                                <img src="../<?php echo htmlspecialchars(preg_replace('/^teacher\//', '', $img)); ?>" 
+                                     alt="รูปภาพข่าว <?php echo $index + 1; ?>">
+                                <div class="photo-number"><?php echo $index + 1; ?></div>
+                            </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php if (count($images) > $maxImages): ?>
+                    <div style="color: #dc2626; font-size: 13px; text-align: center; margin-top: 8px; font-weight: 600;">
+                        * มีรูปภาพมากกว่า <?php echo $maxImages; ?> รูป จะแสดงเฉพาะรูปแรกสุด <?php echo $maxImages; ?> รูปเท่านั้น
+                    </div>
+                    <?php endif; ?>
             </div>
             <?php endif; ?>
         </div>
@@ -827,6 +895,55 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             url.searchParams.set('theme', theme);
             window.location.href = url.toString();
         }
+        function changeMaxImg(val) {
+            const url = new URL(window.location);
+            url.searchParams.set('maximg', val);
+            window.location.href = url.toString();
+        }
+        function changeImgSize(val) {
+            const url = new URL(window.location);
+            url.searchParams.set('imgsize', val);
+            window.location.href = url.toString();
+        }
+        function changeImgCols(val) {
+            const url = new URL(window.location);
+            url.searchParams.set('imgcols', val);
+            window.location.href = url.toString();
+        }
+
+            function changeTitleFontSize(val) {
+                const url = new URL(window.location);
+                url.searchParams.set('titlefontsize', val);
+                window.location.href = url.toString();
+            }
+
+            function changeContentFontSize(val) {
+                const url = new URL(window.location);
+                url.searchParams.set('contentfontsize', val);
+                window.location.href = url.toString();
+            }
+
+        // ตั้งค่า dropdown ตามค่าปัจจุบัน
+        window.addEventListener('DOMContentLoaded', function() {
+            var params = new URL(window.location).searchParams;
+            var maximg = params.get('maximg');
+            var imgsize = params.get('imgsize');
+            var imgcols = params.get('imgcols');
+            var selectMaximg = document.getElementById('maximg-select');
+            var selectImgsize = document.getElementById('imgsize-select');
+            var selectImgcols = document.getElementById('imgcols-select');
+            if (selectMaximg && maximg) selectMaximg.value = maximg;
+            if (selectImgsize && imgsize) selectImgsize.value = imgsize;
+            if (selectImgcols && imgcols) selectImgcols.value = imgcols;
+
+                // Set title/content font size dropdowns
+                var titlefontsize = params.get('titlefontsize');
+                var contentfontsize = params.get('contentfontsize');
+                var selectTitleFontsize = document.getElementById('titlefontsize-select');
+                var selectContentFontsize = document.getElementById('contentfontsize-select');
+                if (selectTitleFontsize && titlefontsize) selectTitleFontsize.value = titlefontsize;
+                if (selectContentFontsize && contentfontsize) selectContentFontsize.value = contentfontsize;
+        });
     </script>
 </body>
 </html>
