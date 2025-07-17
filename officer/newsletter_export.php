@@ -253,6 +253,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             line-height: 1.6;
+            
         }
         
         .content-area {
@@ -264,6 +265,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            background: url('../dist/img/newletter_bg.png') no-repeat center/cover;
         }
         
         /* Theme-based Header Design */
@@ -276,36 +278,13 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             height: 30mm;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact; */
-            background: url('../dist/img/header_newlatter.png') no-repeat center/cover;
+
             height: 30mm;
             position: relative;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
         
-        .header-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.4) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 60%),
-                linear-gradient(135deg, transparent 20%, rgba(255,255,255,0.15) 50%, transparent 80%);
-        }
-        
-        .header-bg::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-start), var(--primary-mid), var(--primary-end));
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
         
         .school-logo {
             width: 16mm;
@@ -345,15 +324,16 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
         /* Enhanced Typography */
         .news-title {
             font-family: 'Prompt', sans-serif;
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-mid) 50%, var(--primary-end) 100%);
+            background: white;
             background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-align: center;
-            margin-bottom: 16px;
+            text-align: left;
+            margin-bottom: 1px;
+            margin-left: 10px;
             line-height: 1.3;
             position: relative;
             padding: 0 20px;
@@ -374,8 +354,9 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
         
         .news-content {
             flex: 1;
+            margin-top: 238px;
             padding: 16px 20px;
-            background: linear-gradient(135deg, var(--accent-bg) 0%, #ffffff 30%, var(--accent-light) 70%, #ffffff 100%);
+           
             position: relative;
         }
         
@@ -386,7 +367,6 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent 10%, var(--primary-start) 30%, var(--primary-mid) 50%, var(--primary-end) 70%, transparent 90%);
         }
         
         .content-text {
@@ -414,18 +394,18 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             top: 0;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(180deg, var(--primary-start), var(--primary-mid), var(--primary-end));
+            /* background: linear-gradient(180deg, var(--primary-start), var(--primary-mid), var(--primary-end)); */
             border-radius: 1px;
             opacity: 0.6;
         }
         
         /* Theme-based Image Gallery */
         .photo-section {
-            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-bg) 50%, #ffffff 100%);
+            /* background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-bg) 50%, #ffffff 100%); */
             border-radius: 12px;
             padding: 14px;
             margin-top: 12px;
-            border: 1px solid var(--border-color);
+            /* border: 1px solid var(--border-color); */
             position: relative;
             overflow: hidden;
         }
@@ -797,28 +777,10 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
 
     <div class="content-area">
         <!-- Modern Red-Yellow Header -->
-        <div class="header-bg">
-            <div class="relative h-full flex items-center justify-between px-6 z-2">
-                <div class="flex items-center gap-4">
-                    <div class="school-logo">
-                        <img src="../dist/img/logo-phicha.png" alt="โลโก้โรงเรียน" class="w-15 h-15 rounded-full object-cover">
-                    </div>
-                    <div class="text-gray-800">
-                        <div class="text-xl font-bold font-prompt mb-1 drop-shadow-lg"><?php echo htmlspecialchars($school); ?></div>
-                        <div class="text-base opacity-95 mb-1 drop-shadow-md font-medium">จดหมายข่าวโรงเรียน</div>
-                        <div class="text-xs opacity-90 tracking-wider drop-shadow-sm font-medium">PHICHAI SCHOOL NEWSLETTER</div>
-                    </div>
-                </div>
-                <div class="issue-badge text-white">
-                    <div class="text-xs font-semibold mb-1 text-gray-700">ฉบับที่</div>
-                    <div class="text-xl font-bold mb-1 text-gray-700"><?php echo $issue_no; ?></div>
-                    <div class="text-xs text-gray-700 font-medium"><?php echo $date; ?></div>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Content Section -->
-        <div class="news-content">
+        <div class="news-content ">
             <h1 class="news-title"><?php echo htmlspecialchars($news['title']); ?></h1>
             
             <div class="content-text">
@@ -837,9 +799,6 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             $gridClass = 'cols-' . min($imageCount, 9);
             ?>
             <div class="photo-section">
-                <div class="photo-title">
-                    📸 ภาพประกอบข่าว
-                </div>
                 <div class="image-grid <?php echo $gridClass; ?>">
                     <?php foreach ($images as $index => $img): ?>
                         <?php if ($index < 9): ?>
@@ -855,24 +814,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             <?php endif; ?>
         </div>
 
-        <!-- Enhanced Footer -->
-        <div class="footer-section">
-            <div class="school-info">
-                <div class="school-name">โรงเรียนพิชัย</div>
-                <div class="school-details">
-                    9/9 หมู่ 3 ต.ในเมือง อ.พิชัย จ.อุตรดิตถ์ 53120<br>
-                    สังกัดสำนักงานเขตพื้นที่การศึกษามัธยมศึกษาพิษณุโลก อุตรดิตถ์
-                    สำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน กระทรวงศึกษาธิการ
-                </div>
-            </div>
-            <div class="contact-info">
-                <div class="contact-item">📞 055-421-402</div>
-                <div class="contact-item">📠 055-421-406</div>
-                <div class="contact-item">🌐 www.phichai.ac.th</div>
-                <div class="contact-item">📘 FB: PhichaischoolSec39</div>
-            </div>
-        </div>
-        
+
         <!-- Print Button -->
         <button onclick="window.print()" class="print-button no-print">
             🖨️ พิมพ์จดหมายข่าว
