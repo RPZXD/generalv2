@@ -45,7 +45,7 @@
                 </button>
                 
                 <!-- User Avatar (if logged in) -->
-                <?php if (isset($_SESSION['user_id']) || isset($_SESSION['username'])): ?>
+                <!-- <?php if (isset($_SESSION['user_id']) || isset($_SESSION['username'])): ?>
                 <div class="relative">
                     <button class="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors">
                         <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg">
@@ -53,7 +53,7 @@
                         </div>
                     </button>
                 </div>
-                <?php endif; ?>
+                <?php endif; ?> -->
             </div>
         </div>
     </div>

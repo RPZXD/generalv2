@@ -17,6 +17,27 @@ $menuItems = [
         'url' => 'news.php',
         'icon' => 'fa-newspaper',
         'gradient' => ['from' => 'amber-500', 'to' => 'orange-500'],
+    ],
+    [
+        'key' => 'room-booking',
+        'name' => 'ตารางจองห้องประชุม',
+        'url' => 'room_booking.php',
+        'icon' => 'fa-door-open',
+        'gradient' => ['from' => 'purple-500', 'to' => 'indigo-500'],
+    ],
+    [
+        'key' => 'car_booking',
+        'name' => 'ตารางจองรถ',
+        'url' => 'car_booking.php',
+        'icon' => 'fa-car',
+        'gradient' => ['from' => 'emerald-500', 'to' => 'teal-500'],
+    ],
+    [
+        'key' => 'repair',
+        'name' => 'แจ้งซ่อม',
+        'url' => 'repair.php',
+        'icon' => 'fa-tools',
+        'gradient' => ['from' => 'orange-500', 'to' => 'red-500'],
     ]
 ];
 ?>
