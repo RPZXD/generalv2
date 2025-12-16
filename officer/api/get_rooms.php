@@ -1,30 +1,26 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
 session_start();
+require_once __DIR__ . '/../../classes/DatabaseGeneral.php';
 
-// Check authentication
-if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'เจ้าหน้าที่') {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
-    exit;
-}
+header('Content-Type: application/json; charset=utf-8');
 
 try {
-    require_once('../../controllers/RoomController.php');
+    $db = new \App\DatabaseGeneral();
+
+    // If specific ID requested
+    if (isset($_GET['id']) && intval($_GET['id']) > 0) {
+        $id = intval($_GET['id']);
+        $stmt = $db->query("SELECT * FROM meeting_rooms WHERE id = ?", [$id]);
+        $room = $stmt->fetch();
+        echo json_encode(['success' => true, 'room' => $room]);
+        exit;
+    }
+
+    // Get all rooms
+    $stmt = $db->query("SELECT * FROM meeting_rooms ORDER BY room_name ASC");
+    $rooms = $stmt->fetchAll();
     
-    $roomController = new RoomController();
-    $result = $roomController->getAllRooms();
-    
-    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => true, 'rooms' => $rooms]);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage(), 'rooms' => []]);
 }
-?>

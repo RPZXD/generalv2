@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . '/../../classes/DatabaseGeneral.php';
+require_once __DIR__ . '/../../models/Booking.php';
+require_once __DIR__ . '/../../controllers/BookingController.php';
 
 use App\DatabaseGeneral;
+use Controllers\BookingController;
 
 header('Content-Type: application/json');
 
@@ -35,31 +38,42 @@ try {
         exit;
     }
     
-    $sql = "UPDATE bookings SET 
-            date = ?, 
-            location = ?, 
-            time_start = ?, 
-            time_end = ?, 
-            purpose = ?, 
-            media = ?, 
-            phone = ?
-            WHERE id = ? AND teach_id = ?";
+    // รวม media จาก edit_media_items[] (ถ้ามี)
+    $media = [];
+    if (!empty($data['edit_media_items'])) {
+        if (is_array($data['edit_media_items'])) {
+            $media = $data['edit_media_items'];
+        } else {
+            $media = explode(',', $data['edit_media_items']);
+            $media = array_map('trim', $media);
+        }
+    }
+    if (!empty($data['edit_other_media'])) {
+        $media[] = trim($data['edit_other_media']);
+    }
+    // ถ้ามี media string ตรงๆ ก็ใช้
+    if (!empty($data['media']) && empty($media)) {
+        $data['media'] = $data['media'];
+    } else if (!empty($media)) {
+        $data['media'] = implode(', ', $media);
+    } else {
+        $data['media'] = '';
+    }
     
-    $params = [
-        $data['date'],
-        $data['location'],
-        $data['time_start'],
-        $data['time_end'],
-        $data['purpose'],
-        $data['media'] ?? '',
-        $data['phone'] ?? '',
-        $id,
-        $teacher_id
-    ];
+    // ใช้ BookingController เพื่อให้รองรับ room_layout
+    // ถ้ามี room_id ให้ดึงชื่อห้องจาก database มาใส่ใน location ด้วย
+    if (!empty($data['room_id'])) {
+        $stmt = $db->query("SELECT room_name FROM meeting_rooms WHERE id = :id", ['id' => $data['room_id']]);
+        $room = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($room) {
+            $data['location'] = $room['room_name'];
+        }
+    }
     
-    $stmt = $db->query($sql, $params);
+    $controller = new BookingController();
+    $result = $controller->update($data, $teacher_id);
     
-    echo json_encode(['success' => true]);
+    echo json_encode($result);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }

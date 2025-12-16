@@ -20,10 +20,16 @@ try {
     $db = new DatabaseGeneral();
     $userDb = new DatabaseUsers();
     
-    // สร้าง SQL query พร้อม conditions
-    $sql = "SELECT rb.*, t.Teach_name as teacher_name 
+    // สร้าง SQL query พร้อม conditions - JOIN กับ meeting_rooms เพื่อดึง room details
+    $sql = "SELECT rb.*, t.Teach_name as teacher_name,
+                   m.room_name as room_name_from_db,
+                   m.emoji as room_emoji,
+                   m.color as room_color,
+                   m.capacity as room_capacity,
+                   m.building as room_building
             FROM bookings rb 
             LEFT JOIN phichaia_student.teacher t ON rb.teach_id = t.Teach_id 
+            LEFT JOIN meeting_rooms m ON rb.room_id = m.id
             WHERE rb.term = ? AND rb.pee = ?";
     
     $params = [$term, $pee];

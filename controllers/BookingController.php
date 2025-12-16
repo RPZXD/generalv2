@@ -16,8 +16,9 @@ class BookingController
 
     public function create($data)
     {
-        // ตรวจสอบความพร้อมของห้อง
-        if (!$this->model->checkAvailability($data['date'], $data['time_start'], $data['time_end'], $data['location'])) {
+        // ตรวจสอบความพร้อมของห้อง - ใช้ room_id ถ้ามี
+        $room_id = !empty($data['room_id']) ? $data['room_id'] : null;
+        if (!$this->model->checkAvailability($data['date'], $data['time_start'], $data['time_end'], $data['location'], null, $room_id)) {
             return ['success' => false, 'message' => 'ห้องไม่ว่างในช่วงเวลานี้'];
         }
         
@@ -27,8 +28,9 @@ class BookingController
 
     public function update($data, $teacher_id = null)
     {
-        // ตรวจสอบความพร้อมของห้อง (ยกเว้นการจองปัจจุบัน)
-        if (!$this->model->checkAvailability($data['date'], $data['time_start'], $data['time_end'], $data['location'], $data['id'])) {
+        // ตรวจสอบความพร้อมของห้อง (ยกเว้นการจองปัจจุบัน) - ใช้ room_id ถ้ามี
+        $room_id = !empty($data['room_id']) ? $data['room_id'] : null;
+        if (!$this->model->checkAvailability($data['date'], $data['time_start'], $data['time_end'], $data['location'], $data['id'], $room_id)) {
             return ['success' => false, 'message' => 'ห้องไม่ว่างในช่วงเวลานี้'];
         }
 

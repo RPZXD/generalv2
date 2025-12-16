@@ -1,3 +1,16 @@
+<?php
+/**
+ * Newsletter Export Page 2 - สำหรับเจ้าหน้าที่เท่านั้น
+ * ต้อง login ก่อนใช้งาน
+ */
+session_start();
+
+// ตรวจสอบการ login - เฉพาะเจ้าหน้าที่
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'เจ้าหน้าที่') {
+    header('Location: ../login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    exit;
+}
+?>
     <style>
         @media print {
             body, html {

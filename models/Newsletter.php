@@ -82,4 +82,35 @@ class Newsletter
         $stmt = $this->db->query($sql, $params);
         return $stmt->rowCount() > 0;
     }
+
+    /**
+     * เพิ่มจำนวนการอ่านข่าว
+     */
+    public function incrementViews($id)
+    {
+        $sql = "UPDATE newsletters SET view_count = COALESCE(view_count, 0) + 1 WHERE id = ?";
+        $stmt = $this->db->query($sql, [$id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * ดึงข่าวที่เผยแพร่แล้วสำหรับสาธารณะ
+     */
+    public function getPublished($limit = 100)
+    {
+        $limit = intval($limit);
+        $sql = "SELECT *, COALESCE(view_count, 0) as view_count FROM newsletters ORDER BY news_date DESC, id DESC LIMIT $limit";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * ดึงข่าวที่เผยแพร่แล้วโดย ID
+     */
+    public function getPublishedById($id)
+    {
+        $sql = "SELECT * FROM newsletters WHERE id = ? AND (status = 'published' OR status IS NULL)";
+        $stmt = $this->db->query($sql, [$id]);
+        return $stmt->fetch();
+    }
 }

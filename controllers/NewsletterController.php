@@ -53,4 +53,28 @@ class NewsletterController
     {
         return $this->model->update($data);
     }
+
+    /**
+     * เพิ่มจำนวนการอ่านข่าว
+     */
+    public function incrementViews($id)
+    {
+        return $this->model->incrementViews($id);
+    }
+
+    /**
+     * ดึงข่าวที่เผยแพร่แล้วสำหรับสาธารณะ
+     */
+    public function getPublished($limit = 100)
+    {
+        return $this->model->getPublished($limit);
+    }
+
+    /**
+     * ดึงข่าวที่เผยแพร่แล้วโดย ID
+     */
+    public function getPublishedById($id)
+    {
+        return $this->model->getPublishedById($id);
+    }
 }

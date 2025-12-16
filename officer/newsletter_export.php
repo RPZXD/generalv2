@@ -1,4 +1,16 @@
 <?php
+/**
+ * Newsletter Export Page - สำหรับเจ้าหน้าที่เท่านั้น
+ * ต้อง login ก่อนใช้งาน
+ */
+session_start();
+
+// ตรวจสอบการ login - เฉพาะเจ้าหน้าที่
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'เจ้าหน้าที่') {
+    header('Location: ../login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    exit;
+}
+
 require_once __DIR__ . '/../classes/DatabaseGeneral.php';
 require_once __DIR__ . '/../models/Newsletter.php';
 require_once __DIR__ . '/../controllers/NewsletterController.php';
@@ -824,6 +836,15 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                     <option value="4">4</option>
                 </select>
             </div>
+
+            <!-- ปุ่มแก้ไขข้อมูล -->
+            <div class="theme-section" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <div class="theme-section-title" style="color: #059669;">✨ แก้ไขข้อมูล</div>
+                <button onclick="toggleEditMode()" id="editModeBtn" style="width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg, #10b981, #059669);color:white;font-weight:600;cursor:pointer;font-size:14px;margin-bottom:8px;">
+                    ✏️ เปิดโหมดแก้ไข
+                </button>
+                <p style="font-size:11px;color:#6b7280;text-align:center;">คลิกที่หัวข้อหรือเนื้อหาเพื่อแก้ไข</p>
+            </div>
     </div>
 
     <div class="content-area">
@@ -836,17 +857,15 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                 $titlefontsize = isset($_GET['titlefontsize']) ? $_GET['titlefontsize'] : 'medium';
                 $contentfontsize = isset($_GET['contentfontsize']) ? $_GET['contentfontsize'] : 'medium';
             ?>
-            <h1 class="news-title titlefont-<?php echo $titlefontsize; ?>"><?php echo htmlspecialchars($news['title']); ?></h1>
+            <h1 class="news-title titlefont-<?php echo $titlefontsize; ?>" id="editableTitle"><?php echo htmlspecialchars($news['title']); ?></h1>
             
-            <div class="content-text contentfont-<?php echo $contentfontsize; ?>">
-                <?php 
+            <div class="content-text contentfont-<?php echo $contentfontsize; ?>" id="editableContent"><?php 
                 // รักษาช่องว่างและการขึ้นบรรทัดใหม่ตามต้นฉบับ
                 $content = htmlspecialchars($news['detail']);
                 // ใช้ nl2br เพื่อแปลงการขึ้นบรรทัดใหม่เป็น <br>
                 $content = nl2br($content);
                 echo $content;
-                ?>
-            </div>
+                ?></div>
             
             <?php if ($images): ?>
             <?php 
@@ -866,7 +885,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                         <?php foreach ($images as $index => $img): ?>
                             <?php if ($index < $maxImages): ?>
                             <div class="photo-item">
-                                <img src="../<?php echo htmlspecialchars(preg_replace('/^teacher\//', '', $img)); ?>" 
+                                <img src="../<?php echo htmlspecialchars($img); ?>" 
                                      alt="รูปภาพข่าว <?php echo $index + 1; ?>">
                                 <div class="photo-number"><?php echo $index + 1; ?></div>
                             </div>
@@ -944,6 +963,123 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                 if (selectTitleFontsize && titlefontsize) selectTitleFontsize.value = titlefontsize;
                 if (selectContentFontsize && contentfontsize) selectContentFontsize.value = contentfontsize;
         });
+
+        // ฟังก์ชันโหมดแก้ไขข้อมูล
+        var isEditMode = false;
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            var title = document.getElementById('editableTitle');
+            var content = document.getElementById('editableContent');
+            var btn = document.getElementById('editModeBtn');
+            
+            if (isEditMode) {
+                // เปิดโหมดแก้ไข
+                title.contentEditable = 'true';
+                content.contentEditable = 'true';
+                
+                // เพิ่ม style เมื่อแก้ไข
+                title.style.outline = '2px dashed #10b981';
+                title.style.outlineOffset = '4px';
+                title.style.backgroundColor = '#f0fdf4';
+                title.style.padding = '8px';
+                title.style.borderRadius = '8px';
+                title.style.cursor = 'text';
+                
+                content.style.outline = '2px dashed #10b981';
+                content.style.outlineOffset = '4px';
+                content.style.backgroundColor = '#f0fdf4';
+                content.style.padding = '12px';
+                content.style.borderRadius = '8px';
+                content.style.cursor = 'text';
+                content.style.minHeight = '100px';
+                
+                // เปลี่ยนปุ่ม
+                btn.innerHTML = '✓ บันทึกการแก้ไข';
+                btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                
+                // แสดงคำแนะนำ
+                showEditTip();
+            } else {
+                // ปิดโหมดแก้ไข
+                title.contentEditable = 'false';
+                content.contentEditable = 'false';
+                
+                // ลบ style
+                title.style.outline = 'none';
+                title.style.outlineOffset = '0';
+                title.style.backgroundColor = 'transparent';
+                title.style.padding = '0';
+                title.style.cursor = 'default';
+                
+                content.style.outline = 'none';
+                content.style.outlineOffset = '0';
+                content.style.backgroundColor = 'transparent';
+                content.style.padding = '0';
+                content.style.cursor = 'default';
+                
+                // เปลี่ยนปุ่มกลับ
+                btn.innerHTML = '✏️ เปิดโหมดแก้ไข';
+                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                
+                // ซ่อนคำแนะนำ
+                hideEditTip();
+            }
+        }
+        
+        function showEditTip() {
+            // สร้างกล่องคำแนะนำ
+            if (!document.getElementById('editTip')) {
+                var tip = document.createElement('div');
+                tip.id = 'editTip';
+                tip.innerHTML = '<div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #f59e0b; border-radius: 12px; padding: 12px 16px; margin: 16px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"><div style="display: flex; align-items: center; gap: 8px; color: #92400e; font-weight: 600; margin-bottom: 4px;"><span>💡</span> โหมดแก้ไขเปิดใช้งาน</div><div style="color: #78350f; font-size: 13px;">คลิกที่หัวข้อหรือเนื้อหาเพื่อแก้ไขข้อความ เมื่อเสร็จแล้วกด "บันทึกการแก้ไข"</div></div>';
+                
+                var newsContent = document.querySelector('.news-content');
+                if (newsContent) {
+                    newsContent.insertBefore(tip, newsContent.firstChild);
+                }
+            }
+        }
+        
+        function hideEditTip() {
+            var tip = document.getElementById('editTip');
+            if (tip) {
+                tip.remove();
+            }
+        }
     </script>
+    
+    <style>
+        /* Style สำหรับโหมดแก้ไข */
+        [contenteditable="true"]:focus {
+            outline: 2px solid #10b981 !important;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2) !important;
+        }
+        
+        [contenteditable="true"]:hover {
+            background-color: #ecfdf5 !important;
+        }
+        
+        /* Animation สำหรับปุ่ม */
+        #editModeBtn {
+            transition: all 0.3s ease;
+        }
+        
+        #editModeBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* ซ่อน sidebar เมื่อพิมพ์ */
+        @media print {
+            #editTip {
+                display: none !important;
+            }
+            [contenteditable] {
+                outline: none !important;
+                background-color: transparent !important;
+            }
+        }
+    </style>
 </body>
 </html>

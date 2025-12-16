@@ -1,49 +1,26 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
 session_start();
+require_once __DIR__ . '/../../classes/DatabaseGeneral.php';
 
-// Check authentication
-if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'เจ้าหน้าที่') {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+header('Content-Type: application/json; charset=utf-8');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+$id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
+if ($id <= 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid room ID']);
     exit;
 }
 
 try {
-    require_once('../../controllers/RoomController.php');
-    
-    $roomController = new RoomController();
-    
-    // Get the ID from POST data
-    $input = json_decode(file_get_contents('php://input'), true);
-    $id = $input['id'] ?? $_POST['id'] ?? null;
-    
-    if (empty($id)) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'ไม่พบรหัสห้องประชุม'
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-    
-    $result = $roomController->deleteRoom($id);
-    
-    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+    $db = new \App\DatabaseGeneral();
+    $db->query("DELETE FROM meeting_rooms WHERE id = ?", [$id]);
+
+    echo json_encode(['success' => true, 'message' => 'ลบห้องประชุมเรียบร้อย']);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 }
-?>

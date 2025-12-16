@@ -59,8 +59,19 @@ try {
     // Log ข้อมูลที่ได้รับ
     error_log("Received booking data: " . print_r($data, true));
     
-    // ตรวจสอบข้อมูลที่จำเป็น
-    if (empty($data['date']) || empty($data['location']) || empty($data['time_start']) || empty($data['time_end']) || empty($data['purpose'])) {
+    // ถ้ามี room_id ให้ดึงชื่อห้องจาก database มาใส่ใน location ด้วย
+    if (!empty($data['room_id'])) {
+        $dbGeneral = new \App\DatabaseGeneral();
+        $stmt = $dbGeneral->query("SELECT room_name FROM meeting_rooms WHERE id = :id", ['id' => $data['room_id']]);
+        $room = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($room) {
+            $data['location'] = $room['room_name'];
+        }
+    }
+    
+    // ตรวจสอบข้อมูลที่จำเป็น - รองรับทั้ง room_id หรือ location
+    $hasRoom = !empty($data['room_id']) || !empty($data['location']);
+    if (empty($data['date']) || !$hasRoom || empty($data['time_start']) || empty($data['time_end']) || empty($data['purpose'])) {
         error_log("Missing required fields: " . json_encode($data));
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'ข้อมูลไม่ครบถ้วน กรุณาตรวจสอบข้อมูลอีกครั้ง']);
@@ -254,6 +265,24 @@ try {
             return "{$day} {$month} {$year}";
         }
 
+        // แปลงรูปแบบการจัดห้องเป็นข้อความ (สำหรับ Flex Message)
+        $this_roomLayoutText = '-';
+        if (!empty($data['room_layout'])) {
+            $layoutMap = [
+                'theater' => '🎭 โรงภาพยนตร์',
+                'classroom' => '🏫 ห้องเรียน',
+                'u-shape' => '🔲 ตัว U',
+                'boardroom' => '📋 โต๊ะประชุม',
+                'banquet' => '🍽️ โต๊ะกลม',
+                'none' => '-'
+            ];
+            if (strpos($data['room_layout'], 'custom:') === 0) {
+                $this_roomLayoutText = '✏️ ' . substr($data['room_layout'], 7);
+            } else {
+                $this_roomLayoutText = $layoutMap[$data['room_layout']] ?? '-';
+            }
+        }
+
         $flex = [
             "type" => "bubble",
             "styles" => [
@@ -429,6 +458,40 @@ try {
                         "type" => "separator",
                         "margin" => "md"
                     ],
+                    // เพิ่มแสดงรูปแบบการจัดห้อง
+                    [
+                        "type" => "box",
+                        "layout" => "baseline",
+                        "spacing" => "sm",
+                        "contents" => [
+                            [
+                                "type" => "text",
+                                "text" => "🪑",
+                                "size" => "lg",
+                                "flex" => 1
+                            ],
+                            [
+                                "type" => "text",
+                                "text" => "จัดห้อง",
+                                "size" => "sm",
+                                "weight" => "bold",
+                                "color" => "#6b7280",
+                                "flex" => 3
+                            ],
+                            [
+                                "type" => "text",
+                                "text" => $this_roomLayoutText ?? "-",
+                                "wrap" => true,
+                                "size" => "sm",
+                                "color" => "#111827",
+                                "flex" => 6
+                            ]
+                        ]
+                    ],
+                    [
+                        "type" => "separator",
+                        "margin" => "md"
+                    ],
                     // เพิ่มแสดงอุปกรณ์ที่ต้องการ
                     [
                         "type" => "box",
@@ -558,13 +621,16 @@ try {
                 "messages" => [
                     [
                         "type" => "text",
-                        "text" => "🎉 มีการจองห้องประชุมใหม่\n" .
+                        "text" => "🎉 มีการจองห้องประชุมใหม่\n\n" .
                                "📅 วันที่: " . thai_date($data['date']) . "\n" .
                                "⏰ เวลา: " . substr($data['time_start'], 0, 5) . " - " . substr($data['time_end'], 0, 5) . " น.\n" .
                                "🏢 สถานที่: " . $data['location'] . "\n" .
+                               "🪑 รูปแบบจัดห้อง: " . $this_roomLayoutText . "\n" .
                                "🎯 วัตถุประสงค์: " . $data['purpose'] . "\n" .
+                               "🛠️ อุปกรณ์: " . (!empty($data['media']) ? $data['media'] : "-") . "\n" .
                                "👨‍🏫 ผู้จอง: " . $teacherName . "\n" .
-                               "📞 โทร: " . (!empty($data['phone']) ? $data['phone'] : "-")
+                               "📞 โทร: " . (!empty($data['phone']) ? $data['phone'] : "-") . "\n\n" .
+                               "⏳ สถานะ: รอการอนุมัติ"
                     ]
                 ]
             ];
@@ -577,21 +643,22 @@ try {
             }
         }
 
-        // ส่งการแจ้งเตือนไปยัง Discord
-        $discordWebhookUrl = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN'; // ใส่ Discord Webhook URL ของคุณ
+        // ส่งการแจ้งเตือนไปยัง Discord (ส่งครั้งเดียว)
+        $discordWebhookUrl = 'https://discord.com/api/webhooks/1392369288953856052/y1BfeY9KlMjHyhQ1P5lFKROa2yWaWQQxzAAK6NZLjheGm6nOtjSTuukr2cE7uX3tBtXF';
         
-        if (!empty($discordWebhookUrl) && $discordWebhookUrl !== 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN') {
+        if (!empty($discordWebhookUrl)) {
             error_log("Sending Discord notification...");
             
             $discordMessage = "🎉 **การจองห้องประชุมใหม่** 🎉\n\n" .
                             "📅 **วันที่:** " . thai_date($data['date']) . "\n" .
                             "⏰ **เวลา:** " . substr($data['time_start'], 0, 5) . " - " . substr($data['time_end'], 0, 5) . " น.\n" .
                             "🏢 **สถานที่:** " . $data['location'] . "\n" .
+                            "🪑 **รูปแบบจัดห้อง:** " . $this_roomLayoutText . "\n" .
                             "🎯 **วัตถุประสงค์:** " . $data['purpose'] . "\n" .
                             "🛠️ **อุปกรณ์:** " . (!empty($data['media']) ? $data['media'] : "-") . "\n" .
                             "👨‍🏫 **ผู้จอง:** " . $teacherName . "\n" .
-                            "⏳ **สถานะ:** รอการอนุมัติ\n\n" .
-                            "📞 โทร: " . (!empty($data['phone']) ? $data['phone'] : "-");
+                            "📞 **ติดต่อ:** " . (!empty($data['phone']) ? $data['phone'] : "-") . "\n\n" .
+                            "⏳ **สถานะ:** รอการอนุมัติ";
             
             $discordResult = send_discord_notification($discordWebhookUrl, $discordMessage);
             
@@ -600,28 +667,7 @@ try {
             } else {
                 error_log("Discord notification failed: " . json_encode($discordResult));
             }
-        } else {
-            error_log("Discord webhook URL not configured, skipping Discord notification");
         }
-
-        // ส่งการแจ้งเตือนไปยัง Discord (สามารถ uncomment เพื่อใช้งานจริง)
-        
-        $discordWebhookUrl = 'https://discord.com/api/webhooks/1392369288953856052/y1BfeY9KlMjHyhQ1P5lFKROa2yWaWQQxzAAK6NZLjheGm6nOtjSTuukr2cE7uX3tBtXF';
-        $discordMessage = "🎉 มีการจองห้องประชุมใหม่โดย {$teacherName}\n" .
-                          "📅 วันที่: " . thai_date($data['date']) . "\n" .
-                          "⏰ เวลา: " . substr($data['time_start'], 0, 5) . " - " . substr($data['time_end'], 0, 5) . " น.\n" .
-                          "🏢 สถานที่: " . $data['location'] . "\n" .
-                          "🎯 วัตถุประสงค์: " . $data['purpose'] . "\n" .
-                          "🛠️ อุปกรณ์: " . (!empty($data['media']) ? $data['media'] : "-") . "\n" .
-                          "📞 ติดต่อสอบถาม: " . (!empty($data['phone']) ? $data['phone'] : "-");
-        
-        $discordResult = send_discord_notification($discordWebhookUrl, $discordMessage);
-        if ($discordResult['success']) {
-            error_log("Discord notification sent successfully");
-        } else {
-            error_log("Discord notification failed: " . json_encode($discordResult));
-        }
-        
 
     } else {
         error_log("Booking failed, not sending LINE message. Result: " . print_r($result, true));

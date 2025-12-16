@@ -1,47 +1,48 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
 session_start();
+require_once __DIR__ . '/../../classes/DatabaseGeneral.php';
 
-// Check authentication
-if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'เจ้าหน้าที่') {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+header('Content-Type: application/json; charset=utf-8');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+$id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+$car_model = trim($_POST['car_model'] ?? '');
+$license_plate = trim($_POST['license_plate'] ?? '');
+$car_type = trim($_POST['car_type'] ?? 'รถตู้');
+$capacity = intval($_POST['capacity'] ?? 8);
+$status = intval($_POST['status'] ?? 1);
+
+if (empty($car_model) || empty($license_plate)) {
+    echo json_encode(['success' => false, 'message' => 'กรุณากรอกชื่อรถและทะเบียน']);
     exit;
 }
 
 try {
-    require_once('../../controllers/CarController.php');
-    
-    $carController = new CarController();
-    
-    // Get form data
-    $data = [
-        'car_id' => $_POST['car_id'] ?? null,
-        'car_model' => trim($_POST['car_model'] ?? ''),
-        'license_plate' => trim($_POST['license_plate'] ?? ''),
-        'car_type' => $_POST['car_type'] ?? '',
-        'capacity' => $_POST['capacity'] ?? null,
-        'status' => $_POST['status'] ?? 1
-    ];
-    
-    $result = $carController->saveCar($data);
-    
-    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+    $db = new \App\DatabaseGeneral();
+
+    if ($id > 0) {
+        // Update existing car
+        $sql = "UPDATE cars SET 
+                car_model = ?,
+                license_plate = ?,
+                car_type = ?,
+                capacity = ?,
+                status = ?,
+                updated_at = NOW()
+                WHERE id = ?";
+        $db->query($sql, [$car_model, $license_plate, $car_type, $capacity, $status, $id]);
+    } else {
+        // Insert new car
+        $sql = "INSERT INTO cars (car_model, license_plate, car_type, capacity, status, created_at) 
+                VALUES (?, ?, ?, ?, ?, NOW())";
+        $db->query($sql, [$car_model, $license_plate, $car_type, $capacity, $status]);
+    }
+
+    echo json_encode(['success' => true, 'message' => $id > 0 ? 'แก้ไขเรียบร้อย' : 'เพิ่มเรียบร้อย']);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 }
-?>
