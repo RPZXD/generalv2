@@ -117,13 +117,70 @@ try {
     $userDb = new DatabaseUsers();
     
     // รับ parameter
-    $month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('m'));
+    $filterMode = isset($_GET['filter_mode']) ? $_GET['filter_mode'] : 'month'; // year, range, month, day
     $year = isset($_GET['year']) ? intval($_GET['year']) : intval(date('Y'));
+    $month = isset($_GET['month']) && $_GET['month'] !== '' ? intval($_GET['month']) : null;
+    $day = isset($_GET['day']) && $_GET['day'] !== '' ? $_GET['day'] : null; // YYYY-MM-DD
+    $startDate = isset($_GET['start_date']) && $_GET['start_date'] !== '' ? $_GET['start_date'] : null;
+    $endDate = isset($_GET['end_date']) && $_GET['end_date'] !== '' ? $_GET['end_date'] : null;
     $status = isset($_GET['status']) ? $_GET['status'] : null;
     
-    // สร้าง query
-    $sql = "SELECT * FROM report_repair WHERE MONTH(AddDate) = ? AND YEAR(AddDate) = ?";
-    $params = [$month, $year];
+    // สร้าง query (รองรับหลายโหมด)
+    $sql = "SELECT * FROM report_repair WHERE 1=1";
+    $params = [];
+    
+    switch ($filterMode) {
+        case 'year':
+            // กรองเฉพาะปี
+            $sql .= " AND YEAR(AddDate) = ?";
+            $params[] = $year;
+            break;
+            
+        case 'range':
+            // กรองช่วงวันที่
+            if ($startDate && $endDate) {
+                $sql .= " AND DATE(AddDate) >= ? AND DATE(AddDate) <= ?";
+                $params[] = $startDate;
+                $params[] = $endDate;
+            } elseif ($startDate) {
+                $sql .= " AND DATE(AddDate) >= ?";
+                $params[] = $startDate;
+            } elseif ($endDate) {
+                $sql .= " AND DATE(AddDate) <= ?";
+                $params[] = $endDate;
+            } else {
+                // Default to current year if no range specified
+                $sql .= " AND YEAR(AddDate) = ?";
+                $params[] = $year;
+            }
+            break;
+            
+        case 'day':
+            // กรองเฉพาะวัน
+            if ($day) {
+                $sql .= " AND DATE(AddDate) = ?";
+                $params[] = $day;
+            } else {
+                // Default to today
+                $sql .= " AND DATE(AddDate) = ?";
+                $params[] = date('Y-m-d');
+            }
+            break;
+            
+        case 'month':
+        default:
+            // กรองเดือน (default)
+            if ($month) {
+                $sql .= " AND MONTH(AddDate) = ? AND YEAR(AddDate) = ?";
+                $params[] = $month;
+                $params[] = $year;
+            } else {
+                // ถ้าไม่ระบุเดือน = ทั้งปี
+                $sql .= " AND YEAR(AddDate) = ?";
+                $params[] = $year;
+            }
+            break;
+    }
     
     if ($status !== null && $status !== '') {
         $sql .= " AND status = ?";
