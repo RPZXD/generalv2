@@ -207,14 +207,14 @@
                 
                 <!-- Tabs -->
                 <div class="flex items-center gap-2">
-                    <div class="inline-flex items-center bg-white dark:bg-slate-800 rounded-xl p-1 shadow-md border border-gray-200 dark:border-gray-700">
-                        <button onclick="setBookingTab('today')" id="tabToday" class="tab-btn px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md">
+                    <div class="inline-flex items-center bg-white dark:bg-slate-800 rounded-xl p-1 shadow-md border border-gray-200 dark:border-gray-700 flex-nowrap overflow-x-auto">
+                        <button onclick="setBookingTab('today')" id="tabToday" class="tab-btn px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md flex-shrink-0 whitespace-nowrap">
                             <i class="fas fa-calendar-day mr-1.5"></i>วันนี้
                         </button>
-                        <button onclick="setBookingTab('all')" id="tabAll" class="tab-btn px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <button onclick="setBookingTab('all')" id="tabAll" class="tab-btn px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 flex-shrink-0 whitespace-nowrap">
                             <i class="fas fa-list mr-1.5"></i>ทั้งหมด
                         </button>
-                        <button onclick="setBookingTab('custom')" id="tabCustom" class="tab-btn px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <button onclick="setBookingTab('custom')" id="tabCustom" class="tab-btn px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 flex-shrink-0 whitespace-nowrap">
                             <i class="far fa-calendar-alt mr-1.5"></i>เลือกวัน
                         </button>
                     </div>
