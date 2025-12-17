@@ -85,7 +85,7 @@
         <div id="tab-list" class="tab-pane">
             <!-- Filter Buttons -->
             <div class="glass rounded-2xl p-4 mb-6">
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mb-4">
                     <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" data-status="">
                         <span class="text-lg">📋</span> ทั้งหมด
                     </button>
@@ -97,6 +97,22 @@
                     </button>
                     <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400" data-status="rejected">
                         <span class="text-lg">❌</span> ยกเลิกแล้ว
+                    </button>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <span class="flex items-center text-sm text-gray-500 mr-2">ช่วงเวลา:</span>
+                    <button class="date-filter-btn active px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" data-filter="all">
+                        <span class="text-lg">📅</span> ทั้งหมด
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="today">
+                        <span class="text-lg">📆</span> วันนี้
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="month">
+                        <span class="text-lg">🗓️</span> เดือนนี้
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="year">
+                        <span class="text-lg">📅</span> ปีนี้
                     </button>
                 </div>
             </div>
@@ -284,6 +300,7 @@
 <script>
 let calendar;
 let currentFilter = '';
+let currentDateFilter = 'all';
 let allBookings = [];
 let currentTab = 'list';
 let carsData = []; // Store cars data from database
@@ -306,18 +323,45 @@ $(document).ready(function() {
     setupEventHandlers();
 });
 
-function initCalendar() {
-    if (calendar) return;
+function initCalendar(forceReinit = false) {
+    // If calendar already exists and not forcing reinit, just refetch
+    if (calendar && !forceReinit) {
+        calendar.refetchEvents();
+        return;
+    }
+    
+    // Destroy existing calendar if reinitializing
+    if (calendar) {
+        calendar.destroy();
+        calendar = null;
+    }
     
     const calendarEl = document.getElementById('calendar');
+    if (!calendarEl) {
+        console.error('Calendar element not found');
+        return;
+    }
+    
+    // Find the most recent booking date to set as initial date
+    let initialDate = new Date().toISOString().split('T')[0]; // Default to today YYYY-MM-DD
+    if (allBookings.length > 0) {
+        // Sort bookings by date descending and get the most recent one
+        const sortedBookings = [...allBookings].sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
+        const mostRecentDate = sortedBookings[0].booking_date;
+        if (mostRecentDate) {
+            initialDate = mostRecentDate.split(' ')[0]; // Ensure YYYY-MM-DD
+        }
+    }
+    
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        initialDate: initialDate,
         locale: 'th',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listWeek'
-        },
+        },  
         height: 700,
         dayMaxEvents: 3,
         eventTimeFormat: {
@@ -326,20 +370,51 @@ function initCalendar() {
             hour12: false
         },
         events: function(fetchInfo, successCallback, failureCallback) {
-            const events = allBookings.filter(b => b.status != 'rejected' && b.status != 2).map(function(booking) {
-                let color = getCarColor(booking.car_id);
-                let carName = booking.car_model || 'รถยนต์';
+            try {
+                const events = allBookings.filter(b => b.status != 'rejected' && b.status != 2).map(function(booking) {
+                    if (!booking.booking_date) return null;
+
+                    let color = getCarColor(booking.car_id);
+                    let carName = booking.car_model || 'รถยนต์';
+                    
+                    // Ensure date format YYYY-MM-DD
+                    let datePart = booking.booking_date.split(' ')[0];
+                    
+                    // Handle time format - ensure proper format
+                    let startTime = booking.start_time || '08:00';
+                    let endTime = booking.end_time || '17:00';
+                    
+                    // If it contains date (has space), take the second part
+                    if (startTime.includes(' ')) {
+                        startTime = startTime.split(' ')[1];
+                    }
+                    if (endTime.includes(' ')) {
+                        endTime = endTime.split(' ')[1];
+                    }
+                    
+                    // Remove seconds if present
+                    if (startTime.includes(':') && startTime.split(':').length >= 3) {
+                        startTime = startTime.split(':').slice(0, 2).join(':');
+                    }
+                    if (endTime.includes(':') && endTime.split(':').length >= 3) {
+                        endTime = endTime.split(':').slice(0, 2).join(':');
+                    }
+                    
+                    return {
+                        id: booking.id,
+                        title: `${carName} - ${booking.destination || 'ไม่ระบุ'}`,
+                        start: `${datePart}T${startTime}`,
+                        end: `${datePart}T${endTime}`,
+                        color: (booking.status == 0 || booking.status == 'pending') ? '#fbbf24' : color,
+                        extendedProps: { booking: booking }
+                    };
+                }).filter(e => e !== null);
                 
-                return {
-                    id: booking.id,
-                    title: `${carName} - ${booking.destination || 'ไม่ระบุ'}`,
-                    start: `${booking.booking_date}T${booking.start_time || '08:00'}`,
-                    end: `${booking.booking_date}T${booking.end_time || '17:00'}`,
-                    color: (booking.status == 0 || booking.status == 'pending') ? '#fbbf24' : color,
-                    extendedProps: { booking: booking }
-                };
-            });
-            successCallback(events);
+                successCallback(events);
+            } catch (error) {
+                console.error('Error generating calendar events:', error);
+                failureCallback(error);
+            }
         },
         eventClick: function(info) {
             showDetailModal(info.event.extendedProps.booking);
@@ -494,7 +569,12 @@ function fetchBookings() {
             updateStats();
             renderBookings(filterBookings());
             updateCarStats();
-            if (calendar) calendar.refetchEvents();
+            // Reinit calendar if on calendar tab, or just refetch if it exists
+            if (currentTab === 'calendar') {
+                initCalendar(true); // Force reinit to update initialDate
+            } else if (calendar) {
+                calendar.refetchEvents();
+            }
         },
         error: function() {
             $('#bookingList').html('<div class="col-span-full text-center py-12 text-red-500"><i class="fas fa-exclamation-circle text-5xl mb-4"></i><p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>');
@@ -527,13 +607,43 @@ function updateCarStats() {
 }
 
 function filterBookings() {
-    if (currentFilter === '') return allBookings;
-    return allBookings.filter(b => {
-        if (currentFilter === 'pending') return b.status == 0 || b.status == 'pending';
-        if (currentFilter === 'approved') return b.status == 1 || b.status == 'approved';
-        if (currentFilter === 'rejected') return b.status == 2 || b.status == 'rejected';
-        return true;
-    });
+    let filtered = allBookings;
+    
+    // Filter by status
+    if (currentFilter !== '') {
+        filtered = filtered.filter(b => {
+            if (currentFilter === 'pending') return b.status == 0 || b.status == 'pending';
+            if (currentFilter === 'approved') return b.status == 1 || b.status == 'approved';
+            if (currentFilter === 'rejected') return b.status == 2 || b.status == 'rejected';
+            return true;
+        });
+    }
+    
+    // Filter by date
+    if (currentDateFilter !== 'all') {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+        
+        filtered = filtered.filter(b => {
+            const bookingDate = new Date(b.booking_date);
+            const bookingYear = bookingDate.getFullYear();
+            const bookingMonth = bookingDate.getMonth();
+            const bookingDay = bookingDate.getDate();
+            
+            if (currentDateFilter === 'today') {
+                return bookingYear === currentYear && bookingMonth === currentMonth && bookingDay === currentDate;
+            } else if (currentDateFilter === 'month') {
+                return bookingYear === currentYear && bookingMonth === currentMonth;
+            } else if (currentDateFilter === 'year') {
+                return bookingYear === currentYear;
+            }
+            return true;
+        });
+    }
+    
+    return filtered;
 }
 
 function renderBookings(bookings) {
@@ -624,6 +734,18 @@ function setupEventHandlers() {
         renderBookings(filterBookings());
     });
 
+    // Date Filter buttons
+    $('.date-filter-btn').on('click', function() {
+        $('.date-filter-btn').removeClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+        $('.date-filter-btn').addClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+        
+        $(this).removeClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+        $(this).addClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+        
+        currentDateFilter = $(this).data('filter');
+        renderBookings(filterBookings());
+    });
+
     // Refresh
     $('#refreshData').on('click', function() {
         fetchCarsData();
@@ -639,7 +761,24 @@ function switchTab(tab) {
     $(`#tab-${tab}`).removeClass('hidden');
     
     if (tab === 'calendar') {
-        setTimeout(() => initCalendar(), 100);
+        setTimeout(() => {
+            // Force reinit if calendar doesn't exist yet
+            if (!calendar) {
+                initCalendar(true);
+            } else {
+                // If calendar exists, ensure we jump to the latest data date
+                if (allBookings.length > 0) {
+                    const sortedBookings = [...allBookings].sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
+                    const mostRecentDate = sortedBookings[0].booking_date;
+                    if (mostRecentDate) {
+                        let datePart = mostRecentDate.split(' ')[0];
+                        calendar.gotoDate(datePart);
+                    }
+                }
+                calendar.refetchEvents();
+                calendar.render(); // Force layout update
+            }
+        }, 100);
     }
 }
 
@@ -696,7 +835,7 @@ function showDetailModal(booking) {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                     <p class="text-xs text-gray-500 mb-1">👥 จำนวนผู้โดยสาร</p>
-                    <p class="font-medium text-gray-900 dark:text-white">${booking.passengers || '-'} คน</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${booking.passenger_count || '-'} คน</p>
                 </div>
                 <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                     <p class="text-xs text-gray-500 mb-1">🚗 ประเภทรถ</p>

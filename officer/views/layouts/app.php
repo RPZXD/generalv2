@@ -25,7 +25,7 @@ $role = $role ?? $_SESSION['role'] ?? 'เจ้าหน้าที่';
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Tailwind CSS v3 -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

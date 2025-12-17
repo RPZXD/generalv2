@@ -85,7 +85,7 @@
         <div id="tab-list" class="tab-pane">
             <!-- Filter Buttons -->
             <div class="glass rounded-2xl p-4 mb-6">
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mb-4">
                     <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-fuchsia-500 bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400" data-status="">
                         <span class="text-lg">📋</span> ทั้งหมด
                     </button>
@@ -97,6 +97,22 @@
                     </button>
                     <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400" data-status="2">
                         <span class="text-lg">❌</span> ยกเลิกแล้ว
+                    </button>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <span class="flex items-center text-sm text-gray-500 mr-2">ช่วงเวลา:</span>
+                    <button class="date-filter-btn active px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" data-filter="all">
+                        <span class="text-lg">📅</span> ทั้งหมด
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="today">
+                        <span class="text-lg">📆</span> วันนี้
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="month">
+                        <span class="text-lg">🗓️</span> เดือนนี้
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="year">
+                        <span class="text-lg">📅</span> ปีนี้
                     </button>
                 </div>
             </div>
@@ -390,6 +406,7 @@
 <script>
 let calendar;
 let currentFilter = '';
+let currentDateFilter = 'all';
 let allBookings = [];
 let currentTab = 'list';
 let roomsData = []; // Store rooms data from database
@@ -655,8 +672,38 @@ function updateRoomStats() {
 }
 
 function filterBookings() {
-    if (currentFilter === '') return allBookings;
-    return allBookings.filter(b => b.status == currentFilter);
+    let filtered = allBookings;
+    
+    // Filter by status
+    if (currentFilter !== '') {
+        filtered = filtered.filter(b => b.status == currentFilter);
+    }
+    
+    // Filter by date
+    if (currentDateFilter !== 'all') {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+        
+        filtered = filtered.filter(b => {
+            const bookingDate = new Date(b.date);
+            const bookingYear = bookingDate.getFullYear();
+            const bookingMonth = bookingDate.getMonth();
+            const bookingDay = bookingDate.getDate();
+            
+            if (currentDateFilter === 'today') {
+                return bookingYear === currentYear && bookingMonth === currentMonth && bookingDay === currentDate;
+            } else if (currentDateFilter === 'month') {
+                return bookingYear === currentYear && bookingMonth === currentMonth;
+            } else if (currentDateFilter === 'year') {
+                return bookingYear === currentYear;
+            }
+            return true;
+        });
+    }
+    
+    return filtered;
 }
 
 function renderBookings(bookings) {
@@ -746,6 +793,18 @@ function setupEventHandlers() {
         $('.status-filter-btn').removeClass('ring-2 ring-fuchsia-500 bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400');
         $(this).addClass('ring-2 ring-fuchsia-500 bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400');
         currentFilter = $(this).data('status');
+        renderBookings(filterBookings());
+    });
+
+    // Date Filter buttons
+    $('.date-filter-btn').on('click', function() {
+        $('.date-filter-btn').removeClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+        $('.date-filter-btn').addClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+        
+        $(this).removeClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+        $(this).addClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+        
+        currentDateFilter = $(this).data('filter');
         renderBookings(filterBookings());
     });
 
