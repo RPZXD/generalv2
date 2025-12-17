@@ -271,6 +271,58 @@ $global = $config['global'];
             const overlay = document.getElementById('sidebar-overlay');
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        }
+        
+        // Close sidebar on mobile when clicking a link
+        function closeSidebarOnMobile() {
+            if (window.innerWidth < 1024) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+        
+        // Close sidebar on resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+        
+        // Handle swipe gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const swipeThreshold = 80;
+            const diff = touchEndX - touchStartX;
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            
+            // Swipe right to open (from left edge)
+            if (diff > swipeThreshold && touchStartX < 30 && !isOpen) {
+                toggleSidebar();
+            }
+            // Swipe left to close
+            if (diff < -swipeThreshold && isOpen && window.innerWidth < 1024) {
+                toggleSidebar();
+            }
         }
     </script>
 </body>

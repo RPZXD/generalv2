@@ -47,6 +47,16 @@ if (!empty($news['create_by'])) {
 
 $pageTitle = $news['title'] ?? 'ข่าวประชาสัมพันธ์';
 
+// Shorten page title for very long titles (keep multibyte/Thai safe)
+function shorten_title($text, $max = 30) {
+    if (!is_string($text)) return $text;
+    $text = trim(strip_tags($text));
+    if (mb_strlen($text, 'UTF-8') <= $max) return $text;
+    return mb_substr($text, 0, $max - 1, 'UTF-8') . '…';
+}
+
+$pageTitle = shorten_title($pageTitle, 30);
+
 // Render view with layout
 ob_start();
 require 'views/news/view.php';

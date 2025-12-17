@@ -43,29 +43,35 @@ $menuItems = [
 ?>
 
 <!-- Sidebar Overlay (Mobile) -->
-<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full lg:translate-x-0">
+<aside id="sidebar" class="fixed top-0 left-0 z-40 w-72 sm:w-64 h-screen transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0">
     <!-- Sidebar Background -->
     <div class="h-full overflow-y-auto bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 dark:from-slate-900 dark:via-slate-950 dark:to-black">
         
-        <!-- Logo Section -->
-        <div class="px-6 py-5 border-b border-white/10">
-            <a href="index.php" class="flex items-center space-x-3 group">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                    <img src="dist/img/<?php echo $global['logoLink'] ?? 'logo-phicha.png'; ?>" class="relative w-12 h-12 rounded-full ring-2 ring-white/20 group-hover:ring-primary-400 transition-all" alt="Logo">
-                </div>
-                <div>
-                    <span class="text-lg font-bold text-white"><?php echo $global['nameTitle'] ?? 'ระบบบริหารงาน'; ?></span>
-                    <p class="text-xs text-gray-400">ระบบบริหารงานทั่วไป</p>
-                </div>
-            </a>
+        <!-- Logo Section with Close Button -->
+        <div class="px-4 sm:px-6 py-5 border-b border-white/10">
+            <div class="flex items-center justify-between">
+                <a href="index.php" class="flex items-center space-x-3 group flex-1 min-w-0">
+                    <div class="relative flex-shrink-0">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                        <img src="dist/img/<?php echo $global['logoLink'] ?? 'logo-phicha.png'; ?>" class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-white/20 group-hover:ring-primary-400 transition-all" alt="Logo">
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-base sm:text-lg font-bold text-white truncate block"><?php echo $global['nameTitle'] ?? 'ระบบบริหารงาน'; ?></span>
+                        <p class="text-xs text-gray-400 truncate">ระบบบริหารงานทั่วไป</p>
+                    </div>
+                </a>
+                <!-- Close button for mobile -->
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 -mr-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
         </div>
         
         <!-- Navigation -->
-        <nav class="mt-6 px-3">
+        <nav class="mt-4 sm:mt-6 px-2 sm:px-3 pb-20">
             <ul class="space-y-1">
                 <!-- Main Menu Items -->
                 <?php foreach ($menuItems as $menu): 
@@ -74,11 +80,11 @@ $menuItems = [
                     $colorBase = explode('-', $fromColor)[0];
                 ?>
                 <li>
-                    <a href="<?php echo htmlspecialchars($menu['url']); ?>" class="sidebar-item flex items-center px-4 py-3 text-gray-300 rounded-xl hover:bg-white/10 hover:text-white group">
-                        <span class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-<?php echo $fromColor; ?> to-<?php echo $toColor; ?> rounded-lg shadow-lg shadow-<?php echo $colorBase; ?>-500/30 group-hover:shadow-<?php echo $colorBase; ?>-500/50 transition-shadow">
-                            <i class="fas <?php echo $menu['icon']; ?> text-white"></i>
+                    <a href="<?php echo htmlspecialchars($menu['url']); ?>" class="sidebar-item flex items-center px-3 sm:px-4 py-3 text-gray-300 rounded-xl hover:bg-white/10 hover:text-white group active:scale-95 transition-all" onclick="closeSidebarOnMobile()">
+                        <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-gradient-to-br from-<?php echo $fromColor; ?> to-<?php echo $toColor; ?> rounded-lg shadow-lg shadow-<?php echo $colorBase; ?>-500/30 group-hover:shadow-<?php echo $colorBase; ?>-500/50 transition-shadow">
+                            <i class="fas <?php echo $menu['icon']; ?> text-white text-sm sm:text-base"></i>
                         </span>
-                        <span class="ml-3 font-medium"><?php echo htmlspecialchars($menu['name']); ?></span>
+                        <span class="ml-3 font-medium text-sm sm:text-base"><?php echo htmlspecialchars($menu['name']); ?></span>
                     </a>
                 </li>
                 <?php endforeach; ?>

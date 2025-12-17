@@ -1,29 +1,29 @@
 <!-- Repair Report Public View Page Content -->
-<div class="space-y-8">
+<div class="space-y-6 md:space-y-8">
     <!-- Hero Section -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 p-8 md:p-12">
+    <div class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 p-6 md:p-8 lg:p-12">
         <div class="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,black)]"></div>
-        <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -mr-48 -mt-48 animate-pulse"></div>
-        <div class="absolute bottom-0 left-0 w-72 h-72 bg-white/10 rounded-full blur-3xl -ml-36 -mb-36 animate-pulse" style="animation-delay: 1s;"></div>
+        <div class="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-white/10 rounded-full blur-3xl -mr-32 md:-mr-48 -mt-32 md:-mt-48 animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-48 md:w-72 h-48 md:h-72 bg-white/10 rounded-full blur-3xl -ml-24 md:-ml-36 -mb-24 md:-mb-36 animate-pulse" style="animation-delay: 1s;"></div>
         
-        <div class="relative flex flex-col lg:flex-row items-center gap-8">
+        <div class="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
             <div class="flex-shrink-0">
                 <div class="relative">
                     <div class="absolute inset-0 bg-white/20 rounded-full blur-xl animate-pulse"></div>
-                    <div class="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center bg-white/20 backdrop-blur rounded-full">
-                        <span class="text-6xl md:text-7xl">🧰</span>
+                    <div class="relative w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 flex items-center justify-center bg-white/20 backdrop-blur rounded-full">
+                        <span class="text-5xl md:text-6xl lg:text-7xl">🧰</span>
                     </div>
                 </div>
             </div>
-            <div class="text-center lg:text-left text-white">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-4">
+            <div class="text-center md:text-left text-white">
+                <div class="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-white/20 backdrop-blur-sm text-xs md:text-sm font-medium mb-3 md:mb-4">
                     <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                     ติดตามสถานะ
                 </div>
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
+                <h1 class="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 md:mb-3">
                     แจ้งซ่อม
                 </h1>
-                <p class="text-lg md:text-xl text-white/80 mb-6">
+                <p class="text-base md:text-lg lg:text-xl text-white/80">
                     ติดตามสถานะการแจ้งซ่อมอาคารสถานที่และอุปกรณ์
                 </p>
             </div>
@@ -31,67 +31,67 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass rounded-2xl p-5 border-l-4 border-orange-500 hover:shadow-xl transition-all group">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 flex items-center justify-center bg-orange-100 dark:bg-orange-900/30 rounded-2xl text-3xl group-hover:scale-110 transition-transform">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div class="glass rounded-xl md:rounded-2xl p-3 md:p-5 border-l-4 border-orange-500 hover:shadow-xl transition-all group">
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center bg-orange-100 dark:bg-orange-900/30 rounded-xl md:rounded-2xl text-xl md:text-3xl group-hover:scale-110 transition-transform">
                     📋
                 </div>
-                <div>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white" id="statTotal">-</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">แจ้งซ่อมทั้งหมด</p>
+                <div class="min-w-0">
+                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white truncate" id="statTotal">-</p>
+                    <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">แจ้งซ่อมทั้งหมด</p>
                 </div>
             </div>
         </div>
-        <div class="glass rounded-2xl p-5 border-l-4 border-amber-500 hover:shadow-xl transition-all group">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 flex items-center justify-center bg-amber-100 dark:bg-amber-900/30 rounded-2xl text-3xl group-hover:scale-110 transition-transform">
+        <div class="glass rounded-xl md:rounded-2xl p-3 md:p-5 border-l-4 border-amber-500 hover:shadow-xl transition-all group">
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center bg-amber-100 dark:bg-amber-900/30 rounded-xl md:rounded-2xl text-xl md:text-3xl group-hover:scale-110 transition-transform">
                     ⏳
                 </div>
-                <div>
-                    <p class="text-2xl font-bold text-amber-600" id="statPending">-</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">รอดำเนินการ</p>
+                <div class="min-w-0">
+                    <p class="text-lg md:text-2xl font-bold text-amber-600 truncate" id="statPending">-</p>
+                    <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">รอดำเนินการ</p>
                 </div>
             </div>
         </div>
-        <div class="glass rounded-2xl p-5 border-l-4 border-blue-500 hover:shadow-xl transition-all group">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-2xl text-3xl group-hover:scale-110 transition-transform">
+        <div class="glass rounded-xl md:rounded-2xl p-3 md:p-5 border-l-4 border-blue-500 hover:shadow-xl transition-all group">
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-xl md:rounded-2xl text-xl md:text-3xl group-hover:scale-110 transition-transform">
                     🔧
                 </div>
-                <div>
-                    <p class="text-2xl font-bold text-blue-600" id="statInProgress">-</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">กำลังดำเนินการ</p>
+                <div class="min-w-0">
+                    <p class="text-lg md:text-2xl font-bold text-blue-600 truncate" id="statInProgress">-</p>
+                    <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">กำลังดำเนินการ</p>
                 </div>
             </div>
         </div>
-        <div class="glass rounded-2xl p-5 border-l-4 border-green-500 hover:shadow-xl transition-all group">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 flex items-center justify-center bg-green-100 dark:bg-green-900/30 rounded-2xl text-3xl group-hover:scale-110 transition-transform">
+        <div class="glass rounded-xl md:rounded-2xl p-3 md:p-5 border-l-4 border-green-500 hover:shadow-xl transition-all group">
+            <div class="flex items-center gap-2 md:gap-4">
+                <div class="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center bg-green-100 dark:bg-green-900/30 rounded-xl md:rounded-2xl text-xl md:text-3xl group-hover:scale-110 transition-transform">
                     ✅
                 </div>
-                <div>
-                    <p class="text-2xl font-bold text-green-600" id="statCompleted">-</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">เสร็จสิ้น</p>
+                <div class="min-w-0">
+                    <p class="text-lg md:text-2xl font-bold text-green-600 truncate" id="statCompleted">-</p>
+                    <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">เสร็จสิ้น</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filter Section -->
-    <div class="glass rounded-2xl p-6">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <span class="text-2xl">🔍</span> กรองรายการแจ้งซ่อม
+    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6">
+        <div class="flex flex-col gap-4">
+            <h2 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <span class="text-xl md:text-2xl">🔍</span> กรองรายการแจ้งซ่อม
             </h2>
-            <div class="flex flex-col sm:flex-row gap-4">
-                <select id="filterStatus" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer min-w-[180px]">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+                <select id="filterStatus" class="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer text-sm md:text-base">
                     <option value="">📋 ทุกสถานะ</option>
                     <option value="0">⏳ รอดำเนินการ</option>
                     <option value="1">🔧 กำลังดำเนินการ</option>
                     <option value="2">✅ เสร็จสิ้น</option>
                 </select>
-                <select id="filterMonth" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer">
+                <select id="filterMonth" class="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer text-sm md:text-base">
                     <option value="1">มกราคม</option>
                     <option value="2">กุมภาพันธ์</option>
                     <option value="3">มีนาคม</option>
@@ -105,39 +105,39 @@
                     <option value="11">พฤศจิกายน</option>
                     <option value="12">ธันวาคม</option>
                 </select>
-                <select id="filterYear" class="px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer">
+                <select id="filterYear" class="w-full px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent cursor-pointer text-sm md:text-base">
                 </select>
             </div>
         </div>
     </div>
 
     <!-- Repair List -->
-    <div class="glass rounded-2xl overflow-hidden">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+    <div class="glass rounded-xl md:rounded-2xl overflow-hidden">
+        <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-orange-500 to-red-500 rounded-xl text-white text-xl">
+                <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-gradient-to-br from-orange-500 to-red-500 rounded-lg md:rounded-xl text-white text-lg md:text-xl">
                     📋
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">รายการแจ้งซ่อม</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400" id="repairResultText">กำลังโหลด...</p>
+                    <h2 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">รายการแจ้งซ่อม</h2>
+                    <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400" id="repairResultText">กำลังโหลด...</p>
                 </div>
             </div>
         </div>
         
-        <div class="p-6">
+        <div class="p-4 md:p-6">
             <!-- Loading -->
-            <div id="loading" class="text-center py-12">
-                <div class="inline-block w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                <p class="mt-4 text-gray-500 dark:text-gray-400">กำลังโหลดรายการแจ้งซ่อม...</p>
+            <div id="loading" class="text-center py-8 md:py-12">
+                <div class="inline-block w-10 h-10 md:w-12 md:h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="mt-4 text-sm md:text-base text-gray-500 dark:text-gray-400">กำลังโหลดรายการแจ้งซ่อม...</p>
             </div>
 
-            <div id="emptyRepair" class="hidden text-center py-12">
-                <div class="text-6xl mb-4">📭</div>
-                <p class="text-gray-500 dark:text-gray-400">ไม่มีรายการแจ้งซ่อมในเดือนนี้</p>
+            <div id="emptyRepair" class="hidden text-center py-8 md:py-12">
+                <div class="text-5xl md:text-6xl mb-4">📭</div>
+                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">ไม่มีรายการแจ้งซ่อมในเดือนนี้</p>
             </div>
             
-            <div id="repairList" class="hidden space-y-4">
+            <div id="repairList" class="hidden space-y-3 md:space-y-4">
                 <!-- Repair items will be inserted here -->
             </div>
         </div>
@@ -145,17 +145,17 @@
 </div>
 
 <!-- Repair Detail Modal -->
-<div id="repairModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+<div id="repairModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">รายละเอียดการแจ้งซ่อม</h3>
-                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors">
+                <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">รายละเอียดการแจ้งซ่อม</h3>
+                <button onclick="closeModal()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-700 rounded-full transition-colors">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
-        <div id="modalContent" class="p-6">
+        <div id="modalContent" class="p-4 md:p-6">
             <!-- Content will be inserted here -->
         </div>
     </div>
@@ -268,26 +268,27 @@ function renderRepairList() {
         const categories = [...new Set(r.damages_summary.map(d => d.category))];
         
         html += `
-        <div onclick="showRepairDetail(${r.id})" class="p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div class="flex-shrink-0 w-16 h-16 flex items-center justify-center bg-orange-100 dark:bg-orange-900/30 rounded-xl text-3xl">
+        <div onclick="showRepairDetail(${r.id})" class="p-3 md:p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg md:rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700/50 cursor-pointer transition-colors active:scale-[0.99]">
+            <div class="flex items-start gap-3 md:gap-4">
+                <div class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-orange-100 dark:bg-orange-900/30 rounded-lg md:rounded-xl text-2xl md:text-3xl">
                     ${getStatusIcon(r.status)}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex flex-wrap items-center gap-2 mb-1">
-                        <h4 class="font-bold text-gray-900 dark:text-white">${escapeHtml(r.AddLocation || 'ไม่ระบุสถานที่')}</h4>
-                        <span class="px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBgClass(r.status)}">${r.status_text}</span>
+                    <div class="flex flex-wrap items-center gap-1.5 md:gap-2 mb-1">
+                        <h4 class="font-bold text-sm md:text-base text-gray-900 dark:text-white truncate">${escapeHtml(r.AddLocation || 'ไม่ระบุสถานที่')}</h4>
+                        <span class="px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium flex-shrink-0 ${getStatusBgClass(r.status)}">${r.status_text}</span>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 truncate">
-                        ${categories.map(c => `<span class="mr-2">${categoryIcons[c] || '📋'} ${c}</span>`).join('')}
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 truncate mb-1.5 md:mb-2">
+                        ${categories.slice(0, 2).map(c => `<span class="mr-1 md:mr-2">${categoryIcons[c] || '📋'} ${c}</span>`).join('')}
+                        ${categories.length > 2 ? `<span class="text-gray-400">+${categories.length - 2}</span>` : ''}
                     </p>
-                    <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="flex flex-wrap items-center gap-2 md:gap-4 text-[10px] md:text-sm text-gray-500 dark:text-gray-400">
                         <span><i class="far fa-calendar-alt mr-1"></i>${date}</span>
                         <span><i class="fas fa-tools mr-1"></i>${r.total_items} รายการ</span>
-                        <span><i class="far fa-user mr-1"></i>${escapeHtml(r.teacher_name_masked || '-')}</span>
+                        <span class="hidden sm:inline"><i class="far fa-user mr-1"></i>${escapeHtml(r.teacher_name_masked || '-')}</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-gray-400"></i>
+                <i class="fas fa-chevron-right text-gray-400 hidden sm:block"></i>
             </div>
         </div>
         `;
