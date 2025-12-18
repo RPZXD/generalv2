@@ -45,8 +45,6 @@ if (!empty($news['create_by'])) {
     }
 }
 
-$pageTitle = $news['title'] ?? 'ข่าวประชาสัมพันธ์';
-
 // Shorten page title for very long titles (keep multibyte/Thai safe)
 function shorten_title($text, $max = 30) {
     if (!is_string($text)) return $text;
@@ -55,7 +53,23 @@ function shorten_title($text, $max = 30) {
     return mb_substr($text, 0, $max - 1, 'UTF-8') . '…';
 }
 
-$pageTitle = shorten_title($pageTitle, 30);
+$metaTitle = $news['title'] ?? 'ข่าวประชาสัมพันธ์';
+$pageTitle = shorten_title($metaTitle, 30);
+
+// Prepare Metadata for Social Sharing
+$metaDescription = trim(mb_substr(strip_tags($news['detail'] ?? ''), 0, 160, 'UTF-8')) . '...';
+$metaImage = null;
+$images_meta = json_decode($news['images'] ?? '[]', true);
+if (!empty($images_meta) && is_array($images_meta)) {
+    $metaImage = $images_meta[0];
+    if (!filter_var($metaImage, FILTER_VALIDATE_URL)) {
+        // Handle relative paths if any (assuming dist/uploads for example)
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $metaImage = $protocol . "://$_SERVER[HTTP_HOST]/" . ltrim($metaImage, '/');
+    }
+}
+$ogType = 'article';
+
 
 // Render view with layout
 ob_start();

@@ -94,6 +94,16 @@ class Newsletter
     }
 
     /**
+     * เพิ่มจำนวนการแชร์ข่าว
+     */
+    public function incrementShares($id)
+    {
+        $sql = "UPDATE newsletters SET share_count = COALESCE(share_count, 0) + 1 WHERE id = ?";
+        $stmt = $this->db->query($sql, [$id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
      * ดึงข่าวที่เผยแพร่แล้วสำหรับสาธารณะ
      */
     public function getPublished($limit = 100)

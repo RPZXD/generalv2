@@ -17,6 +17,47 @@ require_once __DIR__ . '/../controllers/NewsletterController.php';
 
 use Controllers\NewsletterController;
 
+// Settings Persistence logic
+$settingsFile = __DIR__ . '/../newsletter_settings.json';
+$defaultSettings = [
+    'contentMarginTop' => 238,
+    'titleMarginLeft' => 10,
+    'titleMarginBottom' => 1,
+    'titleColor' => '#000000',
+    'showIssueNo' => false,
+    'issueX' => 180,
+    'issueY' => 180,
+    'issueFontSize' => 16,
+    'issueColor' => '#000000',
+    'titleFontSize' => 18,
+    'contentFontSize' => 16
+];
+
+// Load settings
+$settings = $defaultSettings;
+if (file_exists($settingsFile)) {
+    $savedSettings = json_decode(file_get_contents($settingsFile), true);
+    if (is_array($savedSettings)) {
+        $settings = array_merge($defaultSettings, $savedSettings);
+    }
+}
+
+// Handle Save Request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'save_settings') {
+    header('Content-Type: application/json');
+    $input = json_decode(file_get_contents('php://input'), true);
+    if ($input) {
+        if (file_put_contents($settingsFile, json_encode($input, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to write file']);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid input']);
+    }
+    exit;
+}
+
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 if (!$id) {
     echo "ไม่พบข้อมูล";
@@ -75,7 +116,50 @@ $date = isset($news['news_date']) ? thai_date_short($news['news_date']) : '';
 
 // เลือกโทนสี
 $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
+
+// Settings Persistence logic
+$settingsFile = __DIR__ . '/../newsletter_settings.json';
+$defaultSettings = [
+    'contentMarginTop' => 238,
+    'titleMarginLeft' => 10,
+    'titleMarginBottom' => 1,
+    'titleColor' => '#000000',
+    'showIssueNo' => false,
+    'issueX' => 180,
+    'issueY' => 180,
+    'issueFontSize' => 16,
+    'issueColor' => '#000000',
+    'titleFontSize' => 18,
+    'contentFontSize' => 16
+];
+
+// Load settings
+$settings = $defaultSettings;
+if (file_exists($settingsFile)) {
+    $savedSettings = json_decode(file_get_contents($settingsFile), true);
+    if (is_array($savedSettings)) {
+        $settings = array_merge($defaultSettings, $savedSettings);
+    }
+}
+
+// Handle Save Request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'save_settings') {
+    header('Content-Type: application/json');
+    $input = json_decode(file_get_contents('php://input'), true);
+    if ($input) {
+        if (file_put_contents($settingsFile, json_encode($input, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to write file']);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid input']);
+    }
+    exit;
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -277,20 +361,11 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            background: url('../dist/img/newletter_bg.png') no-repeat center/cover;
+            background: url('../dist/img/newletter_bg2.png') no-repeat center/cover;
         }
         
         /* Theme-based Header Design */
         .header-bg {
-            /* background: linear-gradient(135deg, 
-                var(--primary-start) 0%, 
-                var(--primary-mid) 50%, 
-                var(--primary-end) 100%);
-            position: relative;
-            height: 30mm;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact; */
-
             height: 30mm;
             position: relative;
             -webkit-print-color-adjust: exact;
@@ -627,13 +702,52 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             position: fixed;
             top: 20px;
             left: 20px;
-            background: rgba(255,255,255,0.95);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.85);
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.5);
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            max-width: 280px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            max-width: 300px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .theme-selector-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .theme-selector-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(90vh - 60px);
+        }
+        
+        .theme-selector-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .theme-selector-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .theme-selector-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 3px;
         }
         
         .theme-selector h3 {
@@ -645,15 +759,31 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
         }
         
         .theme-section {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .theme-section-title {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             color: #6b7280;
-            margin-bottom: 6px;
-            text-align: center;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .theme-section-title::before {
+            content: '';
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
         }
         
         .theme-options {
@@ -738,12 +868,208 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             transform: translateY(-2px) scale(1.03);
             box-shadow: 0 8px 30px rgba(0,0,0,0.4);
         }
+
+        /* Custom Form Elements */
+        .custom-select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            font-size: 13px;
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(to bottom, #ffffff, #f9fafb);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            padding-right: 36px;
+        }
+
+        .custom-select:hover {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .control-label {
+            font-size: 12px;
+            color: #4b5563;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .control-value {
+            text-align: right;
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        /* Custom Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #e5e7eb, #d1d5db);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]:hover {
+            background: linear-gradient(to right, #667eea, #764ba2);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+            border: 2px solid white;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+            border: 2px solid white;
+        }
+
+        /* Custom Color Picker */
+        input[type="color"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 2px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 2px;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Custom Checkbox (Toggle Style) */
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 44px;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        input[type="checkbox"]:checked {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        input[type="checkbox"]:checked::before {
+            left: 22px;
+        }
+
+        /* Custom Buttons */
+        .custom-btn {
+            font-size: 11px;
+            border: 1px solid #e5e7eb;
+            background: linear-gradient(to bottom, #ffffff, #f9fafb);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        .custom-btn:hover {
+            border-color: #667eea;
+            background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .custom-btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .custom-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .divider {
+            border-top: 1px dashed #e5e7eb;
+            margin: 16px 0;
+            padding-top: 16px;
+        }
     </style>
 </head>
 <body>
     <!-- Theme Selector -->
     <div class="theme-selector no-print">
-        <h3>เลือกโทนสี</h3>
+        <div class="theme-selector-header">
+            🎨 เครื่องมือปรับแต่ง
+        </div>
+        <div class="theme-selector-body">
         
         <!-- Thai 7-Day Colors -->
         <div class="theme-section">
@@ -797,7 +1123,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             <!-- Dropdown เลือกจำนวนรูป -->
             <div class="theme-section">
                 <div class="theme-section-title">จำนวนรูปภาพที่แสดง</div>
-                <select id="maximg-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeMaxImg(this.value)">
+                <select id="maximg-select" class="custom-select" onchange="changeMaxImg(this.value)">
                     <option value="3">3 รูป</option>
                     <option value="6">6 รูป</option>
                     <option value="9">9 รูป</option>
@@ -806,30 +1132,27 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             </div>
 
 
-                <!-- Dropdown เลือกขนาดเนื้อหา -->
                 <div class="theme-section">
                     <div class="theme-section-title">ขนาดเนื้อหา</div>
-                    <select id="contentfontsize-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeContentFontSize(this.value)">
+                    <select id="contentfontsize-select" class="custom-select" onchange="changeContentFontSize(this.value)">
                         <option value="small">เล็ก</option>
                         <option value="medium">กลาง</option>
                         <option value="large">ใหญ่</option>
                     </select>
                 </div>
 
-            <!-- Dropdown เลือกขนาดรูปภาพ -->
             <div class="theme-section">
                 <div class="theme-section-title">ขนาดรูปภาพ</div>
-                <select id="imgsize-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeImgSize(this.value)">
+                <select id="imgsize-select" class="custom-select" onchange="changeImgSize(this.value)">
                     <option value="small">เล็ก</option>
                     <option value="medium">กลาง</option>
                     <option value="large">ใหญ่</option>
                 </select>
             </div>
 
-            <!-- Dropdown เลือกจำนวนรูปต่อแถว -->
             <div class="theme-section">
                 <div class="theme-section-title">จำนวนรูปต่อแถว</div>
-                <select id="imgcols-select" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #ddd;font-size:14px;" onchange="changeImgCols(this.value)">
+                <select id="imgcols-select" class="custom-select" onchange="changeImgCols(this.value)">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -837,29 +1160,119 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
                 </select>
             </div>
 
+            <!-- Layout Adjustment Tools -->
+            <div class="theme-section">
+                <div class="theme-section-title">เครื่องมือปรับแต่ง Layout</div>
+                
+                <div style="margin-bottom:8px;">
+                    <label class="control-label">ขยับเนื้อหาขึ้น-ลง (px)</label>
+                    <input type="range" id="marginTopRange" min="100" max="400" value="<?php echo $settings['contentMarginTop']; ?>" step="1" 
+                           style="width:100%;" oninput="updateContentMargin(this.value)">
+                    <div class="control-value" id="marginTopVal"><?php echo $settings['contentMarginTop']; ?>px</div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">สีหัวข้อข่าว</label>
+                    <input type="color" id="titleColorPicker" value="<?php echo $settings['titleColor']; ?>" 
+                           style="width:100%;height:30px;border:none;cursor:pointer;" oninput="updateTitleColor(this.value)">
+                    <div style="display:flex;justify-content:space-between;margin-top:2px;">
+                        <button onclick="resetTitleColor()" class="custom-btn">สีเดิม (ไล่เฉด)</button>
+                        <button onclick="setTitleColor('white')" class="custom-btn">สีขาว</button>
+                        <button onclick="setTitleColor('black')" class="custom-btn">สีดำ</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">ขยับหัวข้อซ้าย-ขวา (px)</label>
+                    <input type="range" id="titleMarginLeftRange" min="0" max="100" value="<?php echo $settings['titleMarginLeft']; ?>" step="1" 
+                           style="width:100%;" oninput="updateTitleMarginLeft(this.value)">
+                    <div class="control-value" id="titleMarginLeftVal"><?php echo $settings['titleMarginLeft']; ?>px</div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">ขยับหัวข้อขึ้น-ลง (px)</label>
+                    <input type="range" id="titleMarginBottomRange" min="0" max="50" value="<?php echo $settings['titleMarginBottom']; ?>" step="1" 
+                           style="width:100%;" oninput="updateTitleMarginBottom(this.value)">
+                    <div class="control-value" id="titleMarginBottomVal"><?php echo $settings['titleMarginBottom']; ?>px</div>
+                </div>
+
+                <div class="divider">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="theme-section-title" style="margin:0;">แสดงฉบับที่</span>
+                        <input type="checkbox" id="showIssueNo" onchange="toggleIssueNo(this.checked)" <?php echo $settings['showIssueNo'] ? 'checked' : ''; ?>>
+                    </div>
+                </div>
+                
+                <div id="issueNoControls" style="display:<?php echo $settings['showIssueNo'] ? 'block' : 'none'; ?>; padding-left:8px; border-left:2px solid #ddd;">
+                    <div class="control-group">
+                        <label class="control-label">ตำแหน่ง X (ซ้าย-ขวา)</label>
+                        <input type="range" id="issueX" min="0" max="700" value="<?php echo $settings['issueX']; ?>" step="5" style="width:100%;" oninput="updateIssuePos()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">ตำแหน่ง Y (ขึ้น-ลง)</label>
+                        <input type="range" id="issueY" min="0" max="400" value="<?php echo $settings['issueY']; ?>" step="5" style="width:100%;" oninput="updateIssuePos()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">ขนาดตัวอักษร</label>
+                        <input type="range" id="issueFontSize" min="10" max="40" value="<?php echo $settings['issueFontSize']; ?>" step="1" style="width:100%;" oninput="updateIssueStyle()">
+                        <div class="control-value" id="issueFontSizeVal"><?php echo $settings['issueFontSize']; ?>px</div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">สีตัวอักษร</label>
+                        <input type="color" id="issueColor" value="<?php echo $settings['issueColor']; ?>" style="width:100%; height:30px; border:none;" oninput="updateIssueStyle()">
+                    </div>
+                </div>
+
+                <div class="divider">
+                     <div class="theme-section-title">ปรับขนาดตัวอักษรเนื้อหา</div>
+                     <div class="control-group">
+                        <label class="control-label">ขนาดหัวข้อ (Title)</label>
+                        <input type="range" id="customTitleSize" min="14" max="60" value="<?php echo $settings['titleFontSize']; ?>" step="1" style="width:100%;" oninput="updateCustomTitleSize(this.value)">
+                        <div class="control-value" id="customTitleSizeVal"><?php echo $settings['titleFontSize']; ?>px</div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">ขนาดเนื้อหา (Content)</label>
+                        <input type="range" id="customContentSize" min="10" max="30" value="<?php echo $settings['contentFontSize']; ?>" step="1" style="width:100%;" oninput="updateCustomContentSize(this.value)">
+                        <div class="control-value" id="customContentSizeVal"><?php echo $settings['contentFontSize']; ?>px</div>
+                    </div>
+                </div>
+
+                <div class="divider">
+                    <button onclick="saveCurrentSettings()" class="custom-btn-primary" id="saveSettingsBtn">
+                        💾 บันทึกเป็นค่าเริ่มต้น
+                    </button>
+                </div>
+            </div>
+
             <!-- ปุ่มแก้ไขข้อมูล -->
-            <div class="theme-section" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <div class="theme-section-title" style="color: #059669;">✨ แก้ไขข้อมูล</div>
-                <button onclick="toggleEditMode()" id="editModeBtn" style="width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg, #10b981, #059669);color:white;font-weight:600;cursor:pointer;font-size:14px;margin-bottom:8px;">
+            <div class="theme-section">
+                <div class="theme-section-title" style="color: #10b981;">✨ แก้ไขข้อมูล</div>
+                <button onclick="toggleEditMode()" id="editModeBtn" class="custom-btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">
                     ✏️ เปิดโหมดแก้ไข
                 </button>
-                <p style="font-size:11px;color:#6b7280;text-align:center;">คลิกที่หัวข้อหรือเนื้อหาเพื่อแก้ไข</p>
+                <p style="font-size:11px;color:#6b7280;text-align:center;margin-top:8px;">คลิกที่หัวข้อหรือเนื้อหาเพื่อแก้ไข</p>
             </div>
+        </div><!-- End theme-selector-body -->
     </div>
 
     <div class="content-area">
         <!-- Modern Red-Yellow Header -->
         
 
+        <!-- Issue Number Element -->
+        <div id="issueNumberDisplay" style="position: absolute; top: <?php echo $settings['issueY']; ?>px; left: <?php echo $settings['issueX']; ?>px; font-weight: bold; font-size: <?php echo $settings['issueFontSize']; ?>px; color: <?php echo $settings['issueColor']; ?>; z-index: 10; font-family: 'Prompt', sans-serif; display: <?php echo $settings['showIssueNo'] ? 'block' : 'none'; ?>;">
+            ฉบับที่ <?php echo htmlspecialchars($issue_no); ?>
+        </div>
+
         <!-- Content Section -->
-        <div class="news-content ">
+        <div class="news-content " style="margin-top: <?php echo $settings['contentMarginTop']; ?>px;">
             <?php 
                 $titlefontsize = isset($_GET['titlefontsize']) ? $_GET['titlefontsize'] : 'medium';
                 $contentfontsize = isset($_GET['contentfontsize']) ? $_GET['contentfontsize'] : 'medium';
             ?>
-            <h1 class="news-title titlefont-<?php echo $titlefontsize; ?>" id="editableTitle"><?php echo htmlspecialchars($news['title']); ?></h1>
+            <h1 class="news-title titlefont-<?php echo $titlefontsize; ?>" id="editableTitle" style="color: <?php echo $settings['titleColor']; ?>; margin-left: <?php echo $settings['titleMarginLeft']; ?>px; margin-bottom: <?php echo $settings['titleMarginBottom']; ?>px; font-size: <?php echo $settings['titleFontSize']; ?>px !important; <?php if($settings['titleColor'] !== '#000000'): ?>-webkit-text-fill-color: initial; background: none;<?php endif; ?>"><?php echo htmlspecialchars($news['title']); ?></h1>
             
-            <div class="content-text contentfont-<?php echo $contentfontsize; ?>" id="editableContent"><?php 
+            <div class="content-text contentfont-<?php echo $contentfontsize; ?>" id="editableContent" style="font-size: <?php echo $settings['contentFontSize']; ?>px !important;"> <?php 
                 // รักษาช่องว่างและการขึ้นบรรทัดใหม่ตามต้นฉบับ
                 $content = htmlspecialchars($news['detail']);
                 // ใช้ nl2br เพื่อแปลงการขึ้นบรรทัดใหม่เป็น <br>
@@ -1045,6 +1458,160 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'red-yellow';
             var tip = document.getElementById('editTip');
             if (tip) {
                 tip.remove();
+            }
+        }
+        function updateContentMargin(val) {
+            document.querySelector('.news-content').style.marginTop = val + 'px';
+            document.getElementById('marginTopVal').textContent = val + 'px';
+        }
+
+        function updateTitleColor(color) {
+            const title = document.querySelector('.news-title');
+            title.style.color = color;
+            title.style.webkitTextFillColor = 'initial';
+            title.style.background = 'none';
+        }
+
+        function resetTitleColor() {
+            const title = document.querySelector('.news-title');
+            title.style.color = '';
+            title.style.webkitTextFillColor = 'transparent';
+            title.style.background = 'white';
+            title.style.backgroundSize = '200% 200%';
+            title.style.webkitBackgroundClip = 'text';
+            title.style.backgroundClip = 'text';
+            document.getElementById('titleColorPicker').value = '#000000';
+        }
+
+        function setTitleColor(color) {
+            const title = document.querySelector('.news-title');
+            title.style.color = color;
+            title.style.webkitTextFillColor = color; // Forcing fill color
+            title.style.backgroundImage = 'none'; // Removing gradient
+            title.style.background = 'none';
+            
+            // Map common colors to hex for picker sync
+            const colorMap = {
+                'white': '#ffffff',
+                'black': '#000000'
+            };
+            if(colorMap[color]) {
+                document.getElementById('titleColorPicker').value = colorMap[color];
+            }
+        }
+
+        function updateTitleMarginLeft(val) {
+            document.querySelector('.news-title').style.marginLeft = val + 'px';
+            document.getElementById('titleMarginLeftVal').textContent = val + 'px';
+        }
+
+        function updateTitleMarginBottom(val) {
+            document.querySelector('.news-title').style.marginBottom = val + 'px';
+            document.getElementById('titleMarginBottomVal').textContent = val + 'px';
+        }
+
+        // Issue Number Functions
+        function toggleIssueNo(checked) {
+            const display = document.getElementById('issueNumberDisplay');
+            const controls = document.getElementById('issueNoControls');
+            if(checked) {
+                display.style.display = 'block';
+                controls.style.display = 'block';
+            } else {
+                display.style.display = 'none';
+                controls.style.display = 'none';
+            }
+        }
+
+        function updateIssuePos() {
+            const x = document.getElementById('issueX').value;
+            const y = document.getElementById('issueY').value;
+            const el = document.getElementById('issueNumberDisplay');
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+        }
+
+        function updateIssueStyle() {
+            const size = document.getElementById('issueFontSize').value;
+            const color = document.getElementById('issueColor').value;
+            const el = document.getElementById('issueNumberDisplay');
+            el.style.fontSize = size + 'px';
+            el.style.color = color;
+            document.getElementById('issueFontSizeVal').textContent = size + 'px';
+        }
+
+        // Font Size Functions
+        function updateCustomTitleSize(val) {
+            const title = document.querySelector('.news-title');
+            title.style.fontSize = val + 'px';
+            document.getElementById('customTitleSizeVal').textContent = val + 'px';
+            
+            // Override class-based sizing if necessary by setting imporant via inline style logic or just relying on inline specificity
+            // Inline style usually overrides class, but !important in class might block it.
+            // Let's check classes. classes use !important.
+            // So we might need to remove size classes or set cssText with !important
+            title.classList.remove('titlefont-small', 'titlefont-medium', 'titlefont-large');
+            title.style.setProperty('font-size', val + 'px', 'important');
+        }
+
+        function updateCustomContentSize(val) {
+            const content = document.querySelector('.content-text');
+            // content.style.fontSize = val + 'px';
+            document.getElementById('customContentSizeVal').textContent = val + 'px';
+            
+            content.classList.remove('contentfont-small', 'contentfont-medium', 'contentfont-large');
+            content.style.setProperty('font-size', val + 'px', 'important');
+        }
+
+        async function saveCurrentSettings() {
+            const btn = document.getElementById('saveSettingsBtn');
+            const originalText = btn.innerHTML;
+            
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '⌛ กำลังบันทึก...';
+                
+                const settings = {
+                    contentMarginTop: parseInt(document.getElementById('marginTopRange').value),
+                    titleMarginLeft: parseInt(document.getElementById('titleMarginLeftRange').value),
+                    titleMarginBottom: parseInt(document.getElementById('titleMarginBottomRange').value),
+                    titleColor: document.getElementById('titleColorPicker').value,
+                    showIssueNo: document.getElementById('showIssueNo').checked,
+                    issueX: parseInt(document.getElementById('issueX').value),
+                    issueY: parseInt(document.getElementById('issueY').value),
+                    issueFontSize: parseInt(document.getElementById('issueFontSize').value),
+                    issueColor: document.getElementById('issueColor').value,
+                    titleFontSize: parseInt(document.getElementById('customTitleSize').value),
+                    contentFontSize: parseInt(document.getElementById('customContentSize').value)
+                };
+
+                const response = await fetch('newsletter_export.php?action=save_settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    btn.innerHTML = '✅ บันทึกสำเร็จ';
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                    }, 2000);
+                } else {
+                    throw new Error(result.message || 'Save failed');
+                }
+            } catch (err) {
+                console.error(err);
+                btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                btn.innerHTML = '❌ ผิดพลาด: ' + err.message;
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 3000);
             }
         }
     </script>

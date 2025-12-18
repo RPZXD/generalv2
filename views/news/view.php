@@ -22,6 +22,7 @@ function thai_date_full_view($date_str) {
 
 $date = isset($news['news_date']) ? thai_date_full_view($news['news_date']) : '';
 $views = isset($news['view_count']) ? intval($news['view_count']) : 0;
+$shares = isset($news['share_count']) ? intval($news['share_count']) : 0;
 ?>
 
 <div class="space-y-6 md:space-y-8">
@@ -66,7 +67,7 @@ $views = isset($news['view_count']) ? intval($news['view_count']) : 0;
     </div>
 
     <!-- Meta Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mt-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-4">
         <div class="glass rounded-xl md:rounded-2xl p-3 md:p-4 border-l-4 border-indigo-500 hover:shadow-lg transition-all group">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl text-lg md:text-xl group-hover:scale-110 transition-transform">
@@ -97,6 +98,18 @@ $views = isset($news['view_count']) ? intval($news['view_count']) : 0;
                 <div class="min-w-0 flex-1">
                     <p class="text-xs text-gray-500 dark:text-gray-400">อ่านแล้ว</p>
                     <p class="text-sm md:text-base font-bold text-purple-600"><?php echo number_format($views); ?> ครั้ง</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass rounded-xl md:rounded-2xl p-3 md:p-4 border-l-4 border-green-500 hover:shadow-lg transition-all group">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl text-lg md:text-xl group-hover:scale-110 transition-transform">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs text-gray-500 dark:text-gray-400">แชร์แล้ว</p>
+                    <p class="text-sm md:text-base font-bold text-green-600" id="shareCountDisplay"><?php echo number_format($shares); ?> ครั้ง</p>
                 </div>
             </div>
         </div>
@@ -154,14 +167,21 @@ $views = isset($news['view_count']) ? intval($news['view_count']) : 0;
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4">
                 <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 font-medium">แชร์ข่าวนี้</p>
                 <div class="flex items-center gap-2 md:gap-3">
-                    <button onclick="shareToFacebook()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 active:scale-95 transition-all" title="แชร์ Facebook">
+                    <button onclick="shareToFacebook()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-[#1877F2] text-white rounded-full hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition-all" title="แชร์ Facebook">
                         <i class="fab fa-facebook-f text-sm md:text-base"></i>
                     </button>
-                    <button onclick="shareToLine()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 active:scale-95 transition-all" title="แชร์ Line">
+                    <button onclick="shareToLine()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-[#06C755] text-white rounded-full hover:shadow-lg hover:shadow-green-500/30 active:scale-95 transition-all" title="แชร์ Line">
                         <i class="fab fa-line text-sm md:text-base"></i>
                     </button>
-                    <button onclick="copyLink()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-gray-600 text-white rounded-full hover:bg-gray-700 active:scale-95 transition-all" title="คัดลอกลิงก์">
+                    <button onclick="shareToX()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-black text-white rounded-full hover:shadow-lg hover:shadow-black/30 active:scale-95 transition-all" title="แชร์ X (Twitter)">
+                        <i class="fab fa-x-twitter text-sm md:text-base"></i>
+                    </button>
+                    <button onclick="copyLink()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-gray-600 text-white rounded-full hover:shadow-lg hover:shadow-gray-500/30 active:scale-95 transition-all" title="คัดลอกลิงก์">
                         <i class="fas fa-link text-sm md:text-base"></i>
+                    </button>
+                    <!-- Web Share API (for mobile) -->
+                    <button id="webShareBtn" onclick="webShare()" class="hidden w-9 h-9 md:w-10 md:h-10 flex items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full hover:shadow-lg hover:shadow-purple-500/30 active:scale-95 transition-all" title="ส่งต่อ">
+                        <i class="fas fa-share-nodes text-sm md:text-base"></i>
                     </button>
                 </div>
             </div>
@@ -264,23 +284,80 @@ function handleGallerySwipe() {
 }
 
 // Share functions
+// Share functions
+function incrementShareCount() {
+    const id = <?php echo intval($news['id']); ?>;
+    fetch('api/share_news.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            const display = document.getElementById('shareCountDisplay');
+            if(display) {
+               let text = display.innerText; 
+               let count = parseInt(text.replace(/,/g, '')); 
+               if(!isNaN(count)) {
+                   count++;
+                   display.innerText = count.toLocaleString() + ' ครั้ง';
+               }
+            }
+        }
+    })
+    .catch(console.error);
+}
+
 function shareToFacebook() {
+    incrementShareCount();
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
 }
 
 function shareToLine() {
+    incrementShareCount();
     window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
 }
 
+function shareToX() {
+    incrementShareCount();
+    const text = "<?php echo addslashes($news['title']); ?>";
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank', 'width=600,height=400');
+}
+
 function copyLink() {
+    incrementShareCount();
     navigator.clipboard.writeText(window.location.href).then(() => {
-        Swal.fire({
-            icon: 'success',
-            title: 'คัดลอกลิงก์แล้ว!',
-            text: 'ลิงก์ถูกคัดลอกไปยังคลิปบอร์ด',
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
             timer: 2000,
-            showConfirmButton: false
+            timerProgressBar: true
+        });
+        Toast.fire({
+            icon: 'success',
+            title: 'คัดลอกลิงก์เรียบร้อยแล้ว'
         });
     });
+}
+
+function webShare() {
+    if (navigator.share) {
+        navigator.share({
+            title: "<?php echo addslashes($news['title']); ?>",
+            text: "<?php echo addslashes(mb_substr(strip_tags($news['detail']), 0, 100)); ?>...",
+            url: window.location.href
+        }).then(() => {
+            incrementShareCount();
+        }).catch(err => console.error('Error sharing:', err));
+    }
+}
+
+// Show web share button if supported
+if (navigator.share) {
+    document.getElementById('webShareBtn').classList.remove('hidden');
 }
 </script>

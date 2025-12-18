@@ -1,0 +1,13 @@
+{
+    "contentMarginTop": 281,
+    "titleMarginLeft": 17,
+    "titleMarginBottom": 32,
+    "titleColor": "#f4680b",
+    "showIssueNo": true,
+    "issueX": 700,
+    "issueY": 255,
+    "issueFontSize": 20,
+    "issueColor": "#ffffff",
+    "titleFontSize": 26,
+    "contentFontSize": 16
+}

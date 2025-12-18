@@ -12,6 +12,25 @@ $global = $config['global'];
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo $pageTitle ?? $global['pageTitle']; ?> | <?php echo $global['nameschool']; ?></title>
     
+    <!-- Dynamic Meta Tags for SEO & Social Sharing -->
+    <meta name="description" content="<?php echo htmlspecialchars($metaDescription ?? $global['pageDescription'] ?? ''); ?>">
+    <meta name="keywords" content="<?php echo htmlspecialchars($metaKeywords ?? $global['keywords'] ?? ''); ?>">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="<?php echo $ogType ?? 'website'; ?>">
+    <meta property="og:url" content="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($metaTitle ?? $pageTitle ?? $global['pageTitle'] ?? ''); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($metaDescription ?? $global['pageDescription'] ?? ''); ?>">
+    <meta property="og:image" content="<?php echo $metaImage ?? ($global['baseUrl'] ?? '') . 'dist/img/' . ($global['logoLink'] ?? 'logo-phicha.png'); ?>">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; ?>">
+    <meta property="twitter:title" content="<?php echo htmlspecialchars($metaTitle ?? $pageTitle ?? $global['pageTitle'] ?? ''); ?>">
+    <meta property="twitter:description" content="<?php echo htmlspecialchars($metaDescription ?? $global['pageDescription'] ?? ''); ?>">
+    <meta property="twitter:image" content="<?php echo $metaImage ?? ($global['baseUrl'] ?? '') . 'dist/img/' . ($global['logoLink'] ?? 'logo-phicha.png'); ?>">
+
+    
     <!-- Google Font: Mali -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

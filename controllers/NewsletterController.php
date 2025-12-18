@@ -63,6 +63,14 @@ class NewsletterController
     }
 
     /**
+     * เพิ่มจำนวนการแชร์ข่าว
+     */
+    public function incrementShares($id)
+    {
+        return $this->model->incrementShares($id);
+    }
+
+    /**
      * ดึงข่าวที่เผยแพร่แล้วสำหรับสาธารณะ
      */
     public function getPublished($limit = 100)

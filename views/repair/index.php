@@ -838,10 +838,17 @@ function renderRepairList() {
                     ${statusIcon}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                        <h4 class="font-bold text-sm md:text-base text-gray-900 dark:text-white truncate">${escapeHtml(r.AddLocation || 'ไม่ระบุสถานที่')}</h4>
-                        <span class="inline-flex items-center gap-1 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-semibold flex-shrink-0 ${getStatusBgClass(r.status)}">
+                    <h4 class="font-bold text-sm text-gray-900 dark:text-white mb-2 leading-tight line-clamp-2">
+                        ${escapeHtml(r.AddLocation || 'ไม่ระบุสถานที่')}
+                    </h4>
+
+                    <div class="flex flex-wrap items-center gap-2 text-[10px] text-gray-500 dark:text-gray-400">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full font-semibold border ${getStatusBgClass(r.status)}">
                             ${r.status_text}
+                        </span>
+                        
+                        <span class="inline-flex items-center gap-1 bg-gray-50 dark:bg-gray-700/50 px-2 py-1 rounded-md">
+                            <i class="far fa-calendar-alt text-orange-500"></i>${date}
                         </span>
                     </div>
                     <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 mb-1.5 md:mb-2 flex items-center gap-2 overflow-hidden">
