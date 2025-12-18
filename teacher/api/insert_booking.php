@@ -319,6 +319,21 @@ try {
             ]
         ];
 
+        // Send response to client FIRST (before slow notifications)
+        echo json_encode($result);
+        
+        // Flush output to client immediately so they don't wait
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } else {
+            // For non-FastCGI environments
+            if (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            flush();
+        }
+        
+        // Now send notifications in background (client already got response)
         // Send LINE Notification
         sendLineFlexMessage($channelAccessToken, $groupId, $flexContent);
 
@@ -334,6 +349,8 @@ try {
             "https://discord.com/api/webhooks/1324990236822241300/lZk9s-t-l324_uD6s-kK4v-lZk9s-t-l324_uD6s-kK4v",
             $discordMessage
         );
+        
+        exit; // Stop here, response already sent
     }
 
     echo json_encode($result);
