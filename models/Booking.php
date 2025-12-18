@@ -68,6 +68,10 @@ class Booking
                 'status' => $data['status'] ?? 0
             ];
         }
+        // DEBUG
+        // error_log("SQL: " . $sql);
+        // error_log("Params: " . json_encode($params));
+        
         $stmt = $this->db->query($sql, $params);
         return $stmt->rowCount() > 0;
     }
