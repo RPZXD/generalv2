@@ -89,6 +89,136 @@
         </div>
     </div>
 
+    <!-- Analytics Charts Section -->
+    <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 border border-gray-100 dark:border-gray-800 shadow-xl shadow-purple-500/5">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-xl md:rounded-2xl text-white text-xl md:text-2xl shadow-lg shadow-fuchsia-500/30">
+                📊
+            </div>
+            <div>
+                <h2 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">สถิติเชิงวิเคราะห์</h2>
+                <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">ข้อมูลเชิงสถิติการจองห้องประชุม</p>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+            <!-- Status Distribution - Donut Chart -->
+            <div class="group relative overflow-hidden bg-white dark:bg-slate-800/80 rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/30 rounded-lg md:rounded-xl text-lg md:text-xl">📈</span>
+                            <h3 class="font-bold text-sm md:text-base text-gray-900 dark:text-white">สถานะการจอง</h3>
+                        </div>
+                        <span class="px-2.5 py-1 text-[10px] md:text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full">เดือนนี้</span>
+                    </div>
+                    <div class="relative aspect-square max-h-48 md:max-h-56 mx-auto">
+                        <canvas id="statusChart"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="text-center">
+                                <div class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent" id="statusChartTotal">0</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">รายการ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-4 mt-4 flex-wrap">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-emerald-400 to-green-500"></span>
+                            <span class="text-xs text-gray-600 dark:text-gray-400">อนุมัติ</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-amber-400 to-orange-500"></span>
+                            <span class="text-xs text-gray-600 dark:text-gray-400">รออนุมัติ</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-red-400 to-rose-500"></span>
+                            <span class="text-xs text-gray-600 dark:text-gray-400">ไม่อนุมัติ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Usage - Bar Chart -->
+            <div class="group relative overflow-hidden bg-white dark:bg-slate-800/80 rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/50 dark:to-indigo-900/30 rounded-lg md:rounded-xl text-lg md:text-xl">🏢</span>
+                            <h3 class="font-bold text-sm md:text-base text-gray-900 dark:text-white">การใช้งานห้อง</h3>
+                        </div>
+                        <span class="px-2.5 py-1 text-[10px] md:text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">Top 5</span>
+                    </div>
+                    <div class="relative h-48 md:h-56">
+                        <canvas id="roomUsageChart"></canvas>
+                    </div>
+                    <div class="flex justify-center gap-2 mt-4">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full text-xs font-medium text-blue-600 dark:text-blue-400">
+                            <i class="fas fa-chart-bar text-[10px]"></i>
+                            <span id="roomUsageTopRoom">-</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Trend - Line Chart -->
+            <div class="group relative overflow-hidden bg-white dark:bg-slate-800/80 rounded-xl md:rounded-2xl p-4 md:p-5 border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/30 rounded-lg md:rounded-xl text-lg md:text-xl">📆</span>
+                            <h3 class="font-bold text-sm md:text-base text-gray-900 dark:text-white">แนวโน้มการจอง</h3>
+                        </div>
+                        <span class="px-2.5 py-1 text-[10px] md:text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">รายวัน</span>
+                    </div>
+                    <div class="relative h-48 md:h-56">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <div class="flex justify-center gap-4 mt-4">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-purple-400 to-pink-500"></span>
+                            <span class="text-xs text-gray-600 dark:text-gray-400">จำนวนการจอง</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats Summary -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+            <div class="p-4 bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-xl border border-violet-100 dark:border-violet-800/50">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-percentage text-violet-500 text-sm"></i>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">อัตราอนุมัติ</span>
+                </div>
+                <div class="text-lg md:text-xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent" id="approvalRate">-%</div>
+            </div>
+            <div class="p-4 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl border border-cyan-100 dark:border-cyan-800/50">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-fire text-cyan-500 text-sm"></i>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">ห้องยอดนิยม</span>
+                </div>
+                <div class="text-sm md:text-base font-bold text-gray-900 dark:text-white truncate" id="popularRoom">-</div>
+            </div>
+            <div class="p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-100 dark:border-amber-800/50">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-clock text-amber-500 text-sm"></i>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">ช่วงเวลายอดนิยม</span>
+                </div>
+                <div class="text-sm md:text-base font-bold text-gray-900 dark:text-white" id="peakTime">-</div>
+            </div>
+            <div class="p-4 bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl border border-rose-100 dark:border-rose-800/50">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-calendar-day text-rose-500 text-sm"></i>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">วันยอดนิยม</span>
+                </div>
+                <div class="text-sm md:text-base font-bold text-gray-900 dark:text-white" id="peakDay">-</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Filter Section -->
     <div class="glass rounded-xl md:rounded-2xl p-4 md:p-6 border border-gray-100 dark:border-gray-800">
         <div class="flex flex-col gap-4">
@@ -356,6 +486,9 @@
 }
 </style>
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <script>
 let currentMonth = new Date().getMonth() + 1;
 let currentYear = new Date().getFullYear();
@@ -363,6 +496,11 @@ let allRooms = [];
 let allBookings = [];
 let currentTab = 'today';
 let customSelectedDate = null;
+
+// Chart instances
+let statusChart = null;
+let roomUsageChart = null;
+let trendChart = null;
 
 const thaiMonths = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
                     'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
@@ -420,6 +558,8 @@ function loadData() {
                 renderCalendar();
                 renderBookingList();
                 renderRoomList();
+                renderCharts(response.stats);
+                renderAnalytics();
             }
         },
         error: function() {
@@ -434,6 +574,312 @@ function updateStats(stats, roomCount) {
     $('#statApproved').text(stats.approved.toLocaleString());
     $('#statPending').text(stats.pending.toLocaleString());
     $('#statRooms').text(roomCount.toLocaleString());
+    $('#statusChartTotal').text(stats.total.toLocaleString());
+}
+
+// Chart rendering functions
+function renderCharts(stats) {
+    renderStatusChart(stats);
+    renderRoomUsageChart();
+    renderTrendChart();
+}
+
+function renderStatusChart(stats) {
+    const ctx = document.getElementById('statusChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (statusChart) {
+        statusChart.destroy();
+    }
+    
+    const data = {
+        labels: ['อนุมัติแล้ว', 'รออนุมัติ', 'ไม่อนุมัติ'],
+        datasets: [{
+            data: [stats.approved || 0, stats.pending || 0, stats.rejected || 0],
+            backgroundColor: [
+                'rgba(16, 185, 129, 0.8)',  // emerald
+                'rgba(245, 158, 11, 0.8)',  // amber
+                'rgba(239, 68, 68, 0.8)'    // red
+            ],
+            borderColor: [
+                'rgba(16, 185, 129, 1)',
+                'rgba(245, 158, 11, 1)',
+                'rgba(239, 68, 68, 1)'
+            ],
+            borderWidth: 2,
+            hoverOffset: 8
+        }]
+    };
+    
+    statusChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { family: 'Mali', size: 14 },
+                    bodyFont: { family: 'Mali', size: 13 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? ((context.raw / total) * 100).toFixed(1) : 0;
+                            return `${context.label}: ${context.raw} (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateRotate: true,
+                animateScale: true
+            }
+        }
+    });
+}
+
+function renderRoomUsageChart() {
+    const ctx = document.getElementById('roomUsageChart');
+    if (!ctx) return;
+    
+    if (roomUsageChart) {
+        roomUsageChart.destroy();
+    }
+    
+    // Calculate room usage from bookings
+    const roomUsage = {};
+    allBookings.forEach(booking => {
+        const roomName = booking.room_name || 'ไม่ระบุ';
+        roomUsage[roomName] = (roomUsage[roomName] || 0) + 1;
+    });
+    
+    // Sort by usage and take top 5
+    const sortedRooms = Object.entries(roomUsage)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    const labels = sortedRooms.map(r => r[0].length > 12 ? r[0].substring(0, 12) + '...' : r[0]);
+    const values = sortedRooms.map(r => r[1]);
+    
+    // Update top room indicator
+    if (sortedRooms.length > 0) {
+        $('#roomUsageTopRoom').text(`🏆 ${sortedRooms[0][0]}`);
+        $('#popularRoom').text(sortedRooms[0][0]);
+    }
+    
+    const gradientColors = [
+        'rgba(59, 130, 246, 0.8)',   // blue
+        'rgba(99, 102, 241, 0.7)',   // indigo
+        'rgba(139, 92, 246, 0.6)',   // violet
+        'rgba(168, 85, 247, 0.5)',   // purple
+        'rgba(192, 132, 252, 0.4)'   // purple lighter
+    ];
+    
+    roomUsageChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'จำนวนการจอง',
+                data: values,
+                backgroundColor: gradientColors,
+                borderColor: gradientColors.map(c => c.replace('0.8', '1').replace('0.7', '1').replace('0.6', '1').replace('0.5', '1').replace('0.4', '1')),
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { family: 'Mali', size: 14 },
+                    bodyFont: { family: 'Mali', size: 13 },
+                    padding: 12,
+                    cornerRadius: 8
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: { family: 'Mali', size: 11 },
+                        stepSize: 1
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: { family: 'Mali', size: 11 }
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+}
+
+function renderTrendChart() {
+    const ctx = document.getElementById('trendChart');
+    if (!ctx) return;
+    
+    if (trendChart) {
+        trendChart.destroy();
+    }
+    
+    // Group bookings by date for trend
+    const bookingsByDate = {};
+    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+    
+    // Initialize all days with 0
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        bookingsByDate[dateStr] = 0;
+    }
+    
+    // Count bookings per day
+    allBookings.forEach(booking => {
+        if (bookingsByDate.hasOwnProperty(booking.date)) {
+            bookingsByDate[booking.date]++;
+        }
+    });
+    
+    const labels = Object.keys(bookingsByDate).map(date => {
+        return new Date(date).getDate(); // Just show day number
+    });
+    const values = Object.values(bookingsByDate);
+    
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'จำนวนการจอง',
+                data: values,
+                fill: true,
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                borderColor: 'rgba(139, 92, 246, 1)',
+                borderWidth: 3,
+                tension: 0.4,
+                pointBackgroundColor: 'rgba(139, 92, 246, 1)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointHoverBackgroundColor: 'rgba(236, 72, 153, 1)',
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { family: 'Mali', size: 14 },
+                    bodyFont: { family: 'Mali', size: 13 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        title: function(context) {
+                            return `วันที่ ${context[0].label} ${thaiMonths[currentMonth]}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: { family: 'Mali', size: 10 },
+                        maxTicksLimit: 10
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: { family: 'Mali', size: 11 },
+                        stepSize: 1
+                    }
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+}
+
+function renderAnalytics() {
+    // Calculate approval rate
+    const total = allBookings.length;
+    const approved = allBookings.filter(b => parseInt(b.status) === 1).length;
+    const approvalRate = total > 0 ? ((approved / total) * 100).toFixed(1) : 0;
+    $('#approvalRate').text(`${approvalRate}%`);
+    
+    // Find peak time
+    const timeSlots = {};
+    allBookings.forEach(b => {
+        if (b.time_start) {
+            const hour = parseInt(b.time_start.substring(0, 2));
+            timeSlots[hour] = (timeSlots[hour] || 0) + 1;
+        }
+    });
+    
+    const peakHour = Object.entries(timeSlots).sort((a, b) => b[1] - a[1])[0];
+    if (peakHour) {
+        $('#peakTime').text(`${String(peakHour[0]).padStart(2, '0')}:00 น.`);
+    }
+    
+    // Find peak day of week
+    const dayCount = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+    const thaiDays = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์'];
+    
+    allBookings.forEach(b => {
+        const day = new Date(b.date).getDay();
+        dayCount[day]++;
+    });
+    
+    const peakDay = Object.entries(dayCount).sort((a, b) => b[1] - a[1])[0];
+    if (peakDay && parseInt(peakDay[1]) > 0) {
+        $('#peakDay').text(`วัน${thaiDays[peakDay[0]]}`);
+    }
 }
 
 function updateRoomFilter() {
