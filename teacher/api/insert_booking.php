@@ -341,6 +341,10 @@ try {
 } catch (Exception $e) {
     error_log("Error in insert_booking.php: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "เกิดข้อผิดพลาดภายในระบบ"]);
+    echo json_encode([
+        "success" => false, 
+        "message" => "เกิดข้อผิดพลาดภายในระบบ: " . $e->getMessage(),
+        "trace" => $e->getTraceAsString()
+    ]);
 }
 ?>
