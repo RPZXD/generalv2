@@ -28,9 +28,9 @@ class Booking
         
         if ($hasRoomId) {
             $sql = "INSERT INTO bookings (
-                teach_id, term, pee, date, time_start, time_end, purpose, room_id, location, media, phone, room_layout, status, created_at
+                id, teach_id, term, pee, date, time_start, time_end, purpose, room_id, location, media, phone, room_layout, status, created_at
             ) VALUES (
-                :teach_id, :term, :pee, :date, :time_start, :time_end, :purpose, :room_id, :location, :media, :phone, :room_layout, :status, NOW()
+                NULL, :teach_id, :term, :pee, :date, :time_start, :time_end, :purpose, :room_id, :location, :media, :phone, :room_layout, :status, NOW()
             )";
             $params = [
                 'teach_id' => $data['teach_id'],
@@ -49,9 +49,9 @@ class Booking
             ];
         } else {
             $sql = "INSERT INTO bookings (
-                teach_id, term, pee, date, time_start, time_end, purpose, location, media, phone, room_layout, status, created_at
+                id, teach_id, term, pee, date, time_start, time_end, purpose, location, media, phone, room_layout, status, created_at
             ) VALUES (
-                :teach_id, :term, :pee, :date, :time_start, :time_end, :purpose, :location, :media, :phone, :room_layout, :status, NOW()
+                NULL, :teach_id, :term, :pee, :date, :time_start, :time_end, :purpose, :location, :media, :phone, :room_layout, :status, NOW()
             )";
             $params = [
                 'teach_id' => $data['teach_id'],
@@ -68,16 +68,11 @@ class Booking
                 'status' => $data['status'] ?? 0
             ];
         }
-        // DEBUG
-        // error_log("SQL: " . $sql);
-        // error_log("Params: " . json_encode($params));
-        
         try {
             $stmt = $this->db->query($sql, $params);
             return $stmt->rowCount() > 0;
         } catch (\Exception $e) {
-            $params_str = json_encode($params, JSON_UNESCAPED_UNICODE);
-            throw new \Exception($e->getMessage() . " | SQL: " . $sql . " | Params: " . $params_str);
+            throw new \Exception($e->getMessage() . " (SQL: " . $sql . ")");
         }
     }
 
