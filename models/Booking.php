@@ -72,8 +72,13 @@ class Booking
         // error_log("SQL: " . $sql);
         // error_log("Params: " . json_encode($params));
         
-        $stmt = $this->db->query($sql, $params);
-        return $stmt->rowCount() > 0;
+        try {
+            $stmt = $this->db->query($sql, $params);
+            return $stmt->rowCount() > 0;
+        } catch (\Exception $e) {
+            $params_str = json_encode($params, JSON_UNESCAPED_UNICODE);
+            throw new \Exception($e->getMessage() . " | SQL: " . $sql . " | Params: " . $params_str);
+        }
     }
 
     public function getByTeacher($teach_id, $term = null, $pee = null)
