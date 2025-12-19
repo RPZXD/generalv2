@@ -882,7 +882,7 @@ function updateStatus(id, status) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: 'api/car_booking_status.php',
+                url: '/officer/api/car_booking_status.php',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ id: id, status: statusMap[status] || status }),
