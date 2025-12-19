@@ -606,9 +606,9 @@ function fetchBookings() {
             });
             
             // Debug logging
-            console.log('Bookings loaded:', bookings.length);
+            // console.log('Bookings loaded:', bookings.length);
             if (bookings.length > 0) {
-                console.log('Sample booking:', bookings[0], 'Raw ID source:', bookings[0].booking_id_str);
+                // console.log('Sample booking:', bookings[0], 'Raw ID source:', bookings[0].booking_id_str);
             }
             
             allBookings = bookings;
