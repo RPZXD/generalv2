@@ -653,7 +653,9 @@ function renderBookings(bookings) {
     }
 
     let html = '';
+    console.log('All bookings:', bookings); // Debug
     bookings.forEach(function(booking) {
+        console.log('Booking ID:', booking.id, 'Type:', typeof booking.id); // Debug
         let statusInfo = getStatusInfo(booking.status);
         let carEmoji = getCarEmoji(booking.car_type);
         let carName = booking.car_model || 'รถยนต์';
