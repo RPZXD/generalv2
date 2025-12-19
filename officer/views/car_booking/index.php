@@ -885,6 +885,7 @@ function updateStatus(id, status) {
                 url: '/officer/api/car_booking_status.php',
                 type: 'POST',
                 contentType: 'application/json',
+                dataType: 'json',
                 data: JSON.stringify({ id: id, status: statusMap[status] || status }),
                 success: function(response) {
                     if (response.success) {

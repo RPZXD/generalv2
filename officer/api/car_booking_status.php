@@ -9,12 +9,18 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
-// รับข้อมูล JSON
-$input = json_decode(file_get_contents('php://input'), true);
+// รับข้อมูล JSON หรือ POST
+$rawInput = file_get_contents('php://input');
+$input = json_decode($rawInput, true);
+
+// Fallback to $_POST if JSON decode fails
+if ($input === null && !empty($_POST)) {
+    $input = $_POST;
+}
 
 try {
-    $id = $input['id'] ?? '';
-    $status = $input['status'] ?? '';
+    $id = $input['id'] ?? $_POST['id'] ?? '';
+    $status = $input['status'] ?? $_POST['status'] ?? '';
 
     // ตรวจสอบข้อมูลที่จำเป็น
     if (empty($id) || empty($status)) {
