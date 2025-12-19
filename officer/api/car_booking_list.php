@@ -15,8 +15,8 @@ try {
     $dbUsers = new App\DatabaseUsers();
     
     // ดึงข้อมูลการจองและรถยนต์จาก phichaia_general
-    // ระบุ cb.id อย่างชัดเจนเพื่อป้องกันการถูก overwrite จาก c.id
-    $sql = "SELECT cb.id, cb.car_id, cb.teacher_id, cb.booking_date, cb.start_time, cb.end_time, 
+    // ระบุ cb.id เป็น booking_id เพื่อความชัวร์ไม่ให้ชนกับ id อื่น
+    $sql = "SELECT cb.id as booking_id, cb.id, cb.car_id, cb.teacher_id, cb.booking_date, cb.start_time, cb.end_time, 
                    cb.destination, cb.purpose, cb.passenger_count, cb.status, cb.created_at, cb.updated_at,
                    c.car_model, c.license_plate, c.car_type, c.capacity
             FROM car_bookings cb

@@ -595,7 +595,22 @@ function fetchBookings() {
             $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="loader mx-auto mb-4"></div><p class="text-gray-400">กำลังโหลด...</p></div>');
         },
         success: function(response) {
-            allBookings = response.list || [];
+            let bookings = response.list || [];
+            
+            // Normalize booking ID to ensure we have a valid ID
+            // Priority: booking_id (aliased) > id
+            bookings = bookings.map(b => {
+                b.id = b.booking_id || b.id; // Ensure .id is always the correct one
+                return b;
+            });
+            
+            // Debug logging
+            console.log('Bookings loaded:', bookings.length);
+            if (bookings.length > 0) {
+                console.log('Sample booking:', bookings[0]);
+            }
+            
+            allBookings = bookings;
             updateStats();
             renderBookings(filterBookings());
             updateCarStats();
