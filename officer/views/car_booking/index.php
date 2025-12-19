@@ -372,42 +372,72 @@ function initCalendar(forceReinit = false) {
         events: function(fetchInfo, successCallback, failureCallback) {
             try {
                 const events = allBookings.filter(b => b.status != 'rejected' && b.status != 2).map(function(booking) {
-                    if (!booking.booking_date) return null;
+                    try {
+                        if (!booking.booking_date) return null;
 
-                    let color = getCarColor(booking.car_id);
-                    let carName = booking.car_model || 'รถยนต์';
-                    
-                    // Ensure date format YYYY-MM-DD
-                    let datePart = booking.booking_date.split(' ')[0];
-                    
-                    // Handle time format - ensure proper format
-                    let startTime = booking.start_time || '08:00';
-                    let endTime = booking.end_time || '17:00';
-                    
-                    // If it contains date (has space), take the second part
-                    if (startTime.includes(' ')) {
-                        startTime = startTime.split(' ')[1];
+                        let color = getCarColor(booking.car_id);
+                        let carName = booking.car_model || 'รถยนต์';
+                        
+                        // Get base date from booking_date
+                        let baseDate = booking.booking_date ? booking.booking_date.split(' ')[0] : null;
+                        if (!baseDate) return null;
+                        
+                        // Helper function to parse datetime or time-only fields
+                        function parseDateTimeField(field, fallbackDate, fallbackTime) {
+                            if (!field) return { date: fallbackDate, time: fallbackTime };
+                            
+                            const fieldStr = String(field).trim();
+                            
+                            // Check if it contains a date (has space and starts with year)
+                            if (fieldStr.includes(' ') && /^\d{4}-\d{2}-\d{2}/.test(fieldStr)) {
+                                const parts = fieldStr.split(' ');
+                                const timePart = parts[1] ? parts[1].split(':').slice(0, 2).join(':') : fallbackTime;
+                                return { date: parts[0], time: timePart || fallbackTime };
+                            } else {
+                                // It's time-only, use fallback date
+                                const timePart = fieldStr.split(':').slice(0, 2).join(':');
+                                return { date: fallbackDate, time: timePart || fallbackTime };
+                            }
+                        }
+                        
+                        // Parse start and end
+                        const startInfo = parseDateTimeField(booking.start_time, baseDate, '08:00');
+                        const endInfo = parseDateTimeField(booking.end_time, baseDate, '17:00');
+                        
+                        // Validate dates
+                        if (!startInfo.date || !endInfo.date) return null;
+                        
+                        // Check if multi-day booking (only if both dates are valid)
+                        const isMultiDay = startInfo.date !== endInfo.date;
+                        
+                        // For multi-day events, FullCalendar needs end date to be exclusive
+                        let endDateForCalendar = endInfo.date;
+                        if (isMultiDay) {
+                            try {
+                                const endDateObj = new Date(endInfo.date + 'T00:00:00');
+                                if (!isNaN(endDateObj.getTime())) {
+                                    endDateObj.setDate(endDateObj.getDate() + 1);
+                                    endDateForCalendar = endDateObj.toISOString().split('T')[0];
+                                }
+                            } catch (e) {
+                                // If date parsing fails, keep original endInfo.date
+                                console.warn('Date parsing failed for:', endInfo.date);
+                            }
+                        }
+                        
+                        return {
+                            id: booking.id,
+                            title: `${carName} - ${booking.destination || 'ไม่ระบุ'}`,
+                            start: `${startInfo.date}T${startInfo.time}`,
+                            end: isMultiDay ? endDateForCalendar : `${endInfo.date}T${endInfo.time}`,
+                            allDay: isMultiDay,
+                            color: (booking.status == 0 || booking.status == 'pending') ? '#fbbf24' : color,
+                            extendedProps: { booking: booking }
+                        };
+                    } catch (bookingError) {
+                        console.warn('Error processing booking:', booking.id, bookingError);
+                        return null;
                     }
-                    if (endTime.includes(' ')) {
-                        endTime = endTime.split(' ')[1];
-                    }
-                    
-                    // Remove seconds if present
-                    if (startTime.includes(':') && startTime.split(':').length >= 3) {
-                        startTime = startTime.split(':').slice(0, 2).join(':');
-                    }
-                    if (endTime.includes(':') && endTime.split(':').length >= 3) {
-                        endTime = endTime.split(':').slice(0, 2).join(':');
-                    }
-                    
-                    return {
-                        id: booking.id,
-                        title: `${carName} - ${booking.destination || 'ไม่ระบุ'}`,
-                        start: `${datePart}T${startTime}`,
-                        end: `${datePart}T${endTime}`,
-                        color: (booking.status == 0 || booking.status == 'pending') ? '#fbbf24' : color,
-                        extendedProps: { booking: booking }
-                    };
                 }).filter(e => e !== null);
                 
                 successCallback(events);
@@ -653,23 +683,28 @@ function renderBookings(bookings) {
     }
 
     let html = '';
-    console.log('All bookings:', bookings); // Debug
     bookings.forEach(function(booking) {
-        console.log('Booking ID:', booking.id, 'Type:', typeof booking.id); // Debug
         let statusInfo = getStatusInfo(booking.status);
         let carEmoji = getCarEmoji(booking.car_type);
         let carName = booking.car_model || 'รถยนต์';
         if (booking.license_plate) carName += ` (${booking.license_plate})`;
         
-        const dateObj = new Date(booking.booking_date);
-        const formattedDate = dateObj.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' });
+        // Get car color for identification
+        const carColor = getCarColor(booking.car_id);
+        
+        // Format date and time in Thai
+        const formattedDate = formatThaiDateShort(booking.booking_date);
+        const formattedTime = formatThaiTimeRange(booking.start_time, booking.end_time);
 
         html += `
-        <div class="booking-card bg-white dark:bg-slate-800 rounded-2xl border-l-4 ${statusInfo.border} shadow-sm hover:shadow-lg overflow-hidden">
+        <div class="booking-card bg-white dark:bg-slate-800 rounded-2xl border-l-4 shadow-sm hover:shadow-lg overflow-hidden" style="border-left-color: ${carColor}">
             <div class="p-5">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3">
-                        <span class="text-3xl">${carEmoji}</span>
+                        <div class="relative">
+                            <span class="text-3xl">${carEmoji}</span>
+                            <span class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-slate-800" style="background-color: ${carColor}"></span>
+                        </div>
                         <div>
                             <h4 class="font-bold text-gray-900 dark:text-white">${carName}</h4>
                             <p class="text-xs text-gray-500">#${booking.id}</p>
@@ -685,7 +720,7 @@ function renderBookings(bookings) {
                     </div>
                     <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                         <span class="text-emerald-500">⏰</span>
-                        <span>${booking.start_time || '08:00'} - ${booking.end_time || '17:00'}</span>
+                        <span>${formattedTime}</span>
                     </div>
                     <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                         <span class="text-emerald-500">👨‍🏫</span>
@@ -785,14 +820,18 @@ function switchTab(tab) {
 }
 
 function showDetailModal(booking) {
-    const dateObj = new Date(booking.booking_date);
-    const formattedDate = dateObj.toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    // Format date and time in Thai
+    const formattedDate = formatThaiDateFull(booking.booking_date);
+    const formattedTime = formatThaiTimeRange(booking.start_time, booking.end_time);
     const statusInfo = getStatusInfo(booking.status);
     const carEmoji = getCarEmoji(booking.car_type);
     let carName = booking.car_model || 'รถยนต์';
     if (booking.license_plate) carName += ` (${booking.license_plate})`;
     
     $('#detailTitle').html(`<span class="text-2xl mr-2">${carEmoji}</span>${carName}`);
+    
+    // Get detailed date/time info for pickup and return
+    const dateTimeInfo = formatThaiDateTimeDetail(booking.start_time, booking.end_time);
     
     $('#detailContent').html(`
         <div class="space-y-4">
@@ -801,6 +840,20 @@ function showDetailModal(booking) {
                 ${statusInfo.badge}
             </div>
             
+            ${dateTimeInfo.isMultiDay ? `
+            <!-- Multi-day booking: Show pickup and return separately -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                    <p class="text-xs text-emerald-600 dark:text-emerald-400 mb-1 font-medium">🚗 รับ</p>
+                    <p class="font-bold text-gray-900 dark:text-white">${dateTimeInfo.pickup}</p>
+                </div>
+                <div class="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                    <p class="text-xs text-blue-600 dark:text-blue-400 mb-1 font-medium">🔙 ส่ง</p>
+                    <p class="font-bold text-gray-900 dark:text-white">${dateTimeInfo.return}</p>
+                </div>
+            </div>
+            ` : `
+            <!-- Single day booking -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                     <p class="text-xs text-gray-500 mb-1">📅 วันที่</p>
@@ -808,9 +861,10 @@ function showDetailModal(booking) {
                 </div>
                 <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                     <p class="text-xs text-gray-500 mb-1">⏰ เวลา</p>
-                    <p class="font-medium text-gray-900 dark:text-white">${booking.start_time || '08:00'} - ${booking.end_time || '17:00'} น.</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${formattedTime}</p>
                 </div>
             </div>
+            `}
             
             <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                 <p class="text-xs text-gray-500 mb-1">📍 จุดหมายปลายทาง</p>
@@ -930,6 +984,110 @@ function getStatusInfo(status) {
             statusText: statusText
         };
     }
+}
+
+// Thai Date/Time Formatting Helper Functions
+const thaiMonthsShort = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+const thaiMonthsFull = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+const thaiDaysFull = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+
+// Format date as "24 ธ.ค. 68"
+function formatThaiDateShort(dateStr) {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '-';
+    const day = date.getDate();
+    const month = thaiMonthsShort[date.getMonth() + 1];
+    const year = (date.getFullYear() + 543) % 100; // Buddhist year, last 2 digits
+    return `${day} ${month} ${year}`;
+}
+
+// Format date as "วันอังคารที่ 24 ธันวาคม 2568"
+function formatThaiDateFull(dateStr) {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '-';
+    const dayName = thaiDaysFull[date.getDay()];
+    const day = date.getDate();
+    const month = thaiMonthsFull[date.getMonth() + 1];
+    const year = date.getFullYear() + 543; // Buddhist year
+    return `วัน${dayName}ที่ ${day} ${month} ${year}`;
+}
+
+// Format time range - handles both single day and multi-day bookings
+// Returns "08:30-14:00 น." for same day or "24 ธ.ค. 08:30 ถึง 25 ธ.ค. 14:00" for multi-day
+function formatThaiTimeRange(startTime, endTime) {
+    const parseDateTime = (dateTimeStr) => {
+        if (!dateTimeStr) return null;
+        // Handle both "08:30:00", "08:30" and "2025-12-24 08:30:00" formats
+        if (dateTimeStr.includes(' ')) {
+            const [datePart, timePart] = dateTimeStr.split(' ');
+            const timeFormatted = timePart.split(':').slice(0, 2).join(':');
+            return { date: datePart, time: timeFormatted };
+        } else {
+            const timeFormatted = dateTimeStr.split(':').slice(0, 2).join(':');
+            return { date: null, time: timeFormatted };
+        }
+    };
+    
+    const start = parseDateTime(startTime);
+    const end = parseDateTime(endTime);
+    
+    if (!start || !end) {
+        return `${start?.time || '08:00'}-${end?.time || '17:00'} น.`;
+    }
+    
+    // Check if multi-day booking (dates are different)
+    if (start.date && end.date && start.date !== end.date) {
+        const startDateShort = formatThaiDateShort(start.date);
+        const endDateShort = formatThaiDateShort(end.date);
+        return `${startDateShort} ${start.time} ถึง ${endDateShort} ${end.time}`;
+    }
+    
+    // Same day booking
+    return `${start.time}-${end.time} น.`;
+}
+
+// Format datetime for detailed view - shows "รับ: 24 ธ.ค. 68 เวลา 08:30 น." / "ส่ง: 25 ธ.ค. 68 เวลา 14:00 น."
+function formatThaiDateTimeDetail(startTime, endTime) {
+    const parseDateTime = (dateTimeStr, fallbackDate) => {
+        if (!dateTimeStr) return null;
+        if (dateTimeStr.includes(' ')) {
+            const [datePart, timePart] = dateTimeStr.split(' ');
+            const timeFormatted = timePart.split(':').slice(0, 2).join(':');
+            return { date: datePart, time: timeFormatted };
+        } else {
+            const timeFormatted = dateTimeStr.split(':').slice(0, 2).join(':');
+            return { date: fallbackDate, time: timeFormatted };
+        }
+    };
+    
+    const start = parseDateTime(startTime, null);
+    const end = parseDateTime(endTime, null);
+    
+    if (!start || !end) {
+        return {
+            pickup: `${start?.time || '08:00'} น.`,
+            return: `${end?.time || '17:00'} น.`,
+            isMultiDay: false
+        };
+    }
+    
+    const isMultiDay = start.date && end.date && start.date !== end.date;
+    
+    if (isMultiDay) {
+        return {
+            pickup: `${formatThaiDateShort(start.date)} เวลา ${start.time} น.`,
+            return: `${formatThaiDateShort(end.date)} เวลา ${end.time} น.`,
+            isMultiDay: true
+        };
+    }
+    
+    return {
+        pickup: `${start.time} น.`,
+        return: `${end.time} น.`,
+        isMultiDay: false
+    };
 }
 
 // Close modals on outside click
