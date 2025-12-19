@@ -15,8 +15,8 @@ try {
     $dbUsers = new App\DatabaseUsers();
     
     // ดึงข้อมูลการจองและรถยนต์จาก phichaia_general
-    // ระบุ cb.id เป็น booking_id เพื่อความชัวร์ไม่ให้ชนกับ id อื่น
-    $sql = "SELECT cb.id as booking_id, cb.id, cb.car_id, cb.teacher_id, cb.booking_date, cb.start_time, cb.end_time, 
+    // Hack: CAST id เป็น CHAR เพื่อแก้ปัญหา driver บน production คืนค่า 0
+    $sql = "SELECT CAST(cb.id AS CHAR) as booking_id_str, cb.id, cb.car_id, cb.teacher_id, cb.booking_date, cb.start_time, cb.end_time, 
                    cb.destination, cb.purpose, cb.passenger_count, cb.status, cb.created_at, cb.updated_at,
                    c.car_model, c.license_plate, c.car_type, c.capacity
             FROM car_bookings cb
