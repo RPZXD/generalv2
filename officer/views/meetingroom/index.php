@@ -772,7 +772,14 @@ function renderBookings(bookings) {
                     <button onclick="updateStatus(${booking.id}, 2)" class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors" title="ยกเลิก">
                         <i class="fas fa-times"></i>
                     </button>
-                    ` : ''}
+                    ` : `
+                    <button onclick="updateStatus(${booking.id}, 0)" class="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-xl text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors" title="เปลี่ยนกลับรอการอนุมัติ">
+                        <i class="fas fa-undo"></i>
+                    </button>
+                    `}
+                    <button onclick="deleteBooking(${booking.id})" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-xl text-sm font-medium hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400 transition-colors" title="ลบ">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -921,7 +928,20 @@ function showDetailModal(booking) {
                 <i class="fas fa-times"></i> ยกเลิก
             </button>
         `;
+    } else {
+        actionsHtml += `
+            <button onclick="updateStatus(${booking.id}, 0); closeDetailModal();" class="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-undo"></i> กลับรอการอนุมัติ
+            </button>
+        `;
     }
+    
+    // เพิ่มปุ่มลบ
+    actionsHtml += `
+        <button onclick="deleteBooking(${booking.id}); closeDetailModal();" class="px-4 py-3 bg-gray-200 hover:bg-red-500 text-gray-600 hover:text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+            <i class="fas fa-trash"></i> ลบ
+        </button>
+    `;
     
     $('#detailActions').html(actionsHtml);
     $('#detailModal').removeClass('hidden');
@@ -999,14 +1019,24 @@ function closeEditModal() {
 }
 
 function updateStatus(id, status) {
-    const action = status == 1 ? 'อนุมัติ' : 'ยกเลิก';
+    const actionMap = {
+        0: 'เปลี่ยนกลับรอการอนุมัติ',
+        1: 'อนุมัติ',
+        2: 'ยกเลิก'
+    };
+    const action = actionMap[status] || 'เปลี่ยนสถานะ';
+    const colorMap = {
+        0: '#3b82f6',
+        1: '#22c55e',
+        2: '#ef4444'
+    };
     
     Swal.fire({
         title: `ยืนยัน${action}?`,
         text: `คุณต้องการ${action}การจองนี้ใช่หรือไม่?`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: status == 1 ? '#22c55e' : '#ef4444',
+        confirmButtonColor: colorMap[status] || '#3b82f6',
         cancelButtonColor: '#6b7280',
         confirmButtonText: `ใช่, ${action}`,
         cancelButtonText: 'ยกเลิก'
@@ -1020,6 +1050,38 @@ function updateStatus(id, status) {
                     Swal.fire({icon: 'error', title: 'ผิดพลาด', text: response.message || 'ไม่สามารถอัปเดตสถานะได้'});
                 }
             }, 'json');
+        }
+    });
+}
+
+function deleteBooking(id) {
+    Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: 'คุณต้องการลบการจองนี้ใช่หรือไม่? การดำเนินการนี้ไม่สามารถยกเลิกได้!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'ใช่, ลบเลย',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'กำลังลบ...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            
+            $.post('api/delete_booking.php', { id: id }, function(response) {
+                if (response.success) {
+                    Swal.fire({icon: 'success', title: 'ลบแล้ว!', text: 'ลบการจองเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false});
+                    fetchBookings();
+                } else {
+                    Swal.fire({icon: 'error', title: 'ผิดพลาด', text: response.message || 'ไม่สามารถลบได้'});
+                }
+            }, 'json').fail(function() {
+                Swal.fire({icon: 'error', title: 'ผิดพลาด', text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ'});
+            });
         }
     });
 }
