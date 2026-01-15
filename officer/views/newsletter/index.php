@@ -903,6 +903,18 @@ function exportNewsletter(id) {
 
 // Approve Newsletter Function
 function approveNewsletter(id, status) {
+    // Validate ID
+    const newsletterId = parseInt(id);
+    if (!newsletterId || newsletterId <= 0) {
+        console.error('Invalid newsletter ID:', id);
+        Swal.fire({
+            icon: 'error',
+            title: 'ผิดพลาด',
+            text: 'ไม่พบ ID ของจดหมายข่าว กรุณารีเฟรชหน้า'
+        });
+        return;
+    }
+    
     const statusText = status == 1 ? 'อนุมัติ' : 'ไม่อนุมัติ';
     const icon = status == 1 ? 'success' : 'warning';
     const confirmColor = status == 1 ? '#10b981' : '#ef4444';
@@ -922,7 +934,7 @@ function approveNewsletter(id, status) {
                 url: 'api/newsletter_status.php',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ id: id, status: status }),
+                data: JSON.stringify({ id: newsletterId, status: parseInt(status) }),
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
