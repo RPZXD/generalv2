@@ -1,4 +1,4 @@
-<!-- Meeting Room Management - Tab Layout with Full Calendar -->
+ <!-- Meeting Room Management - Tab Layout with Full Calendar -->
 <div class="space-y-6">
     <!-- Page Header with Stats -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">

@@ -30,7 +30,9 @@ $defaultSettings = [
     'issueFontSize' => 16,
     'issueColor' => '#000000',
     'titleFontSize' => 18,
-    'contentFontSize' => 16
+    'contentFontSize' => 16,
+    'customBackgroundImage' => '',
+    'useCustomBackground' => false
 ];
 
 // Load settings
@@ -361,7 +363,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            background: url('../dist/img/newletter_bg2.png') no-repeat center/cover;
+            <?php 
+            $bgImage = '../dist/img/newletter_bg2.png'; // default
+            if (!empty($settings['useCustomBackground']) && !empty($settings['customBackgroundImage'])) {
+                $bgImage = $settings['customBackgroundImage'];
+            }
+            ?>
+            background: url('<?php echo $bgImage; ?>') no-repeat center/cover;
         }
         
         /* Theme-based Header Design */
@@ -1252,6 +1260,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                 </button>
                 <p style="font-size:11px;color:#6b7280;text-align:center;margin-top:8px;">คลิกที่หัวข้อหรือเนื้อหาเพื่อแก้ไข</p>
             </div>
+
+            <!-- อัปโหลด Background Image -->
+            <div class="theme-section">
+                <div class="theme-section-title" style="color: #8b5cf6;">🖼️ รูป Background</div>
+                
+                <!-- Current Background Preview -->
+                <div style="margin-bottom:12px; text-align:center;">
+                    <div style="width:100%; aspect-ratio:210/297; border-radius:8px; overflow:hidden; border:2px dashed #e5e7eb; background-size:cover; background-position:center;" 
+                         id="bgPreview"
+                         style="background-image: url('<?php echo $bgImage; ?>');">
+                        <img src="<?php echo $bgImage; ?>" alt="Background Preview" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'">
+                    </div>
+                    <p style="font-size:10px; color:#9ca3af; margin-top:4px;">
+                        <?php echo $settings['useCustomBackground'] ? 'รูป Custom' : 'รูป Default'; ?>
+                    </p>
+                </div>
+                
+                <!-- Toggle Custom Background -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span class="control-label" style="margin:0;">ใช้รูป Custom</span>
+                    <input type="checkbox" id="useCustomBg" onchange="toggleCustomBackground(this.checked)" <?php echo $settings['useCustomBackground'] ? 'checked' : ''; ?>>
+                </div>
+                
+                <!-- Upload Button -->
+                <input type="file" id="bgUploadInput" accept="image/png,image/jpeg,image/jpg,image/webp" style="display:none;" onchange="uploadBackground(this)">
+                <button onclick="document.getElementById('bgUploadInput').click()" class="custom-btn-primary" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); margin-bottom:8px;">
+                    📤 เลือกรูป Background ใหม่
+                </button>
+                
+                <!-- Reset to Default -->
+                <button onclick="resetBackground()" class="custom-btn" style="width:100%;">
+                    🔄 ใช้รูป Default
+                </button>
+                
+                <p style="font-size:10px;color:#9ca3af;text-align:center;margin-top:8px;">
+                    รองรับ PNG, JPG, WEBP (สูงสุด 5MB)<br>
+                    แนะนำขนาด 2480 x 3508 px (A4)
+                </p>
+            </div>
         </div><!-- End theme-selector-body -->
     </div>
 
@@ -1612,6 +1659,145 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                     btn.innerHTML = originalText;
                     btn.style.background = '';
                 }, 3000);
+            }
+        }
+
+        // ====== Background Upload Functions ======
+        async function uploadBackground(input) {
+            if (!input.files || !input.files[0]) return;
+            
+            const file = input.files[0];
+            
+            // Validate file size
+            if (file.size > 5 * 1024 * 1024) {
+                alert('ไฟล์มีขนาดใหญ่เกินไป (สูงสุด 5MB)');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('background', file);
+            
+            try {
+                // Show loading
+                const uploadBtn = document.querySelector('[onclick*="bgUploadInput"]');
+                const originalText = uploadBtn.innerHTML;
+                uploadBtn.innerHTML = '⏳ กำลังอัปโหลด...';
+                uploadBtn.disabled = true;
+                
+                const response = await fetch('api/newsletter_bg_upload.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update preview
+                    const preview = document.querySelector('#bgPreview img');
+                    if (preview) {
+                        preview.src = result.path + '?t=' + Date.now();
+                        preview.style.display = 'block';
+                    }
+                    
+                    // Update content-area background
+                    document.querySelector('.content-area').style.backgroundImage = `url('${result.path}?t=${Date.now()}')`;
+                    
+                    // Check the toggle
+                    document.getElementById('useCustomBg').checked = true;
+                    
+                    uploadBtn.innerHTML = '✅ อัปโหลดสำเร็จ!';
+                    setTimeout(() => {
+                        uploadBtn.innerHTML = originalText;
+                        uploadBtn.disabled = false;
+                    }, 2000);
+                    
+                    // Reload page to apply changes
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    throw new Error(result.message || 'อัปโหลดไม่สำเร็จ');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+                const uploadBtn = document.querySelector('[onclick*="bgUploadInput"]');
+                uploadBtn.innerHTML = '📤 เลือกรูป Background ใหม่';
+                uploadBtn.disabled = false;
+            }
+            
+            // Reset input
+            input.value = '';
+        }
+        
+        async function toggleCustomBackground(useCustom) {
+            try {
+                // Get current settings first
+                const currentSettings = {
+                    contentMarginTop: parseInt(document.getElementById('marginTopRange').value),
+                    titleMarginLeft: parseInt(document.getElementById('titleMarginLeftRange').value),
+                    titleMarginBottom: parseInt(document.getElementById('titleMarginBottomRange').value),
+                    titleColor: document.getElementById('titleColorPicker').value,
+                    showIssueNo: document.getElementById('showIssueNo').checked,
+                    issueX: parseInt(document.getElementById('issueX').value),
+                    issueY: parseInt(document.getElementById('issueY').value),
+                    issueFontSize: parseInt(document.getElementById('issueFontSize').value),
+                    issueColor: document.getElementById('issueColor').value,
+                    titleFontSize: parseInt(document.getElementById('customTitleSize').value),
+                    contentFontSize: parseInt(document.getElementById('customContentSize').value),
+                    useCustomBackground: useCustom
+                };
+                
+                const response = await fetch('newsletter_export.php?action=save_settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentSettings)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+            }
+        }
+        
+        async function resetBackground() {
+            if (!confirm('ต้องการใช้รูป Background เดิมหรือไม่?')) return;
+            
+            try {
+                // Get current settings and reset background settings
+                const currentSettings = {
+                    contentMarginTop: parseInt(document.getElementById('marginTopRange').value),
+                    titleMarginLeft: parseInt(document.getElementById('titleMarginLeftRange').value),
+                    titleMarginBottom: parseInt(document.getElementById('titleMarginBottomRange').value),
+                    titleColor: document.getElementById('titleColorPicker').value,
+                    showIssueNo: document.getElementById('showIssueNo').checked,
+                    issueX: parseInt(document.getElementById('issueX').value),
+                    issueY: parseInt(document.getElementById('issueY').value),
+                    issueFontSize: parseInt(document.getElementById('issueFontSize').value),
+                    issueColor: document.getElementById('issueColor').value,
+                    titleFontSize: parseInt(document.getElementById('customTitleSize').value),
+                    contentFontSize: parseInt(document.getElementById('customContentSize').value),
+                    useCustomBackground: false,
+                    customBackgroundImage: ''
+                };
+                
+                const response = await fetch('newsletter_export.php?action=save_settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentSettings)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('เกิดข้อผิดพลาด: ' + err.message);
             }
         }
     </script>

@@ -16,7 +16,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="glass rounded-2xl p-4 border-l-4 border-cyan-500 hover:shadow-lg transition-all group">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 flex items-center justify-center bg-cyan-100 dark:bg-cyan-900/30 rounded-xl text-2xl group-hover:scale-110 transition-transform">📋</div>
@@ -26,12 +26,21 @@
                 </div>
             </div>
         </div>
-        <div class="glass rounded-2xl p-4 border-l-4 border-emerald-500 hover:shadow-lg transition-all group">
+        <div class="glass rounded-2xl p-4 border-l-4 border-amber-500 hover:shadow-lg transition-all group cursor-pointer" onclick="filterByStatus('pending')">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-xl text-2xl group-hover:scale-110 transition-transform">📅</div>
+                <div class="w-12 h-12 flex items-center justify-center bg-amber-100 dark:bg-amber-900/30 rounded-xl text-2xl group-hover:scale-110 transition-transform">⏳</div>
                 <div>
-                    <p class="text-2xl font-bold text-emerald-600" id="statThisMonth">0</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">เดือนนี้</p>
+                    <p class="text-2xl font-bold text-amber-600" id="statPending">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">รอดำเนินการ</p>
+                </div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-4 border-l-4 border-emerald-500 hover:shadow-lg transition-all group cursor-pointer" onclick="filterByStatus('approved')">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-xl text-2xl group-hover:scale-110 transition-transform">✅</div>
+                <div>
+                    <p class="text-2xl font-bold text-emerald-600" id="statApproved">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">อนุมัติแล้ว</p>
                 </div>
             </div>
         </div>
@@ -44,11 +53,11 @@
                 </div>
             </div>
         </div>
-        <div class="glass rounded-2xl p-4 border-l-4 border-amber-500 hover:shadow-lg transition-all group">
+        <div class="glass rounded-2xl p-4 border-l-4 border-rose-500 hover:shadow-lg transition-all group">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-amber-100 dark:bg-amber-900/30 rounded-xl text-2xl group-hover:scale-110 transition-transform">🆕</div>
+                <div class="w-12 h-12 flex items-center justify-center bg-rose-100 dark:bg-rose-900/30 rounded-xl text-2xl group-hover:scale-110 transition-transform">🆕</div>
                 <div>
-                    <p class="text-2xl font-bold text-amber-600" id="statRecent">0</p>
+                    <p class="text-2xl font-bold text-rose-600" id="statRecent">0</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">7 วันล่าสุด</p>
                 </div>
             </div>
@@ -291,6 +300,7 @@
 let allNewsletters = [];
 let filteredNewsletters = [];
 let currentTab = 'grid';
+let currentStatusFilter = 'all'; // 'all', 'pending', 'approved', 'rejected'
 
 // Helper function to parse images JSON and get first image path
 function getFirstImage(imagesData) {
@@ -419,10 +429,8 @@ function updateStats() {
     const thisYear = now.getFullYear();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     
-    const thisMonthCount = allNewsletters.filter(n => {
-        const date = new Date(n.news_date || n.created_at);
-        return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
-    }).length;
+    const pendingCount = allNewsletters.filter(n => n.status == 0 || n.status == null).length;
+    const approvedCount = allNewsletters.filter(n => n.status == 1).length;
     
     const recentCount = allNewsletters.filter(n => {
         const date = new Date(n.news_date || n.created_at);
@@ -432,9 +440,25 @@ function updateStats() {
     const authors = [...new Set(allNewsletters.map(n => n.create_by).filter(Boolean))].length;
     
     $('#statTotal').text(allNewsletters.length);
-    $('#statThisMonth').text(thisMonthCount);
+    $('#statPending').text(pendingCount);
+    $('#statApproved').text(approvedCount);
     $('#statAuthors').text(authors);
     $('#statRecent').text(recentCount);
+}
+
+function filterByStatus(status) {
+    currentStatusFilter = status;
+    filterAndRender();
+}
+
+function getStatusBadge(status) {
+    if (status == 1) {
+        return '<span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs rounded-full font-medium">✅ อนุมัติแล้ว</span>';
+    } else if (status == 2) {
+        return '<span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs rounded-full font-medium">❌ ไม่อนุมัติ</span>';
+    } else {
+        return '<span class="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs rounded-full font-medium">⏳ รอดำเนินการ</span>';
+    }
 }
 
 function filterAndRender() {
@@ -445,7 +469,19 @@ function filterAndRender() {
     filteredNewsletters = allNewsletters.filter(n => {
         const title = (n.title || '').toLowerCase();
         const author = (n.teacher_name || '').toLowerCase();
-        return title.includes(searchTerm) || author.includes(searchTerm);
+        const matchesSearch = title.includes(searchTerm) || author.includes(searchTerm);
+        
+        // Status filter
+        let matchesStatus = true;
+        if (currentStatusFilter === 'pending') {
+            matchesStatus = n.status == 0 || n.status == null;
+        } else if (currentStatusFilter === 'approved') {
+            matchesStatus = n.status == 1;
+        } else if (currentStatusFilter === 'rejected') {
+            matchesStatus = n.status == 2;
+        }
+        
+        return matchesSearch && matchesStatus;
     });
     
     // Sort
@@ -497,7 +533,13 @@ function renderGrid() {
                 `}
             </div>
             <div class="p-5">
-                <h3 class="font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 min-h-[3rem]">${escapeHtml(n.title || 'ไม่มีชื่อ')}</h3>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-gray-900 dark:text-white line-clamp-2 flex-1">${escapeHtml(n.title || 'ไม่มีชื่อ')}</h3>
+                </div>
+                <div class="mb-3">
+                    ${getStatusBadge(n.status)}
+                    ${n.issue_no ? `<span class="ml-2 px-2 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 text-xs rounded-full font-medium">ฉบับที่ ${n.issue_no}</span>` : ''}
+                </div>
                 <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
                     <span class="text-cyan-500">📅</span>
                     <span>${date}</span>
@@ -506,14 +548,22 @@ function renderGrid() {
                     <span class="text-cyan-500">👤</span>
                     <span class="truncate">${escapeHtml(n.teacher_name || 'ไม่ระบุ')}</span>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="showDetail(${n.id})" class="flex-1 px-4 py-2.5 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 rounded-xl text-sm font-medium hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors">
-                        <i class="fas fa-eye mr-1"></i> ดู
+                <div class="flex flex-wrap gap-2">
+                    ${(n.status == 0 || n.status == null) ? `
+                    <button onclick="approveNewsletter(${n.id}, 1)" class="flex-1 px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-medium transition-colors" title="อนุมัติ">
+                        <i class="fas fa-check mr-1"></i> อนุมัติ
                     </button>
-                    <button onclick="exportNewsletter(${n.id})" class="px-4 py-2.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl text-sm font-medium hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors" title="Export/พิมพ์">
+                    <button onclick="approveNewsletter(${n.id}, 2)" class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-medium transition-colors" title="ไม่อนุมัติ">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    ` : ''}
+                    <button onclick="showDetail(${n.id})" class="px-3 py-2 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 rounded-xl text-sm font-medium hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors" title="ดูรายละเอียด">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button onclick="exportNewsletter(${n.id})" class="px-3 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl text-sm font-medium hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors" title="Export/พิมพ์">
                         <i class="fas fa-print"></i>
                     </button>
-                    <button onclick="deleteNewsletter(${n.id})" class="px-4 py-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                    <button onclick="deleteNewsletter(${n.id})" class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-xl text-sm font-medium hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/50 dark:hover:text-red-400 transition-colors" title="ลบ">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -552,18 +602,27 @@ function renderList() {
             </td>
             <td class="px-6 py-4">
                 <p class="font-medium text-gray-900 dark:text-white truncate max-w-xs">${escapeHtml(n.title || 'ไม่มีชื่อ')}</p>
+                <div class="mt-1">${getStatusBadge(n.status)} ${n.issue_no ? `<span class="ml-1 text-xs text-cyan-600">ฉบับ ${n.issue_no}</span>` : ''}</div>
             </td>
             <td class="px-6 py-4 text-gray-600 dark:text-gray-400">${date}</td>
             <td class="px-6 py-4 text-gray-600 dark:text-gray-400">${escapeHtml(n.teacher_name || '-')}</td>
             <td class="px-6 py-4">
-                <div class="flex justify-center gap-2">
+                <div class="flex justify-center gap-1 flex-wrap">
+                    ${(n.status == 0 || n.status == null) ? `
+                    <button onclick="approveNewsletter(${n.id}, 1)" class="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors" title="อนุมัติ">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button onclick="approveNewsletter(${n.id}, 2)" class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" title="ไม่อนุมัติ">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    ` : ''}
                     <button onclick="showDetail(${n.id})" class="p-2 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 rounded-lg hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors" title="ดูรายละเอียด">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button onclick="exportNewsletter(${n.id})" class="p-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors" title="Export/พิมพ์">
+                    <button onclick="exportNewsletter(${n.id})" class="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors" title="Export/พิมพ์">
                         <i class="fas fa-print"></i>
                     </button>
-                    <button onclick="deleteNewsletter(${n.id})" class="p-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors" title="ลบ">
+                    <button onclick="deleteNewsletter(${n.id})" class="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors" title="ลบ">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -614,15 +673,25 @@ function renderTimeline() {
                         </div>
                         <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
                             <span><i class="fas fa-user mr-1 text-cyan-500"></i> ${escapeHtml(n.teacher_name || 'ไม่ระบุ')}</span>
+                            <span class="ml-4">${getStatusBadge(n.status)}</span>
+                            ${n.issue_no ? `<span class="ml-2 px-2 py-0.5 bg-cyan-100 text-cyan-700 text-xs rounded-full">ฉบับ ${n.issue_no}</span>` : ''}
                         </div>
                         <div class="flex gap-2 flex-wrap">
+                            ${(n.status == 0 || n.status == null) ? `
+                            <button onclick="approveNewsletter(${n.id}, 1)" class="px-4 py-2 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-600 transition-colors">
+                                <i class="fas fa-check mr-1"></i> อนุมัติ
+                            </button>
+                            <button onclick="approveNewsletter(${n.id}, 2)" class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors">
+                                <i class="fas fa-times mr-1"></i> ไม่อนุมัติ
+                            </button>
+                            ` : ''}
                             <button onclick="showDetail(${n.id})" class="px-4 py-2 bg-cyan-500 text-white rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors">
                                 <i class="fas fa-eye mr-1"></i> ดูรายละเอียด
                             </button>
-                            <button onclick="exportNewsletter(${n.id})" class="px-4 py-2 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-600 transition-colors">
+                            <button onclick="exportNewsletter(${n.id})" class="px-4 py-2 bg-purple-500 text-white rounded-xl text-sm font-medium hover:bg-purple-600 transition-colors">
                                 <i class="fas fa-print mr-1"></i> Export
                             </button>
-                            <button onclick="deleteNewsletter(${n.id})" class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors">
+                            <button onclick="deleteNewsletter(${n.id})" class="px-4 py-2 bg-gray-500 text-white rounded-xl text-sm font-medium hover:bg-red-500 transition-colors">
                                 <i class="fas fa-trash mr-1"></i> ลบ
                             </button>
                         </div>
@@ -700,6 +769,12 @@ function showDetail(id) {
         <div class="space-y-4">
             ${imagesHtml}
             
+            <!-- Status Badge -->
+            <div class="flex items-center gap-3 flex-wrap">
+                ${getStatusBadge(newsletter.status)}
+                ${newsletter.issue_no ? `<span class="px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 text-sm rounded-full font-medium">ฉบับที่ ${newsletter.issue_no}</span>` : ''}
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                     <p class="text-xs text-gray-500 mb-1">📅 วันที่</p>
@@ -720,14 +795,32 @@ function showDetail(id) {
         </div>
     `);
     
-    $('#detailActions').html(`
-        <button onclick="exportNewsletter(${newsletter.id})" class="flex-1 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+    // Generate action buttons based on status
+    let actionButtons = '';
+    
+    // Add approve/reject buttons if status is pending
+    if (newsletter.status == 0 || newsletter.status == null) {
+        actionButtons += `
+            <button onclick="approveNewsletter(${newsletter.id}, 1); closeDetailModal();" class="flex-1 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-check"></i> อนุมัติ
+            </button>
+            <button onclick="approveNewsletter(${newsletter.id}, 2); closeDetailModal();" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                <i class="fas fa-times"></i> ไม่อนุมัติ
+            </button>
+        `;
+    }
+    
+    // Always show export and delete buttons
+    actionButtons += `
+        <button onclick="exportNewsletter(${newsletter.id})" class="flex-1 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
             <i class="fas fa-print"></i> Export/พิมพ์
         </button>
-        <button onclick="deleteNewsletter(${newsletter.id}); closeDetailModal();" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
-            <i class="fas fa-trash"></i> ลบจดหมายข่าว
+        <button onclick="deleteNewsletter(${newsletter.id}); closeDetailModal();" class="px-4 py-3 bg-gray-500 hover:bg-red-500 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+            <i class="fas fa-trash"></i>
         </button>
-    `);
+    `;
+    
+    $('#detailActions').html(actionButtons);
     
     $('#detailModal').removeClass('hidden');
 }
@@ -806,6 +899,63 @@ function escapeHtml(text) {
 // Export Newsletter Function
 function exportNewsletter(id) {
     window.open(`newsletter_export.php?id=${id}`, '_blank');
+}
+
+// Approve Newsletter Function
+function approveNewsletter(id, status) {
+    const statusText = status == 1 ? 'อนุมัติ' : 'ไม่อนุมัติ';
+    const icon = status == 1 ? 'success' : 'warning';
+    const confirmColor = status == 1 ? '#10b981' : '#ef4444';
+    
+    Swal.fire({
+        title: `ยืนยันการ${statusText}?`,
+        text: `ต้องการ${statusText}จดหมายข่าวนี้หรือไม่?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: confirmColor,
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: `<i class="fas fa-${status == 1 ? 'check' : 'times'} mr-2"></i>${statusText}`,
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: 'api/newsletter_status.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, status: status }),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        let successMsg = status == 1 ? 'อนุมัติเรียบร้อยแล้ว!' : 'ปฏิเสธจดหมายข่าวแล้ว';
+                        if (response.issue_no) {
+                            successMsg += ` (ฉบับที่ ${response.issue_no})`;
+                        }
+                        Swal.fire({
+                            icon: status == 1 ? 'success' : 'info',
+                            title: 'สำเร็จ!',
+                            text: successMsg,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        fetchNewsletters();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ผิดพลาด',
+                            text: response.message || 'ไม่สามารถอัปเดตสถานะได้'
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'ผิดพลาด',
+                        text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
+                    });
+                }
+            });
+        }
+    });
 }
 
 // Close modals on outside click
