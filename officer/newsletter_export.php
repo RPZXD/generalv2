@@ -1426,15 +1426,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
 
         // ฟังก์ชันโหมดแก้ไขข้อมูล
         var isEditMode = false;
+        var newsletterId = <?php echo json_encode($id); ?>;
         
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
+        async function toggleEditMode() {
             var title = document.getElementById('editableTitle');
             var content = document.getElementById('editableContent');
             var btn = document.getElementById('editModeBtn');
             
-            if (isEditMode) {
+            if (!isEditMode) {
                 // เปิดโหมดแก้ไข
+                isEditMode = true;
                 title.contentEditable = 'true';
                 content.contentEditable = 'true';
                 
@@ -1455,36 +1456,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
                 content.style.minHeight = '100px';
                 
                 // เปลี่ยนปุ่ม
-                btn.innerHTML = '✓ บันทึกการแก้ไข';
-                btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                btn.innerHTML = '💾 บันทึกการแก้ไข';
+                btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
                 
                 // แสดงคำแนะนำ
                 showEditTip();
             } else {
-                // ปิดโหมดแก้ไข
-                title.contentEditable = 'false';
-                content.contentEditable = 'false';
+                // บันทึกการแก้ไขลงฐานข้อมูล
+                btn.disabled = true;
+                btn.innerHTML = '⏳ กำลังบันทึก...';
                 
-                // ลบ style
-                title.style.outline = 'none';
-                title.style.outlineOffset = '0';
-                title.style.backgroundColor = 'transparent';
-                title.style.padding = '0';
-                title.style.cursor = 'default';
-                
-                content.style.outline = 'none';
-                content.style.outlineOffset = '0';
-                content.style.backgroundColor = 'transparent';
-                content.style.padding = '0';
-                content.style.cursor = 'default';
-                
-                // เปลี่ยนปุ่มกลับ
-                btn.innerHTML = '✏️ เปิดโหมดแก้ไข';
-                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                
-                // ซ่อนคำแนะนำ
-                hideEditTip();
+                try {
+                    // ดึงข้อความที่แก้ไข
+                    var newTitle = title.innerText.trim();
+                    var newDetail = content.innerText.trim();
+                    
+                    // เรียก API บันทึก
+                    const response = await fetch('api/newsletter_edit.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: newsletterId,
+                            title: newTitle,
+                            detail: newDetail
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // บันทึกสำเร็จ
+                        btn.innerHTML = '✅ บันทึกสำเร็จ!';
+                        btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                        
+                        setTimeout(() => {
+                            closeEditMode(title, content, btn);
+                        }, 1500);
+                    } else {
+                        throw new Error(result.message || 'บันทึกไม่สำเร็จ');
+                    }
+                } catch (err) {
+                    console.error('Save error:', err);
+                    btn.innerHTML = '❌ ' + err.message;
+                    btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    btn.disabled = false;
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = '💾 บันทึกการแก้ไข';
+                        btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                    }, 3000);
+                    return; // ไม่ปิดโหมดแก้ไขถ้า error
+                }
             }
+        }
+        
+        function closeEditMode(title, content, btn) {
+            isEditMode = false;
+            
+            // ปิดโหมดแก้ไข
+            title.contentEditable = 'false';
+            content.contentEditable = 'false';
+            
+            // ลบ style
+            title.style.outline = 'none';
+            title.style.outlineOffset = '0';
+            title.style.backgroundColor = 'transparent';
+            title.style.padding = '0';
+            title.style.cursor = 'default';
+            
+            content.style.outline = 'none';
+            content.style.outlineOffset = '0';
+            content.style.backgroundColor = 'transparent';
+            content.style.padding = '0';
+            content.style.cursor = 'default';
+            
+            // เปลี่ยนปุ่มกลับ
+            btn.innerHTML = '✏️ เปิดโหมดแก้ไข';
+            btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            btn.disabled = false;
+            
+            // ซ่อนคำแนะนำ
+            hideEditTip();
         }
         
         function showEditTip() {

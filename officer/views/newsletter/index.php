@@ -184,6 +184,64 @@
     </div>
 </div>
 
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="glass rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative mx-4 animate-scale-in">
+        <div class="sticky top-0 bg-gradient-to-r from-amber-500 to-orange-500 p-6 rounded-t-2xl">
+            <button onclick="closeEditModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="text-2xl">✏️</span> แก้ไขจดหมายข่าว
+            </h3>
+        </div>
+        <form id="editForm" class="p-6">
+            <input type="hidden" id="editId" value="">
+            
+            <!-- หัวข้อ -->
+            <div class="mb-4">
+                <label for="editTitle" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <i class="fas fa-heading mr-1 text-amber-500"></i> หัวข้อข่าว
+                </label>
+                <input type="text" id="editTitle" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                    placeholder="กรอกหัวข้อข่าว">
+            </div>
+            
+            <!-- วันที่ -->
+            <div class="mb-4">
+                <label for="editDate" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <i class="fas fa-calendar mr-1 text-amber-500"></i> วันที่
+                </label>
+                <input type="date" id="editDate" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all">
+            </div>
+            
+            <!-- รายละเอียด -->
+            <div class="mb-6">
+                <label for="editDetail" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <i class="fas fa-align-left mr-1 text-amber-500"></i> รายละเอียด
+                </label>
+                <textarea id="editDetail" rows="8" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all resize-none"
+                    placeholder="กรอกรายละเอียด"></textarea>
+            </div>
+            
+            <!-- ปุ่ม -->
+            <div class="flex gap-3">
+                <button type="button" onclick="closeEditModal()" 
+                    class="flex-1 px-6 py-3 rounded-xl bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors">
+                    <i class="fas fa-times mr-2"></i>ยกเลิก
+                </button>
+                <button type="submit" id="editSubmitBtn"
+                    class="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold hover:from-amber-600 hover:to-orange-600 transition-colors shadow-lg">
+                    <i class="fas fa-save mr-2"></i>บันทึก
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
 /* Loader */
 .loader {
@@ -560,6 +618,9 @@ function renderGrid() {
                     <button onclick="showDetail(${n.id})" class="px-3 py-2 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 rounded-xl text-sm font-medium hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors" title="ดูรายละเอียด">
                         <i class="fas fa-eye"></i>
                     </button>
+                    <button onclick="openEditModal(${n.id})" class="px-3 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl text-sm font-medium hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors" title="แก้ไข">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <button onclick="exportNewsletter(${n.id})" class="px-3 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl text-sm font-medium hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors" title="Export/พิมพ์">
                         <i class="fas fa-print"></i>
                     </button>
@@ -618,6 +679,9 @@ function renderList() {
                     ` : ''}
                     <button onclick="showDetail(${n.id})" class="p-2 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 rounded-lg hover:bg-cyan-200 dark:hover:bg-cyan-900/50 transition-colors" title="ดูรายละเอียด">
                         <i class="fas fa-eye"></i>
+                    </button>
+                    <button onclick="openEditModal(${n.id})" class="p-2 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors" title="แก้ไข">
+                        <i class="fas fa-edit"></i>
                     </button>
                     <button onclick="exportNewsletter(${n.id})" class="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors" title="Export/พิมพ์">
                         <i class="fas fa-print"></i>
@@ -687,6 +751,9 @@ function renderTimeline() {
                             ` : ''}
                             <button onclick="showDetail(${n.id})" class="px-4 py-2 bg-cyan-500 text-white rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors">
                                 <i class="fas fa-eye mr-1"></i> ดูรายละเอียด
+                            </button>
+                            <button onclick="openEditModal(${n.id})" class="px-4 py-2 bg-amber-500 text-white rounded-xl text-sm font-medium hover:bg-amber-600 transition-colors">
+                                <i class="fas fa-edit mr-1"></i> แก้ไข
                             </button>
                             <button onclick="exportNewsletter(${n.id})" class="px-4 py-2 bg-purple-500 text-white rounded-xl text-sm font-medium hover:bg-purple-600 transition-colors">
                                 <i class="fas fa-print mr-1"></i> Export
@@ -979,11 +1046,99 @@ $('#detailModal').on('click', function(e) {
     if (e.target === this) closeDetailModal();
 });
 
+$('#editModal').on('click', function(e) {
+    if (e.target === this) closeEditModal();
+});
+
 // Keyboard shortcuts
 $(document).on('keydown', function(e) {
     if (e.key === 'Escape') {
         closePreviewModal();
         closeDetailModal();
+        closeEditModal();
+    }
+});
+
+// ====== Edit Modal Functions ======
+function openEditModal(id) {
+    const newsletter = allNewsletters.find(n => n.id === id);
+    if (!newsletter) {
+        Swal.fire({
+            icon: 'error',
+            title: 'ผิดพลาด',
+            text: 'ไม่พบข้อมูลจดหมายข่าว'
+        });
+        return;
+    }
+    
+    // เติมข้อมูลในฟอร์ม
+    $('#editId').val(newsletter.id);
+    $('#editTitle').val(newsletter.title || '');
+    $('#editDate').val(newsletter.news_date || '');
+    $('#editDetail').val(newsletter.detail || '');
+    
+    // แสดง Modal
+    $('#editModal').removeClass('hidden');
+    $('body').css('overflow', 'hidden');
+}
+
+function closeEditModal() {
+    $('#editModal').addClass('hidden');
+    $('body').css('overflow', '');
+    $('#editForm')[0].reset();
+}
+
+// Handle Edit Form Submit
+$('#editForm').on('submit', async function(e) {
+    e.preventDefault();
+    
+    const btn = $('#editSubmitBtn');
+    const originalHtml = btn.html();
+    
+    try {
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>กำลังบันทึก...');
+        
+        const data = {
+            id: parseInt($('#editId').val()),
+            title: $('#editTitle').val().trim(),
+            news_date: $('#editDate').val(),
+            detail: $('#editDetail').val().trim()
+        };
+        
+        if (!data.id || data.id <= 0) {
+            throw new Error('ไม่พบ ID');
+        }
+        
+        const response = await fetch('api/newsletter_edit.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกสำเร็จ!',
+                text: 'แก้ไขจดหมายข่าวเรียบร้อยแล้ว',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            
+            closeEditModal();
+            fetchNewsletters(); // รีโหลดข้อมูล
+        } else {
+            throw new Error(result.message || 'บันทึกไม่สำเร็จ');
+        }
+    } catch (err) {
+        console.error('Edit error:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'ผิดพลาด',
+            text: err.message || 'เกิดข้อผิดพลาดในการบันทึก'
+        });
+        btn.prop('disabled', false).html(originalHtml);
     }
 });
 </script>
