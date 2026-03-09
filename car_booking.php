@@ -1,10 +1,14 @@
-<?php 
+<?php
 /**
  * Car Booking Public View Page
  * Uses the new MVC layout with modern UI
  */
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+
+// Disable access to this page
+header('Location: index.php');
+exit;
 
 // Read configuration from JSON file
 $config = json_decode(file_get_contents('config.json'), true);
