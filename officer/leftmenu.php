@@ -12,6 +12,7 @@ function createNavItem($href, $iconClass, $text)
 echo createNavItem('index.php', 'bi-house', 'หน้าหลัก 🏠');
 echo createNavItem('repair.php', 'bi-tools', 'แจ้งซ่อม 🛠️');
 echo createNavItem('meetingroom.php', 'bi-building', 'จองห้องประชุม 🏢');
+echo createNavItem('car_booking.php', 'bi-truck', 'จองรถ 🚗');
 echo createNavItem('newsletter.php', 'bi-envelope-paper', 'จดหมายข่าว 📰');
 echo createNavItem('report.php', 'bi-bar-chart', 'รายงานและสถิติ 📊');
 echo createNavItem('settings.php', 'bi-gear', 'ตั้งค่า ⚙️');
