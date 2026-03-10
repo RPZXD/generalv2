@@ -31,6 +31,14 @@ $menuItems = [
         'gradient' => ['from' => 'indigo-500', 'to' => 'purple-500'],
     ],
     [
+        'key' => 'car_booking',
+        'name' => 'จองรถ',
+        'url' => 'car_booking.php',
+        'icon' => 'fa-truck',
+        'emoji' => '🚗',
+        'gradient' => ['from' => 'red-500', 'to' => 'rose-600'],
+    ],
+    [
         'key' => 'newsletter',
         'name' => 'จดหมายข่าว',
         'url' => 'newsletter.php',
