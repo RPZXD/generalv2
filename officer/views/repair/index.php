@@ -1,531 +1,384 @@
-<!-- Repair Management Content -->
-<div class="space-y-6">
-    <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-bold gradient-text flex items-center gap-3">
-                <span class="text-4xl">🔧</span> จัดการแจ้งซ่อม
-            </h1>
-            <p class="mt-1 text-gray-600 dark:text-gray-400">ตรวจสอบและอัปเดตสถานะงานซ่อม</p>
+<!-- Repair Kanban Board - Ultra Premium UI -->
+<div class="space-y-6 animate-fade-in px-2">
+    <!-- Compact Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md p-4 rounded-[2rem] border border-white/20 shadow-xl shadow-slate-200/20 dark:shadow-black/20">
+        <div class="flex items-center gap-4">
+            <div class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-indigo-500 to-fuchsia-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20">
+                <i class="fas fa-tasks text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black tracking-tight text-slate-800 dark:text-white">Management Board</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Live Repair Tracking
+                </p>
+            </div>
         </div>
-        <div class="flex gap-3">
-            <div class="glass px-4 py-2 rounded-xl flex items-center gap-2">
-                <span class="text-2xl">📊</span>
-                <div>
-                    <p class="text-xs text-gray-500">รายการทั้งหมด</p>
-                    <p id="totalCount" class="text-lg font-bold text-gray-800 dark:text-white">0</p>
+        <div class="flex items-center gap-3">
+            <div class="hidden lg:flex items-center gap-6 px-6 border-r border-slate-200 dark:border-slate-700 mr-2">
+                <div class="text-center">
+                    <p class="text-[10px] font-black text-slate-400 uppercase">Total Tasks</p>
+                    <p class="text-lg font-black text-slate-800 dark:text-white" id="total-tasks">0</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] font-black text-slate-400 uppercase">In Progress</p>
+                    <p class="text-lg font-black text-emerald-500" id="total-progress">0</p>
                 </div>
             </div>
-            <button id="refreshList" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all flex items-center gap-2">
-                <i class="fas fa-sync-alt"></i> รีเฟรช
+            <button onclick="window.location.href='repair_report.php'" class="px-5 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2 font-bold text-sm">
+                <i class="fas fa-file-invoice"></i>
+                <span class="hidden sm:inline">สรุปรายงาน</span>
+            </button>
+            <button id="refreshList" class="p-3 bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all border border-slate-100 dark:border-slate-600">
+                <i class="fas fa-sync-alt"></i>
             </button>
         </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="glass rounded-2xl p-4 border-l-4 border-yellow-400">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">รอดำเนินการ</p>
-                    <p id="pendingCount" class="text-2xl font-bold text-yellow-600">0</p>
-                </div>
-                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
-                    <span class="text-2xl">⏳</span>
-                </div>
-            </div>
-        </div>
-        <div class="glass rounded-2xl p-4 border-l-4 border-orange-400">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">กำลังดำเนินการ</p>
-                    <p id="progressCount" class="text-2xl font-bold text-orange-600">0</p>
-                </div>
-                <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
-                    <span class="text-2xl">🔄</span>
-                </div>
-            </div>
-        </div>
-        <div class="glass rounded-2xl p-4 border-l-4 border-green-400">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">เสร็จสิ้น</p>
-                    <p id="doneCount" class="text-2xl font-bold text-green-600">0</p>
-                </div>
-                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-                    <span class="text-2xl">✅</span>
-                </div>
-            </div>
-        </div>
-        <div class="glass rounded-2xl p-4 border-l-4 border-fuchsia-400">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">อัตราสำเร็จ</p>
-                    <p id="successRate" class="text-2xl font-bold text-fuchsia-600">0%</p>
-                </div>
-                <div class="w-12 h-12 bg-fuchsia-100 dark:bg-fuchsia-900/30 rounded-xl flex items-center justify-center">
-                    <span class="text-2xl">📈</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Kanban Board Grid -->
+    <div class="flex overflow-x-auto pb-8 custom-scrollbar-ultra min-h-[75vh]" style="gap: var(--column-gap, 1rem)">
+        
+        <?php
+        $columns = [
+            ['id' => 0, 'name' => 'รายการแจ้งใหม่', 'icon' => 'fa-inbox', 'color' => '#38bdf8', 'bg' => 'sky'],
+            ['id' => 1, 'name' => 'รอพิจารณา/งบ', 'icon' => 'fa-clock', 'color' => '#f43f5e', 'bg' => 'rose'],
+            ['id' => 2, 'name' => 'กำลังดำเนินการ', 'icon' => 'fa-wrench', 'color' => '#10b981', 'bg' => 'emerald'],
+            ['id' => 3, 'name' => 'ตรวจสอบ/ทดสอบ', 'icon' => 'fa-microscope', 'color' => '#6366f1', 'bg' => 'indigo'],
+            ['id' => 4, 'name' => 'ดำเนินการเสร็จสิ้น', 'icon' => 'fa-check-circle', 'color' => '#f59e0b', 'bg' => 'amber'],
+        ];
 
-    <!-- Filter Section -->
-    <div class="glass rounded-2xl p-4">
-        <div class="flex flex-wrap items-center gap-3">
-            <span class="text-sm font-medium text-gray-600 dark:text-gray-400"><i class="fas fa-filter mr-2"></i>กรองตามสถานะ:</span>
-            <div class="flex flex-wrap gap-2">
-                <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm bg-gradient-to-r from-slate-100 to-gray-100 dark:from-slate-700 dark:to-gray-700 text-gray-800 dark:text-white hover:shadow-md transition-all ring-2 ring-fuchsia-500" data-status="">
-                    📋 ทั้งหมด
-                </button>
-                <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 text-yellow-800 dark:text-yellow-300 hover:shadow-md transition-all" data-status="0">
-                    ⏳ รอดำเนินการ
-                </button>
-                <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 text-orange-800 dark:text-orange-300 hover:shadow-md transition-all" data-status="1">
-                    🔄 กำลังดำเนินการ
-                </button>
-                <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 text-green-800 dark:text-green-300 hover:shadow-md transition-all" data-status="2">
-                    ✅ เสร็จสิ้น
-                </button>
+        foreach ($columns as $col):
+            $bg = $col['bg'];
+        ?>
+        <div class="kanban-col-ultra group/col" data-status="<?php echo $col['id']; ?>">
+            <div class="p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-<?php echo $bg; ?>-500/20 bg-gradient-to-br from-<?php echo $bg; ?>-400 to-<?php echo $bg; ?>-600">
+                        <i class="fas <?php echo $col['icon']; ?>"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-slate-800 dark:text-white leading-tight"><?php echo $col['name']; ?></h3>
+                        <p class="text-[9px] font-black uppercase text-slate-400 tracking-tighter">Phase <?php echo $col['id'] + 1; ?></p>
+                    </div>
+                </div>
+                <span class="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500" id="count-<?php echo $col['id']; ?>">0</span>
+            </div>
+            
+            <div id="column-<?php echo $col['id']; ?>" class="kanban-list-ultra custom-scrollbar-thin" data-status="<?php echo $col['id']; ?>">
+                <!-- Cards -->
             </div>
         </div>
-    </div>
+        <?php endforeach; ?>
 
-    <!-- Repair List -->
-    <div class="glass rounded-2xl p-6">
-        <div id="repairList" class="space-y-4 max-h-[650px] overflow-y-auto pr-2 custom-scrollbar">
-            <div class="text-center py-12">
-                <div class="loader mx-auto mb-4"></div>
-                <p class="text-gray-400">กำลังโหลดข้อมูล...</p>
-            </div>
-        </div>
     </div>
 </div>
 
-<!-- Detail Modal -->
-<div id="detailModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDetailModal()"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div class="glass rounded-3xl p-6 m-4 shadow-2xl">
-            <div class="flex justify-between items-start mb-6">
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <span class="text-2xl">🔍</span> รายละเอียดการแจ้งซ่อม
-                </h3>
-                <button onclick="closeDetailModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors">
-                    <i class="fas fa-times text-gray-500"></i>
-                </button>
-            </div>
-            <div id="detailContent"></div>
-        </div>
+<!-- Modal stays same but styled -->
+<div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeDetailModal()"></div>
+    <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl relative z-10 border border-white/20">
+        <div class="p-8 overflow-y-auto max-h-[90vh] custom-scrollbar-thin" id="detailContent"></div>
     </div>
 </div>
 
 <style>
-.loader { 
-    width: 50px; 
-    height: 50px; 
-    border: 4px solid #e5e7eb; 
-    border-top-color: #d946ef; 
-    border-radius: 50%; 
-    animation: spin 1s linear infinite; 
+    /* Ultra Modern Styles */
+    :root {
+        --column-width: 280px;
+        --column-gap: 1.25rem;
+    }
+
+    .kanban-col-ultra {
+        flex: 0 0 var(--column-width);
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 2rem;
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 180px);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+    }
+    .dark .kanban-col-ultra {
+        background: rgba(30, 41, 59, 0.4);
+        border-color: rgba(51, 65, 85, 0.5);
+    }
+
+    .kanban-list-ultra {
+        flex: 1;
+        padding: 1rem;
+        overflow-y: auto;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+.card-ultra {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    cursor: grab;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+.dark .card-ultra {
+    background: #1e293b;
+    border-color: #334155;
+}
+.card-ultra:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: #e2e8f0;
+}
+.card-ultra:active { cursor: grabbing; }
+
+.card-accent-bar {
+    position: absolute;
+    left: 0; top: 1.5rem; bottom: 1.5rem;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+}
+
+.custom-scrollbar-ultra::-webkit-scrollbar { height: 10px; }
+.custom-scrollbar-ultra::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar-ultra::-webkit-scrollbar-thumb { 
+    background: #e2e8f0; 
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    border-radius: 10px; 
+}
+.dark .custom-scrollbar-ultra::-webkit-scrollbar-thumb { background: #334155; }
+
+.loader-modern {
+    width: 32px; height: 32px;
+    border: 3px solid #f3f4f6;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.05);
-    border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #d946ef, #f97316);
-    border-radius: 10px;
-}
-
-.repair-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.repair-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
-}
-
-.damage-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-}
+.sortable-ghost { opacity: 0.2; transform: scale(0.95); }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <script>
 let allRepairs = [];
-let currentFilter = '';
+const damageTypes = [
+    { key: 'doorDamage', label: 'ประตู', icon: '🚪' },
+    { key: 'windowDamage', label: 'หน้าต่าง', icon: '🪟' },
+    { key: 'tablestDamage', label: 'โต๊ะเรียน', icon: '🪑' },
+    { key: 'chairstDamage', label: 'เก้าอี้เรียน', icon: '💺' },
+    { key: 'tabletaDamage', label: 'โต๊ะครู', icon: '🖥️' },
+    { key: 'chairtaDamage', label: 'เก้าอี้ครู', icon: '🪑' },
+    { key: 'fanDamage', label: 'พัดลม', icon: '🌀' },
+    { key: 'lightDamage', label: 'หลอดไฟ', icon: '💡' },
+    { key: 'airDamage', label: 'แอร์', icon: '❄️' },
+    { key: 'tvDamage', label: 'ทีวี', icon: '📺' },
+    { key: 'audioDamage', label: 'ลำโพง', icon: '🔊' },
+    { key: 'hdmiDamage', label: 'สาย HDMI', icon: '🔌' },
+    { key: 'projectorDamage', label: 'โปรเจคเตอร์', icon: '📽️' },
+    { key: 'swDamage', label: 'สวิตช์ไฟ', icon: '🔘' },
+    { key: 'swfanDamage', label: 'สวิตช์พัดลม', icon: '🎚️' },
+    { key: 'plugDamage', label: 'ปลั๊กไฟ', icon: '🔌' }
+];
+
+const statusConfig = {
+    0: { color: '#38bdf8', label: 'แจ้งใหม่' },
+    1: { color: '#f43f5e', label: 'รอพิจารณา' },
+    2: { color: '#10b981', label: 'ดำเนินการ' },
+    3: { color: '#6366f1', label: 'ตรวจสอบ' },
+    4: { color: '#f59e0b', label: 'เสร็จสิ้น' }
+};
 
 $(document).ready(function() {
     fetchRepairs();
-    
-    $('.status-filter-btn').on('click', function() {
-        $('.status-filter-btn').removeClass('ring-2 ring-fuchsia-500 shadow-lg');
-        $(this).addClass('ring-2 ring-fuchsia-500 shadow-lg');
-        currentFilter = $(this).data('status');
-        renderRepairs();
-    });
-    
-    $('#refreshList').on('click', function() {
-        $(this).find('i').addClass('animate-spin');
-        fetchRepairs();
-        setTimeout(() => $(this).find('i').removeClass('animate-spin'), 1000);
-    });
+    initSortable();
+    $('#refreshList').on('click', fetchRepairs);
 });
 
-function fetchRepairs() {
-    $('#repairList').html('<div class="text-center py-12"><div class="loader mx-auto mb-4"></div><p class="text-gray-400">กำลังโหลดข้อมูล...</p></div>');
-    
-    $.get('api/repair_list.php', function(response) {
-        allRepairs = response.list || [];
-        updateStats();
-        renderRepairs();
-    }).fail(function() {
-        $('#repairList').html('<div class="text-center py-12"><div class="text-6xl mb-4">❌</div><p class="text-red-500">ไม่สามารถโหลดข้อมูลได้</p></div>');
+function initSortable() {
+    [0, 1, 2, 3, 4].forEach(status => {
+        new Sortable(document.getElementById(`column-${status}`), {
+            group: 'repairs',
+            animation: 400,
+            ghostClass: 'sortable-ghost',
+            onEnd: function(evt) {
+                const repairId = evt.item.getAttribute('data-id');
+                const newStatus = evt.to.getAttribute('data-status');
+                if (newStatus !== evt.from.getAttribute('data-status')) {
+                    updateRepairStatus(repairId, newStatus, evt);
+                }
+            }
+        });
     });
 }
 
-function updateStats() {
-    const pending = allRepairs.filter(r => r.status == 0).length;
-    const progress = allRepairs.filter(r => r.status == 1).length;
-    const done = allRepairs.filter(r => r.status == 2).length;
-    const total = allRepairs.length;
-    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
-    
-    $('#totalCount').text(total);
-    $('#pendingCount').text(pending);
-    $('#progressCount').text(progress);
-    $('#doneCount').text(done);
-    $('#successRate').text(rate + '%');
+function fetchRepairs() {
+    $('.kanban-list-ultra').html('<div class="flex justify-center py-12"><div class="loader-modern"></div></div>');
+    $.get('api/repair_list.php', function(response) {
+        allRepairs = response.list || [];
+        renderRepairs();
+    });
 }
 
 function renderRepairs() {
-    let repairs = currentFilter === '' ? allRepairs : allRepairs.filter(r => r.status == currentFilter);
+    [0, 1, 2, 3, 4].forEach(s => { $(`#column-${s}`).empty(); $(`#count-${s}`).text('0'); });
     
-    if (repairs.length === 0) {
-        $('#repairList').html(`
-            <div class="text-center py-16">
-                <div class="text-7xl mb-4 animate-bounce">📭</div>
-                <p class="text-xl text-gray-500 dark:text-gray-400 font-medium">ไม่พบรายการแจ้งซ่อม</p>
-                <p class="text-sm text-gray-400 mt-2">ลองเปลี่ยนตัวกรองหรือรีเฟรชข้อมูล</p>
-            </div>
-        `);
-        return;
-    }
-    
-    let html = '';
-    repairs.forEach((r, index) => {
-        // Status config
-        let statusConfig = {
-            0: { badge: 'bg-gradient-to-r from-yellow-400 to-amber-500', text: 'รอดำเนินการ', icon: '⏳', border: 'border-yellow-400', bg: 'from-yellow-50 to-amber-50 dark:from-yellow-900/10 dark:to-amber-900/10' },
-            1: { badge: 'bg-gradient-to-r from-orange-400 to-red-500', text: 'กำลังดำเนินการ', icon: '🔄', border: 'border-orange-400', bg: 'from-orange-50 to-red-50 dark:from-orange-900/10 dark:to-red-900/10' },
-            2: { badge: 'bg-gradient-to-r from-green-400 to-emerald-500', text: 'เสร็จสิ้น', icon: '✅', border: 'border-green-400', bg: 'from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10' }
-        };
-        let status = statusConfig[r.status] || statusConfig[0];
+    let stats = { total: allRepairs.length, inProgress: 0 };
+    let columnCounts = { 0:0, 1:0, 2:0, 3:0, 4:0 };
+
+    allRepairs.forEach(repair => {
+        const status = parseInt(repair.status);
+        columnCounts[status]++;
+        if (status === 2) stats.inProgress++;
+
+        const dateObj = new Date(repair.AddDate);
+        const dateStr = dateObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
         
-        // สร้างรายการอุปกรณ์ที่ชำรุด
-        let damageItems = [];
-        const damageTypes = [
-            { key: 'doorDamage', label: 'ประตู', icon: '🚪', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' },
-            { key: 'windowDamage', label: 'หน้าต่าง', icon: '🪟', color: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300' },
-            { key: 'tablestDamage', label: 'โต๊ะเรียน', icon: '🪑', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' },
-            { key: 'chairstDamage', label: 'เก้าอี้เรียน', icon: '💺', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' },
-            { key: 'tabletaDamage', label: 'โต๊ะครู', icon: '🖥️', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' },
-            { key: 'chairtaDamage', label: 'เก้าอี้ครู', icon: '🪑', color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' },
-            { key: 'fanDamage', label: 'พัดลม', icon: '🌀', color: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300' },
-            { key: 'lightDamage', label: 'หลอดไฟ', icon: '💡', color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' },
-            { key: 'airDamage', label: 'แอร์', icon: '❄️', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300' },
-            { key: 'tvDamage', label: 'ทีวี', icon: '📺', color: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300' },
-            { key: 'audioDamage', label: 'ลำโพง', icon: '🔊', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300' },
-            { key: 'hdmiDamage', label: 'สาย HDMI', icon: '🔌', color: 'bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-300' },
-            { key: 'projectorDamage', label: 'โปรเจคเตอร์', icon: '📽️', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300' },
-            { key: 'swDamage', label: 'สวิตช์ไฟ', icon: '🔘', color: 'bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-300' },
-            { key: 'swfanDamage', label: 'สวิตช์พัดลม', icon: '🎚️', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' },
-            { key: 'plugDamage', label: 'ปลั๊กไฟ', icon: '🔌', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' }
-        ];
-        
-        damageTypes.forEach(type => {
-            if (r[type.key] > 0) {
-                damageItems.push({ ...type, count: r[type.key] });
+        // Priority check (older than 3 days)
+        const isPriority = (new Date() - dateObj) > (3 * 24 * 60 * 60 * 1000) && status < 4;
+
+        let damageTags = '';
+        let count = 0;
+        damageTypes.forEach(t => {
+            if (repair[t.key] > 0 && count < 2) {
+                damageTags += `<span class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-[9px] font-black text-slate-500">${t.icon} ${t.label}</span>`;
+                count++;
             }
         });
-        
-        // เพิ่มรายการอื่นๆ
-        if (r.other1Details && r.other1Damage > 0) damageItems.push({ label: r.other1Details, count: r.other1Damage, icon: '🔧', color: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300' });
-        if (r.other2Details && r.other2Damage > 0) damageItems.push({ label: r.other2Details, count: r.other2Damage, icon: '🔧', color: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300' });
-        if (r.other3Details && r.other3Damage > 0) damageItems.push({ label: r.other3Details, count: r.other3Damage, icon: '🔧', color: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300' });
-        
-        let damageHtml = damageItems.length > 0 
-            ? damageItems.slice(0, 4).map(d => `<span class="damage-tag ${d.color}">${d.icon} ${d.label} <span class="font-bold">${d.count}</span></span>`).join('') 
-            + (damageItems.length > 4 ? `<span class="damage-tag bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">+${damageItems.length - 4} รายการ</span>` : '')
-            : '<span class="text-gray-400 text-sm">ไม่มีรายการ</span>';
-        
-        // Format date
-        let dateDisplay = r.AddDate ? new Date(r.AddDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
-        
-        html += `
-        <div class="repair-card bg-gradient-to-r ${status.bg} rounded-2xl border-l-4 ${status.border} shadow-sm overflow-hidden" style="animation: slideUp 0.3s ease-out ${index * 0.05}s both;">
-            <div class="p-5">
-                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                    <!-- Main Info -->
-                    <div class="flex-1 space-y-3">
-                        <!-- Header -->
-                        <div class="flex flex-wrap items-center gap-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-2xl">🏫</span>
-                                <h3 class="text-lg font-bold text-gray-800 dark:text-white">${r.AddLocation || 'ไม่ระบุสถานที่'}</h3>
-                            </div>
-                            <span class="px-3 py-1 ${status.badge} text-white text-xs font-medium rounded-full shadow-sm">
-                                ${status.icon} ${status.text}
-                            </span>
-                        </div>
-                        
-                        <!-- Reporter Info -->
-                        <div class="flex flex-wrap items-center gap-4 text-sm">
-                            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/60 dark:bg-slate-800/60 rounded-lg">
-                                <span class="text-lg">👤</span>
-                                <div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">ผู้แจ้ง</p>
-                                    <p class="font-semibold text-gray-800 dark:text-white">${r.teacher_name || 'ไม่ทราบชื่อ'}</p>
-                                </div>
-                            </div>
-                            ${r.teacher_phone ? `
-                            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/60 dark:bg-slate-800/60 rounded-lg">
-                                <span class="text-lg">📞</span>
-                                <div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">เบอร์โทร</p>
-                                    <p class="font-semibold text-gray-800 dark:text-white">${r.teacher_phone}</p>
-                                </div>
-                            </div>
-                            ` : ''}
-                            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/60 dark:bg-slate-800/60 rounded-lg">
-                                <span class="text-lg">📅</span>
-                                <div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">วันที่แจ้ง</p>
-                                    <p class="font-semibold text-gray-800 dark:text-white">${dateDisplay}</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Damage Items -->
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
-                                <i class="fas fa-wrench"></i> รายการชำรุด:
-                            </p>
-                            <div class="flex flex-wrap gap-2">
-                                ${damageHtml}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Actions -->
-                    <div class="flex flex-row lg:flex-col items-center gap-2">
-                        <button onclick="showDetail(${r.id})" class="p-2.5 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 rounded-xl shadow-sm transition-all hover:shadow-md" title="ดูรายละเอียด">
-                            <i class="fas fa-eye text-fuchsia-500"></i> ดูรายละเอียด
-                        </button>
-                        ${r.status != 2 ? `
-                        <select onchange="updateRepairStatus(${r.id}, this.value)" class="px-3 py-2 bg-white dark:bg-slate-700 border-0 rounded-xl shadow-sm text-sm font-medium focus:ring-2 focus:ring-fuchsia-500 cursor-pointer">
-                            <option value="0" ${r.status == 0 ? 'selected' : ''}>⏳ รอดำเนินการ</option>
-                            <option value="1" ${r.status == 1 ? 'selected' : ''}>🔄 กำลังดำเนินการ</option>
-                            <option value="2" ${r.status == 2 ? 'selected' : ''}>✅ เสร็จสิ้น</option>
-                        </select>
-                        ` : `
-                        <span class="px-3 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-xl text-sm font-medium">
-                            ✅ ซ่อมเสร็จแล้ว
-                        </span>
-                        `}
-                    </div>
+
+        const card = `
+        <div class="card-ultra group" data-id="${repair.id}">
+            <div class="card-accent-bar" style="background: ${statusConfig[status].color}"></div>
+            <div class="flex justify-between items-start mb-3 pl-2">
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Ticket ID</span>
+                    <span class="text-xs font-black text-slate-800 dark:text-white">#${repair.id}</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Received</span>
+                    <span class="text-xs font-black text-slate-800 dark:text-white">${dateStr}</span>
                 </div>
             </div>
-        </div>`;
+            
+            <h4 class="font-black text-slate-800 dark:text-white text-sm mb-1 pl-2 line-clamp-1">${repair.AddLocation || 'Unnamed Area'}</h4>
+            <div class="flex items-center gap-2 mb-4 pl-2">
+                <div class="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-[8px] text-indigo-600">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 truncate">${repair.teacher_name || 'Guest'}</span>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 mb-4 pl-2">
+                ${damageTags}
+                ${isPriority ? '<span class="px-2 py-1 bg-rose-100 text-rose-600 rounded-lg text-[9px] font-black animate-pulse">URGENT</span>' : ''}
+            </div>
+
+            <div class="pt-3 border-t border-slate-50 dark:border-slate-800/50 flex justify-between items-center pl-2">
+                <button onclick="showDetail(${repair.id})" class="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
+                    Open Details
+                </button>
+                <i class="fas fa-ellipsis-v text-slate-300 text-[10px]"></i>
+            </div>
+        </div>
+        `;
+        $(`#column-${status}`).append(card);
     });
-    
-    $('#repairList').html(html);
+
+    // Update Headers
+    $('#total-tasks').text(stats.total);
+    $('#total-progress').text(stats.inProgress);
+    [0, 1, 2, 3, 4].forEach(s => {
+        $(`#count-${s}`).text(columnCounts[s]);
+        if (columnCounts[s] === 0) {
+            $(`#column-${s}`).html('<div class="flex flex-col items-center justify-center py-12 opacity-20"><i class="fas fa-layer-group text-3xl mb-2"></i><p class="text-[10px] font-black uppercase">No Tasks</p></div>');
+        }
+    });
+}
+
+function updateRepairStatus(id, status, evt) {
+    $.ajax({
+        url: 'api/repair_update.php', type: 'POST', contentType: 'application/json',
+        data: JSON.stringify({ id, status }),
+        success: function(res) {
+            if (res.success) {
+                // Update local data
+                const repairIndex = allRepairs.findIndex(r => r.id == id);
+                if (repairIndex !== -1) {
+                    allRepairs[repairIndex].status = status;
+                }
+                
+                renderRepairs();
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Status Synchronized', showConfirmButton: false, timer: 1500 });
+            } else { fetchRepairs(); }
+        }
+    });
 }
 
 function showDetail(id) {
-    const repair = allRepairs.find(r => r.id == id);
-    if (!repair) return;
+    const r = allRepairs.find(x => x.id == id);
+    if (!r) return;
     
-    // สร้างรายการอุปกรณ์ทั้งหมด
-    const allDamageTypes = [
-        { key: 'doorCount', damageKey: 'doorDamage', label: 'ประตู', icon: '🚪' },
-        { key: 'windowCount', damageKey: 'windowDamage', label: 'หน้าต่าง', icon: '🪟' },
-        { key: 'tablestCount', damageKey: 'tablestDamage', label: 'โต๊ะนักเรียน', icon: '🪑' },
-        { key: 'chairstCount', damageKey: 'chairstDamage', label: 'เก้าอี้นักเรียน', icon: '💺' },
-        { key: 'tabletaCount', damageKey: 'tabletaDamage', label: 'โต๊ะครู', icon: '🖥️' },
-        { key: 'chairtaCount', damageKey: 'chairtaDamage', label: 'เก้าอี้ครู', icon: '🪑' },
-        { key: 'tvCount', damageKey: 'tvDamage', label: 'ทีวี', icon: '📺' },
-        { key: 'audioCount', damageKey: 'audioDamage', label: 'ลำโพง', icon: '🔊' },
-        { key: 'hdmiCount', damageKey: 'hdmiDamage', label: 'สาย HDMI', icon: '🔌' },
-        { key: 'projectorCount', damageKey: 'projectorDamage', label: 'โปรเจคเตอร์', icon: '📽️' },
-        { key: 'fanCount', damageKey: 'fanDamage', label: 'พัดลม', icon: '🌀' },
-        { key: 'lightCount', damageKey: 'lightDamage', label: 'หลอดไฟ', icon: '💡' },
-        { key: 'airCount', damageKey: 'airDamage', label: 'แอร์', icon: '❄️' },
-        { key: 'swCount', damageKey: 'swDamage', label: 'สวิตช์ไฟ', icon: '🔘' },
-        { key: 'swfanCount', damageKey: 'swfanDamage', label: 'สวิตช์พัดลม', icon: '🎚️' },
-        { key: 'plugCount', damageKey: 'plugDamage', label: 'ปลั๊กไฟ', icon: '🔌' }
-    ];
-    
-    let detailRows = allDamageTypes.map(type => {
-        const total = repair[type.key] || 0;
-        const damaged = repair[type.damageKey] || 0;
+    let tableRows = damageTypes.map(t => {
+        const total = r[t.key.replace('Damage', 'Count')] || 0;
+        const damaged = r[t.key] || 0;
         if (total > 0 || damaged > 0) {
-            return `
-                <tr class="border-b border-gray-100 dark:border-gray-700">
-                    <td class="py-3 px-4">
-                        <span class="text-lg mr-2">${type.icon}</span>
-                        ${type.label}
-                    </td>
-                    <td class="py-3 px-4 text-center font-medium">${total}</td>
-                    <td class="py-3 px-4 text-center">
-                        ${damaged > 0 ? `<span class="px-2 py-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 rounded-full font-bold">${damaged}</span>` : '<span class="text-gray-400">-</span>'}
-                    </td>
-                </tr>
-            `;
+            return `<tr class="border-b border-slate-50 dark:border-slate-800/50">
+                <td class="py-4 font-bold text-slate-700 dark:text-slate-300 flex items-center gap-3">
+                    <span class="text-xl">${t.icon}</span> ${t.label}
+                </td>
+                <td class="py-4 text-center font-black text-slate-400">${total}</td>
+                <td class="py-4 text-center">
+                    ${damaged > 0 ? `<span class="px-3 py-1 bg-rose-100 text-rose-600 rounded-full font-black text-xs">${damaged}</span>` : '-'}
+                </td>
+            </tr>`;
         }
         return '';
     }).join('');
-    
-    // เพิ่มรายการอื่นๆ
-    if (repair.other1Details) {
-        detailRows += `<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-3 px-4">🔧 ${repair.other1Details}</td><td class="py-3 px-4 text-center">${repair.other1Count || 0}</td><td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-red-100 text-red-700 rounded-full font-bold">${repair.other1Damage || 0}</span></td></tr>`;
-    }
-    if (repair.other2Details) {
-        detailRows += `<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-3 px-4">🔧 ${repair.other2Details}</td><td class="py-3 px-4 text-center">${repair.other2Count || 0}</td><td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-red-100 text-red-700 rounded-full font-bold">${repair.other2Damage || 0}</span></td></tr>`;
-    }
-    if (repair.other3Details) {
-        detailRows += `<tr class="border-b border-gray-100 dark:border-gray-700"><td class="py-3 px-4">🔧 ${repair.other3Details}</td><td class="py-3 px-4 text-center">${repair.other3Count || 0}</td><td class="py-3 px-4 text-center"><span class="px-2 py-1 bg-red-100 text-red-700 rounded-full font-bold">${repair.other3Damage || 0}</span></td></tr>`;
-    }
-    
-    let statusConfig = {
-        0: { badge: 'bg-yellow-100 text-yellow-800', text: 'รอดำเนินการ', icon: '⏳' },
-        1: { badge: 'bg-orange-100 text-orange-800', text: 'กำลังดำเนินการ', icon: '🔄' },
-        2: { badge: 'bg-green-100 text-green-800', text: 'เสร็จสิ้น', icon: '✅' }
-    };
-    let status = statusConfig[repair.status] || statusConfig[0];
-    
+
     $('#detailContent').html(`
-        <div class="space-y-6">
-            <!-- Location & Status -->
-            <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-gradient-to-r from-fuchsia-50 to-pink-50 dark:from-fuchsia-900/20 dark:to-pink-900/20 rounded-2xl">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">🏫</span>
-                    <div>
-                        <p class="text-sm text-gray-500">สถานที่</p>
-                        <p class="text-xl font-bold text-gray-800 dark:text-white">${repair.AddLocation || '-'}</p>
-                    </div>
-                </div>
-                <span class="px-4 py-2 ${status.badge} rounded-full font-medium">
-                    ${status.icon} ${status.text}
-                </span>
-            </div>
-            
-            <!-- Reporter Info -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                    <p class="text-xs text-gray-500 mb-1">👤 ผู้แจ้ง</p>
-                    <p class="font-bold text-gray-800 dark:text-white">${repair.teacher_name || 'ไม่ทราบชื่อ'}</p>
-                </div>
-                <div class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                    <p class="text-xs text-gray-500 mb-1">📞 เบอร์โทร</p>
-                    <p class="font-bold text-gray-800 dark:text-white">${repair.teacher_phone || '-'}</p>
-                </div>
-                <div class="p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                    <p class="text-xs text-gray-500 mb-1">📅 วันที่แจ้ง</p>
-                    <p class="font-bold text-gray-800 dark:text-white">${repair.AddDate || '-'}</p>
-                </div>
-            </div>
-            
-            <!-- Damage Table -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden">
-                <div class="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-b border-gray-100 dark:border-gray-700">
-                    <h4 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <span>🔧</span> รายการอุปกรณ์
-                    </h4>
-                </div>
-                <table class="w-full">
-                    <thead class="bg-gray-50 dark:bg-slate-700">
-                        <tr>
-                            <th class="py-3 px-4 text-left text-sm font-medium text-gray-600 dark:text-gray-300">รายการ</th>
-                            <th class="py-3 px-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300">จำนวนทั้งหมด</th>
-                            <th class="py-3 px-4 text-center text-sm font-medium text-gray-600 dark:text-gray-300">ชำรุด</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm text-gray-700 dark:text-gray-300">
-                        ${detailRows || '<tr><td colspan="3" class="py-8 text-center text-gray-400">ไม่มีรายการ</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Term/Pee Info -->
-            <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
-                <span>📚 ภาคเรียนที่ ${repair.term || '-'} ปีการศึกษา ${repair.pee || '-'}</span>
-                <span>🔢 รหัสการแจ้ง: #${repair.id}</span>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-black text-slate-800 dark:text-white">Request Details</h2>
+            <button onclick="closeDetailModal()" class="text-slate-400 hover:text-rose-500 transition-colors"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-[2rem] mb-6 flex items-center gap-6">
+            <div class="w-16 h-16 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-3xl shadow-sm">📍</div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white leading-tight">${r.AddLocation || '-'}</p>
             </div>
         </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl">
+                <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Reporter</p>
+                <p class="font-black text-xs text-slate-800 dark:text-white">${r.teacher_name || '-'}</p>
+            </div>
+            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl">
+                <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Phone</p>
+                <p class="font-black text-xs text-slate-800 dark:text-white">${r.teacher_phone || '-'}</p>
+            </div>
+            <div class="p-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl">
+                <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Date</p>
+                <p class="font-black text-xs text-slate-800 dark:text-white">${r.AddDate || '-'}</p>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-[2rem] overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 dark:bg-slate-900/50">
+                    <tr><th class="py-3 px-6 text-[10px] font-black text-slate-400 uppercase">Item</th><th class="py-3 px-6 text-center text-[10px] font-black text-slate-400 uppercase">Total</th><th class="py-3 px-6 text-center text-[10px] font-black text-slate-400 uppercase">Damage</th></tr>
+                </thead>
+                <tbody class="px-6">${tableRows || '<tr><td colspan="3" class="py-12 text-center text-slate-300 font-black uppercase">No Items Reported</td></tr>'}</tbody>
+            </table>
+        </div>
     `);
-    
-    $('#detailModal').removeClass('hidden').addClass('flex');
+    $('#detailModal').removeClass('hidden');
 }
 
-function closeDetailModal() {
-    $('#detailModal').removeClass('flex').addClass('hidden');
-}
-
-function updateRepairStatus(id, status) {
-    Swal.fire({
-        title: 'ยืนยันการเปลี่ยนสถานะ?',
-        text: status == 2 ? 'ต้องการเปลี่ยนสถานะเป็น "เสร็จสิ้น" หรือไม่?' : 'ต้องการเปลี่ยนสถานะหรือไม่?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#d946ef',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'ยืนยัน',
-        cancelButtonText: 'ยกเลิก'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: 'api/repair_update.php',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ id: id, status: status }),
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success', 
-                            title: 'สำเร็จ!', 
-                            text: 'อัปเดตสถานะเรียบร้อยแล้ว',
-                            timer: 1500, 
-                            showConfirmButton: false
-                        });
-                        fetchRepairs();
-                    } else {
-                        Swal.fire({icon: 'error', title: 'ผิดพลาด', text: response.message || response.error});
-                    }
-                },
-                error: function() {
-                    Swal.fire({icon: 'error', title: 'ผิดพลาด', text: 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้'});
-                }
-            });
-        } else {
-            fetchRepairs(); // Reset dropdown
-        }
-    });
-}
-
-// Close modal on escape key
-$(document).keydown(function(e) {
-    if (e.key === 'Escape') closeDetailModal();
-});
+function closeDetailModal() { $('#detailModal').addClass('hidden'); }
+$(document).keydown(e => { if (e.key === 'Escape') closeDetailModal(); });
 </script>

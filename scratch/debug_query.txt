@@ -1,0 +1,56 @@
+Rows found: 1
+Array
+(
+    [0] => Array
+        (
+            [id] => 214
+            [AddDate] => 2026-04-22
+            [AddLocation] => Test Location
+            [doorCount] => 
+            [doorDamage] => 
+            [windowCount] => 
+            [windowDamage] => 
+            [tablestCount] => 
+            [tablestDamage] => 
+            [chairstCount] => 
+            [chairstDamage] => 
+            [tabletaCount] => 
+            [tabletaDamage] => 
+            [chairtaCount] => 
+            [chairtaDamage] => 
+            [other1Details] => 
+            [other1Count] => 
+            [other1Damage] => 
+            [tvCount] => 
+            [tvDamage] => 
+            [audioCount] => 
+            [audioDamage] => 
+            [hdmiCount] => 
+            [hdmiDamage] => 
+            [projectorCount] => 
+            [projectorDamage] => 
+            [other2Details] => 
+            [other2Count] => 
+            [other2Damage] => 
+            [fanCount] => 
+            [fanDamage] => 
+            [lightCount] => 
+            [lightDamage] => 
+            [airCount] => 
+            [airDamage] => 
+            [swCount] => 
+            [swDamage] => 
+            [swfanCount] => 
+            [swfanDamage] => 
+            [plugCount] => 
+            [plugDamage] => 
+            [other3Details] => 
+            [other3Count] => 
+            [other3Damage] => 
+            [teach_id] => 999
+            [term] => 1
+            [pee] => 2569
+            [status] => 0
+        )
+
+)

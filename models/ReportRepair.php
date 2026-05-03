@@ -191,4 +191,27 @@ class ReportRepair
         $stmt = $this->db->query($sql, ['status' => $status, 'id' => $id]);
         return $stmt->rowCount() > 0;
     }
+
+    /**
+     * ดึงข้อมูลรายงานแจ้งซ่อมแบบระบุเงื่อนไข
+     */
+    public function getFilteredReport($startDate, $endDate, $status = null)
+    {
+        $params = ['start' => $startDate, 'end' => $endDate];
+        $where = "r.AddDate >= :start AND r.AddDate <= :end";
+        
+        if ($status !== null && $status !== '') {
+            $where .= " AND r.status = :status";
+            $params['status'] = $status;
+        }
+
+        $sql = "SELECT r.*, u.Teach_name as teach_name 
+                FROM report_repair r
+                LEFT JOIN phichaia_student.teacher u ON r.teach_id = u.Teach_id
+                WHERE $where 
+                ORDER BY r.AddDate ASC, r.id ASC";
+        
+        $stmt = $this->db->query($sql, $params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

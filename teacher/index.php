@@ -20,6 +20,9 @@ use App\DatabaseUsers;
 
 $dbUsers = new DatabaseUsers();
 
+// ดึงข้อมูลครู
+$teacher_id = $_GET['id'] ?? null;
+
 // ใช้ method ที่ถูกต้องในการดึงข้อมูลครู
 if ($teacher_id) {
     $TeacherData = $dbUsers->getTeacherById($teacher_id);

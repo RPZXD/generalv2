@@ -11,7 +11,8 @@ class User
         'ผู้บริหาร' => ['VP', 'DIR', 'ADM'],
         'admin' => ['ADM'],
         // เพิ่มนักเรียน
-        'นักเรียน' => ['STU']
+        'นักเรียน' => ['STU'],
+        'คนขับรถ' => ['ADM', 'DRV']
     ];
 
     public static function authenticate($username, $password, $role)

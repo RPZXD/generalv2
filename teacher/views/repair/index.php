@@ -1,675 +1,579 @@
-<!-- Repair Request Page Content -->
-<div class="space-y-6">
+<!-- Repair Request - Teacher View Modernized -->
+<div class="space-y-8 animate-fade-in px-2 pb-12">
     <!-- Page Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 class="text-3xl font-bold gradient-text flex items-center gap-3">
-                <span class="text-4xl">🛠️</span> บันทึกการแจ้งซ่อม
-            </h1>
-            <p class="mt-1 text-gray-600 dark:text-gray-400">แจ้งปัญหาและติดตามสถานะการซ่อมแซม</p>
+    <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md p-6 rounded-[2.5rem] border border-white/20 shadow-xl">
+        <div class="flex items-center gap-5">
+            <div
+                class="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-600 text-white rounded-[1.5rem] shadow-lg shadow-amber-500/20 text-2xl">
+                <i class="fas fa-tools"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black tracking-tight text-slate-800 dark:text-white">แจ้งซ่อม</h1>
+                <p
+                    class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    ระบบแจ้งซ่อมออนไลน์ สำหรับบุคลากร
+                </p>
+            </div>
         </div>
-        <div class="mt-4 md:mt-0">
-            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                <span class="w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></span>
-                งานซ่อมบำรุง
-            </span>
+        <div class="flex items-center gap-3">
+            <button id="refreshList"
+                class="p-4 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all border border-slate-100 dark:border-slate-600">
+                <i class="fas fa-sync-alt"></i>
+            </button>
         </div>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- ฟอร์มบันทึกแจ้งซ่อม (ซ้าย) -->
-        <div class="glass rounded-2xl p-6 md:p-8">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl shadow-lg text-white">
-                    <i class="fas fa-tools text-xl"></i>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- New Request Form (Left) -->
+        <div
+            class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 shadow-2xl">
+            <div class="flex items-center gap-3 mb-8">
+                <div
+                    class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
+                    <i class="fas fa-edit"></i>
                 </div>
-                <div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">บันทึกการแจ้งซ่อม</h2>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">กรอกรายละเอียดทรัพย์สินที่ชำรุด</p>
-                </div>
+                <h2 class="text-xl font-black text-slate-800 dark:text-white">แบบฟอร์มแจ้งซ่อม</h2>
             </div>
 
-            <form id="addReportForm" method="POST" class="space-y-5">
-                <!-- วันที่แจ้ง -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="AddDate">
-                        <i class="fas fa-calendar-alt mr-2 text-amber-500"></i>วันที่แจ้ง <span class="text-red-500">*</span>
-                    </label>
-                    <input type="date" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors" id="AddDate" name="AddDate" required>
-                </div>
-
-                <!-- สถานที่ -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="AddLocation">
-                        <i class="fas fa-map-marker-alt mr-2 text-amber-500"></i>สถานที่ <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors" id="AddLocation" name="AddLocation" placeholder="เช่น ห้องคอม(438) อาคาร 4" required>
-                </div>
-
-                <!-- รายการทรัพย์สินชำรุด -->
-                <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4">
-                    <h5 class="font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fas fa-clipboard-list text-amber-500"></i>
-                        รายการทรัพย์สินชำรุด/เสียหาย
-                    </h5>
-                    
-                    <!-- หมวด 1 -->
-                    <div class="mb-4">
-                        <h6 class="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center">1</span>
-                            ครุภัณฑ์ภายในห้องเรียน/ห้องปฏิบัติการ
-                        </h6>
-                        <div id="topic1" class="pl-8 space-y-2"></div>
-                    </div>
-                    
-                    <!-- หมวด 2 -->
-                    <div class="mb-4">
-                        <h6 class="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">2</span>
-                            ทัศนูปกรณ์ประจำห้องเรียน/ห้องปฏิบัติการ
-                        </h6>
-                        <div id="topic2" class="pl-8 space-y-2"></div>
-                    </div>
-                    
-                    <!-- หมวด 3 -->
+            <form id="addReportForm" method="POST" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <h6 class="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-yellow-500 text-white text-xs flex items-center justify-center">3</span>
-                            เครื่องใช้ไฟฟ้าประจำห้องเรียน/ห้องปฏิบัติการ
-                        </h6>
-                        <div id="topic3" class="pl-8 space-y-2"></div>
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 pl-1">วันที่แจ้ง</label>
+                        <input type="date" name="AddDate" id="AddDate"
+                            class="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-amber-500 transition-all font-bold text-slate-700 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 pl-1">สถานที่/ห้อง</label>
+                        <input type="text" name="AddLocation" id="AddLocation"
+                            class="w-full px-5 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none focus:ring-2 focus:ring-amber-500 transition-all font-bold text-slate-700 dark:text-white"
+                            placeholder="เช่น ห้อง 431" required>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label
+                        class="block text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">เลือกรายการที่เสียหาย</label>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] p-6 space-y-6 border border-slate-100 dark:border-slate-800">
+                        <!-- Categories dynamically loaded -->
+                        <div id="topic1" class="space-y-3"></div>
+                        <div class="border-t border-slate-200 dark:border-slate-700 my-4"></div>
+                        <div id="topic2" class="space-y-3"></div>
+                        <div class="border-t border-slate-200 dark:border-slate-700 my-4"></div>
+                        <div id="topic3" class="space-y-3"></div>
                     </div>
                 </div>
 
                 <input type="hidden" name="teach_id" value="<?php echo $teacher_id; ?>">
-                
-                <!-- Submit Button -->
-                <div class="flex justify-end pt-4">
-                    <button type="submit" class="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all transform hover:-translate-y-1 flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i>
-                        <span>บันทึกแจ้งซ่อม</span>
-                        <span>🚀</span>
-                    </button>
-                </div>
-            </form>
 
-            <div class="mt-6 text-center">
-                <p class="text-sm text-gray-400 dark:text-gray-500">
-                    <i class="fas fa-phone mr-1"></i>
-                    หากเร่งด่วน กรุณาติดต่อเจ้าหน้าที่โดยตรง
-                </p>
-            </div>
+                <button type="submit"
+                    class="w-full py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3">
+                    <i class="fas fa-paper-plane"></i>
+                    ส่งข้อมูลแจ้งซ่อม
+                </button>
+            </form>
         </div>
 
-        <!-- รายการแจ้งซ่อม (ขวา) -->
-        <div class="glass rounded-2xl p-6 md:p-8">
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl shadow-lg text-white">
-                        <i class="fas fa-list-alt text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">📋 รายการแจ้งซ่อม</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">รายการที่คุณแจ้งไว้</p>
-                    </div>
+        <!-- Request History (Right) -->
+        <div class="lg:col-span-7 space-y-6">
+            <div class="flex items-center gap-3 mb-4 pl-4">
+                <div
+                    class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                    <i class="fas fa-history"></i>
                 </div>
-                <button id="refreshList" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-lg hover:shadow-blue-500/30">
-                    <i class="fas fa-sync-alt"></i>
-                    รีเฟรช
-                </button>
+                <h2 class="text-xl font-black text-slate-800 dark:text-white">สถานะการแจ้งซ่อมของคุณ</h2>
             </div>
-            
-            <div id="repairCardList" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                <!-- JS will render cards here -->
-                <div class="text-center py-8 text-gray-400">
-                    <div class="loader mx-auto mb-4"></div>
-                    <p>กำลังโหลดข้อมูล...</p>
+
+            <div id="repairCardList" class="space-y-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar-thin">
+                <!-- Cards render here -->
+                <div class="flex flex-col items-center justify-center py-20 opacity-30">
+                    <div class="loader mb-4"></div>
+                    <p class="font-black uppercase text-xs tracking-widest">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal แก้ไขแจ้งซ่อม -->
-<div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-    <div class="glass rounded-2xl shadow-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative mx-4 animate-fade-in">
-        <button id="closeEditModal" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-500 flex items-center justify-center transition-colors">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-yellow-500 to-amber-500 rounded-xl shadow-lg text-white">
-                <i class="fas fa-edit text-xl"></i>
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeEditModal()"></div>
+    <div
+        class="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl relative z-10 border border-white/20">
+        <div class="p-8 overflow-y-auto max-h-[90vh] custom-scrollbar-thin" id="editModalContent">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-black text-slate-800 dark:text-white">แก้ไขข้อมูลการแจ้งซ่อม</h2>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-rose-500 transition-colors"><i
+                        class="fas fa-times text-xl"></i></button>
             </div>
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">✏️ แก้ไขการแจ้งซ่อม</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">แก้ไขรายละเอียดการแจ้งซ่อม</p>
+            <form id="editRepairForm" class="space-y-6">
+                <input type="hidden" name="id" id="editId">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="date" name="AddDate" id="editAddDate"
+                        class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold" required>
+                    <input type="text" name="AddLocation" id="editAddLocation"
+                        class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold" required>
+                </div>
+                <div id="edit_topics_container" class="bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] p-6 space-y-6">
+                    <div id="edit_topic1"></div>
+                    <div id="edit_topic2"></div>
+                    <div id="edit_topic3"></div>
+                </div>
+                <button type="submit"
+                    class="w-full py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg">บันทึกการแก้ไข</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="closeDetailModal()"></div>
+    <div class="bg-white dark:bg-slate-900 rounded-[3rem] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl relative z-10 border border-white/20 transform transition-all scale-100">
+        <div class="p-8 md:p-12 overflow-y-auto max-h-[85vh] custom-scrollbar-thin">
+            <div class="flex justify-between items-start mb-8">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-blue-600 text-2xl">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-white">รายละเอียดการแจ้งซ่อม</h2>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" id="detailTicketId">Ticket #000</p>
+                    </div>
+                </div>
+                <button onclick="closeDetailModal()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-rose-500 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Info Grid -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-[1.5rem] border border-slate-100 dark:border-slate-800">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">วันที่แจ้ง</span>
+                        <p class="font-bold text-slate-700 dark:text-white" id="detailDate">-</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-[1.5rem] border border-slate-100 dark:border-slate-800">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">สถานที่</span>
+                        <p class="font-bold text-slate-700 dark:text-white" id="detailLocation">-</p>
+                    </div>
+                </div>
+
+                <!-- Items Section -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                        รายการที่แจ้งเสียหาย
+                    </h3>
+                    <div id="detailItemsList" class="space-y-3">
+                        <!-- Items will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Status Progress -->
+                <div class="pt-6 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest">สถานะปัจจุบัน</h3>
+                        <div id="detailStatusBadge" class="px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">
+                            -
+                        </div>
+                    </div>
+                    <div class="flex gap-2" id="detailSteps">
+                        <!-- Steps injected here -->
+                    </div>
+                </div>
             </div>
         </div>
-
-        <form id="editRepairForm" class="space-y-5">
-            <input type="hidden" name="id" id="editId">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="editAddDate">
-                        <i class="fas fa-calendar-alt mr-2 text-amber-500"></i>วันที่แจ้ง <span class="text-red-500">*</span>
-                    </label>
-                    <input type="date" name="AddDate" id="editAddDate" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 transition-colors" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="editAddLocation">
-                        <i class="fas fa-map-marker-alt mr-2 text-amber-500"></i>สถานที่ <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" name="AddLocation" id="editAddLocation" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 transition-colors" required>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4">
-                <h5 class="font-bold text-gray-800 dark:text-white mb-4">รายการทรัพย์สินชำรุด/เสียหาย</h5>
-                
-                <div class="mb-4">
-                    <h6 class="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center">1</span>
-                        ครุภัณฑ์ภายในห้องเรียน/ห้องปฏิบัติการ
-                    </h6>
-                    <div id="edit_topic1" class="pl-8 space-y-2"></div>
-                </div>
-                
-                <div class="mb-4">
-                    <h6 class="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">2</span>
-                        ทัศนูปกรณ์ประจำห้องเรียน/ห้องปฏิบัติการ
-                    </h6>
-                    <div id="edit_topic2" class="pl-8 space-y-2"></div>
-                </div>
-                
-                <div>
-                    <h6 class="font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-yellow-500 text-white text-xs flex items-center justify-center">3</span>
-                        เครื่องใช้ไฟฟ้าประจำห้องเรียน/ห้องปฏิบัติการ
-                    </h6>
-                    <div id="edit_topic3" class="pl-8 space-y-2"></div>
-                </div>
-            </div>
-
-            <button type="submit" class="w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                <i class="fas fa-save"></i>
-                <span>บันทึกการแก้ไข</span>
-                <span>💾</span>
-            </button>
-        </form>
     </div>
 </div>
 
 <style>
-/* Loading spinner */
-.loader {
-    border: 3px solid rgba(59, 130, 246, 0.2);
-    border-top: 3px solid #3b82f6;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    /* Teacher Specific Styles */
+    .repair-card-teacher {
+        background: white;
+        border-radius: 2rem;
+        padding: 1.5rem;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        transition: all 0.3s ease;
+        position: relative;
+    }
 
-/* Repair card styling */
-.repair-card {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-    border-left: 4px solid #3b82f6;
-    transition: all 0.3s ease;
-}
-.repair-card:hover {
-    transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-}
+    .dark .repair-card-teacher {
+        background: #1e293b;
+        border-color: #334155;
+    }
 
-/* Form checkbox styling */
-.form-check {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 0.75rem;
-    transition: all 0.2s ease;
-}
-.form-check:hover {
-    background: rgba(255, 255, 255, 0.8);
-}
-.dark .form-check {
-    background: rgba(30, 41, 59, 0.5);
-}
-.dark .form-check:hover {
-    background: rgba(30, 41, 59, 0.8);
-}
+    .repair-card-teacher:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    }
 
-/* Custom checkbox */
-.form-check-input {
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 0.375rem;
-    border: 2px solid #d1d5db;
-    cursor: pointer;
-}
-.form-check-input:checked {
-    background-color: #f59e0b;
-    border-color: #f59e0b;
-}
+    .status-step {
+        flex: 1;
+        height: 4px;
+        border-radius: 10px;
+        background: #e2e8f0;
+        position: relative;
+    }
+
+    .dark .status-step {
+        background: #334155;
+    }
+
+    .status-step.active {
+        background: var(--step-color);
+    }
+
+    .checkbox-modern {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: transparent;
+    }
+
+    .checkbox-modern:hover {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    .dark .checkbox-modern:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .input-number-modern {
+        width: 60px;
+        padding: 8px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .dark .input-number-modern {
+        background: #0f172a;
+        border-color: #334155;
+    }
+
+    .custom-scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .custom-scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .dark .custom-scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #334155;
+    }
 </style>
 
 <script>
-// Items configuration
-const items = [
-    { id: 'door', label: 'ประตู', detailsId: 'doorDetails' },
-    { id: 'window', label: 'หน้าต่าง', detailsId: 'windowDetails' },
-    { id: 'tablest', label: 'โต๊ะนักเรียน', detailsId: 'tablestDetails' },
-    { id: 'chairst', label: 'เก้าอี้นักเรียน', detailsId: 'chairstDetails' },
-    { id: 'tableta', label: 'โต๊ะครู', detailsId: 'tabletaDetails' },
-    { id: 'chairta', label: 'เก้าอี้ครู', detailsId: 'chairtaDetails' },
-    { id: 'other1', label: 'อื่นๆ', detailsId: 'other1Details' }
-];
-const items2 = [
-    { id: 'tv', label: 'โทรทัศน์', detailsId: 'tvDetails' },
-    { id: 'audio', label: 'เครื่องเสียง', detailsId: 'audioDetails' },
-    { id: 'hdmi', label: 'สาย HDMI', detailsId: 'hdmiDetails' },
-    { id: 'projector', label: 'จอโปรเจคเตอร์', detailsId: 'projectorDetails' },
-    { id: 'other2', label: 'อื่นๆ', detailsId: 'other2Details' }
-];
-const items3 = [
-    { id: 'fan', label: 'พัดลม', detailsId: 'fanDetails' },
-    { id: 'light', label: 'หลอดไฟ', detailsId: 'lightDetails' },
-    { id: 'air', label: 'เครื่องปรับอากาศ', detailsId: 'airDetails' },
-    { id: 'sw', label: 'สวิตซ์ไฟ', detailsId: 'swDetails' },
-    { id: 'swfan', label: 'สวิตซ์พัดลม', detailsId: 'swfanDetails' },
-    { id: 'plug', label: 'ปลั๊กไฟ', detailsId: 'plugDetails' },
-    { id: 'other3', label: 'อื่นๆ', detailsId: 'other3Details' }
-];
+    const items = [
+        { id: 'door', label: 'ประตู', detailsId: 'doorDetails' },
+        { id: 'window', label: 'หน้าต่าง', detailsId: 'windowDetails' },
+        { id: 'tablest', label: 'โต๊ะนักเรียน', detailsId: 'tablestDetails' },
+        { id: 'chairst', label: 'เก้าอี้นักเรียน', detailsId: 'chairstDetails' },
+        { id: 'tableta', label: 'โต๊ะครู', detailsId: 'tabletaDetails' },
+        { id: 'chairta', label: 'เก้าอี้ครู', detailsId: 'chairtaDetails' }
+    ];
+    const items2 = [
+        { id: 'tv', label: 'โทรทัศน์', detailsId: 'tvDetails' },
+        { id: 'audio', label: 'เครื่องเสียง', detailsId: 'audioDetails' },
+        { id: 'hdmi', label: 'สาย HDMI', detailsId: 'hdmiDetails' },
+        { id: 'projector', label: 'จอโปรเจคเตอร์', detailsId: 'projectorDetails' }
+    ];
+    const items3 = [
+        { id: 'fan', label: 'พัดลม', detailsId: 'fanDetails' },
+        { id: 'light', label: 'หลอดไฟ', detailsId: 'lightDetails' },
+        { id: 'air', label: 'แอร์', detailsId: 'airDetails' },
+        { id: 'plug', label: 'ปลั๊กไฟ', detailsId: 'plugDetails' }
+    ];
 
-document.addEventListener('DOMContentLoaded', function () {
-    // กำหนดวันที่ปัจจุบัน
-    const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
-    document.getElementById('AddDate').value = formattedDate;
+    const statusMap = {
+        0: { label: 'แจ้งใหม่', color: '#38bdf8', icon: 'fa-inbox' },
+        1: { label: 'รอพิจารณา', color: '#f43f5e', icon: 'fa-clock' },
+        2: { label: 'กำลังดำเนินการ', color: '#10b981', icon: 'fa-wrench' },
+        3: { label: 'ตรวจสอบ', color: '#6366f1', icon: 'fa-microscope' },
+        4: { label: 'เสร็จสิ้น', color: '#f59e0b', icon: 'fa-check-circle' }
+    };
 
-    function createFormElement(item, topicId) {
-        const topic = document.getElementById(topicId);
-        const formCheckDiv = document.createElement('div');
-        formCheckDiv.classList.add('form-check', 'p-3', 'rounded-lg', 'flex', 'items-start', 'gap-3');
+    const teach_id = "<?php echo $teacher_id; ?>";
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = item.id;
-        checkbox.classList.add('form-check-input', 'mt-1');
-        checkbox.onchange = () => toggleDetails(item.id);
+    $(document).ready(function () {
+        // Set default date
+        $('#AddDate').val(new Date().toISOString().split('T')[0]);
 
-        const labelWrapper = document.createElement('div');
-        labelWrapper.classList.add('flex-1');
-        
-        const label = document.createElement('label');
-        label.setAttribute('for', item.id);
-        label.classList.add('font-medium', 'cursor-pointer', 'text-gray-700', 'dark:text-gray-300');
-        label.innerHTML = item.label;
-        labelWrapper.appendChild(label);
+        // Load Form Elements
+        renderFormElements();
+        fetchRepairs();
 
-        formCheckDiv.appendChild(checkbox);
-        formCheckDiv.appendChild(labelWrapper);
+        $('#refreshList').on('click', fetchRepairs);
+        $('#addReportForm').on('submit', handleAddSubmit);
+    });
 
-        const detailsDiv = document.createElement('div');
-        detailsDiv.id = item.detailsId;
-        detailsDiv.style.display = 'none';
-        detailsDiv.classList.add('ml-8', 'mt-2', 'p-4', 'bg-white', 'dark:bg-slate-700', 'rounded-xl', 'border', 'border-gray-200', 'dark:border-gray-600', 'space-y-3');
-
-        if (item.id.includes('other')) {
-            const otherInputDiv = document.createElement('div');
-            otherInputDiv.classList.add('mb-2');
-            const otherLabel = document.createElement('label');
-            otherLabel.textContent = 'โปรดระบุ:';
-            otherLabel.classList.add('block', 'text-sm', 'font-medium', 'text-gray-600', 'dark:text-gray-400', 'mb-1');
-            const otherInput = document.createElement('input');
-            otherInput.type = 'text';
-            otherInput.classList.add('w-full', 'p-2', 'border', 'rounded-lg', 'text-gray-900', 'dark:text-white', 'dark:bg-slate-600');
-            otherInput.name = `${item.id}Details`;
-            otherInputDiv.appendChild(otherLabel);
-            otherInputDiv.appendChild(otherInput);
-            detailsDiv.appendChild(otherInputDiv);
-        }
-
-        const row = document.createElement('div');
-        row.classList.add('grid', 'grid-cols-1', 'md:grid-cols-4', 'gap-3');
-
-        const col1 = document.createElement('div');
-        const label1 = document.createElement('label');
-        label1.textContent = 'จำนวน:';
-        label1.classList.add('block', 'text-sm', 'font-medium', 'text-gray-600', 'dark:text-gray-400', 'mb-1');
-        const inputNumber = document.createElement('input');
-        inputNumber.type = 'number';
-        inputNumber.classList.add('w-full', 'p-2', 'border', 'rounded-lg', 'text-gray-900', 'dark:text-white', 'dark:bg-slate-600');
-        inputNumber.name = `${item.id}Count`;
-        inputNumber.min = 0;
-        col1.appendChild(label1);
-        col1.appendChild(inputNumber);
-
-        const col2 = document.createElement('div');
-        col2.classList.add('md:col-span-3');
-        const label2 = document.createElement('label');
-        label2.textContent = 'ระบุความเสียหาย:';
-        label2.classList.add('block', 'text-sm', 'font-medium', 'text-gray-600', 'dark:text-gray-400', 'mb-1');
-        const textarea = document.createElement('textarea');
-        textarea.classList.add('w-full', 'p-2', 'border', 'rounded-lg', 'text-gray-900', 'dark:text-white', 'dark:bg-slate-600');
-        textarea.name = `${item.id}Damage`;
-        textarea.rows = 2;
-        col2.appendChild(label2);
-        col2.appendChild(textarea);
-
-        row.appendChild(col1);
-        row.appendChild(col2);
-        detailsDiv.appendChild(row);
-        topic.appendChild(formCheckDiv);
-        topic.appendChild(detailsDiv);
-    }
-
-    function toggleDetails(itemId) {
-        const detailsDiv = document.getElementById(`${itemId}Details`);
-        const checkbox = document.getElementById(itemId);
-        if (checkbox.checked) {
-            detailsDiv.style.display = 'block';
-        } else {
-            detailsDiv.style.display = 'none';
-        }
-    }
-
-    items.forEach(item => createFormElement(item, 'topic1'));
-    items2.forEach(item => createFormElement(item, 'topic2'));
-    items3.forEach(item => createFormElement(item, 'topic3'));
-});
-
-const teach_id = "<?php echo $teacher_id; ?>";
-
-function fetchRepairs() {
-    const cardList = document.getElementById('repairCardList');
-    cardList.innerHTML = '<div class="text-center py-8 text-gray-400"><div class="loader mx-auto mb-4"></div><p>กำลังโหลดข้อมูล...</p></div>';
-    
-    fetch('api/fet_report_repair.php?Teach_id=' + encodeURIComponent(teach_id))
-        .then(res => res.json())
-        .then(data => {
-            const list = Array.isArray(data) ? data : (data.list || []);
-            cardList.innerHTML = '';
-            
-            if (!list.length) {
-                cardList.innerHTML = '<div class="text-center py-8 text-gray-400"><i class="fas fa-inbox text-4xl mb-2"></i><p>ไม่มีข้อมูลการแจ้งซ่อม</p></div>';
-                return;
-            }
-            
-            list.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "repair-card rounded-xl p-4 dark:bg-slate-700/50";
-                card.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-center gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-medium">
-                                    <i class="fas fa-calendar-alt mr-1"></i>${item.AddDate || '-'}
-                                </span>
-                            </div>
-                            <div class="font-semibold text-gray-800 dark:text-white mb-1">
-                                <i class="fas fa-map-marker-alt mr-2 text-amber-500"></i>${item.AddLocation || '-'}
-                            </div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">
-                                ${item.doorDamage || 'ไม่มีรายละเอียด'}
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="editBtn px-4 py-2 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:hover:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 rounded-lg font-medium transition-colors flex items-center gap-1" data-id="${item.id}">
-                                <i class="fas fa-edit"></i> แก้ไข
-                            </button>
-                            <button class="deleteBtn px-4 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 rounded-lg font-medium transition-colors flex items-center gap-1" data-id="${item.id}">
-                                <i class="fas fa-trash"></i> ลบ
-                            </button>
+    function renderFormElements() {
+        const render = (arr, topicId) => {
+            const container = $(`#${topicId}`);
+            arr.forEach(item => {
+                container.append(`
+                <div class="space-y-2">
+                    <div class="checkbox-modern">
+                        <input type="checkbox" id="${item.id}" class="w-5 h-5 rounded-md border-slate-300 text-amber-500 focus:ring-amber-500" onchange="toggleDetails('${item.id}')">
+                        <label for="${item.id}" class="flex-1 font-bold text-slate-700 dark:text-slate-300 cursor-pointer text-sm">${item.label}</label>
+                    </div>
+                    <div id="${item.detailsId}" class="hidden pl-10 pr-4 pb-4 space-y-3 animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black uppercase text-slate-400">จำนวน</span>
+                            <input type="number" name="${item.id}Count" class="input-number-modern" min="0" value="1" disabled>
+                            <span class="text-[10px] font-black uppercase text-slate-400">อาการเสีย</span>
+                            <input type="text" name="${item.id}Damage" class="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs" placeholder="ระบุอาการ..." disabled>
                         </div>
                     </div>
-                `;
-                cardList.appendChild(card);
+                </div>
+            `);
             });
-        })
-        .catch(() => {
-            cardList.innerHTML = '<div class="text-center py-8 text-red-500"><i class="fas fa-exclamation-triangle text-4xl mb-2"></i><p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>';
-        });
-}
-
-fetchRepairs();
-document.getElementById('refreshList').onclick = fetchRepairs;
-
-// Form submit
-document.getElementById('addReportForm').onsubmit = function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-
-    fetch('api/insert_report_repair.php', {
-        method: 'POST',
-        body: formData
-    }).then(res => res.json()).then(result => {
-        if (result.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'สำเร็จ!',
-                text: 'บันทึกข้อมูลเรียบร้อย',
-                confirmButtonColor: '#f59e0b'
-            });
-            this.reset();
-            const today = new Date();
-            document.getElementById('AddDate').value = today.toISOString().split('T')[0];
-            fetchRepairs();
-        } else {
-            Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาด', 'error');
-        }
-    }).catch(() => {
-        Swal.fire('ผิดพลาด', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
-    });
-};
-
-// Edit form elements
-function createEditFormElement(item, topicId) {
-    const topic = document.getElementById(topicId);
-    if (!topic) return;
-
-    const formCheckDiv = document.createElement('div');
-    formCheckDiv.classList.add('form-check', 'p-3', 'rounded-lg', 'flex', 'items-start', 'gap-3');
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = 'edit_' + item.id;
-    checkbox.classList.add('form-check-input', 'mt-1');
-    checkbox.onchange = function() { toggleEditDetails(item.id); };
-
-    const labelWrapper = document.createElement('div');
-    labelWrapper.classList.add('flex-1');
-    
-    const label = document.createElement('label');
-    label.setAttribute('for', 'edit_' + item.id);
-    label.classList.add('font-medium', 'cursor-pointer', 'text-gray-700', 'dark:text-gray-300');
-    label.innerHTML = item.label;
-    labelWrapper.appendChild(label);
-
-    formCheckDiv.appendChild(checkbox);
-    formCheckDiv.appendChild(labelWrapper);
-
-    const detailsDiv = document.createElement('div');
-    detailsDiv.id = 'edit_' + item.detailsId;
-    detailsDiv.style.display = 'none';
-    detailsDiv.classList.add('ml-8', 'mt-2', 'p-4', 'bg-white', 'dark:bg-slate-700', 'rounded-xl', 'border', 'space-y-3');
-
-    if (item.id.includes('other')) {
-        const otherInputDiv = document.createElement('div');
-        otherInputDiv.classList.add('mb-2');
-        const otherLabel = document.createElement('label');
-        otherLabel.textContent = 'โปรดระบุ:';
-        otherLabel.classList.add('block', 'text-sm', 'font-medium', 'mb-1');
-        const otherInput = document.createElement('input');
-        otherInput.type = 'text';
-        otherInput.classList.add('w-full', 'p-2', 'border', 'rounded-lg');
-        otherInput.name = `${item.id}Details`;
-        otherInputDiv.appendChild(otherLabel);
-        otherInputDiv.appendChild(otherInput);
-        detailsDiv.appendChild(otherInputDiv);
+        };
+        render(items, 'topic1');
+        render(items2, 'topic2');
+        render(items3, 'topic3');
     }
 
-    const row = document.createElement('div');
-    row.classList.add('grid', 'grid-cols-1', 'md:grid-cols-4', 'gap-3');
+    function toggleDetails(id) {
+        const isChecked = $(`#${id}`).is(':checked');
+        const $details = $(`#${id}Details`);
+        $details.toggleClass('hidden', !isChecked);
+        $details.find('input').prop('disabled', !isChecked);
+    }
 
-    const col1 = document.createElement('div');
-    const label1 = document.createElement('label');
-    label1.textContent = 'จำนวน:';
-    label1.classList.add('block', 'text-sm', 'font-medium', 'mb-1');
-    const inputNumber = document.createElement('input');
-    inputNumber.type = 'number';
-    inputNumber.classList.add('w-full', 'p-2', 'border', 'rounded-lg');
-    inputNumber.name = `${item.id}Count`;
-    inputNumber.min = 0;
-    col1.appendChild(label1);
-    col1.appendChild(inputNumber);
+    function fetchRepairs() {
+        $('#repairCardList').html('<div class="flex flex-col items-center justify-center py-20 opacity-30"><div class="loader mb-4"></div><p class="font-black">กำลังโหลดข้อมูล...</p></div>');
+        $.get('api/fet_report_repair.php?Teach_id=' + encodeURIComponent(teach_id), function (data) {
+            const list = Array.isArray(data) ? data : (data.list || []);
+            $('#repairCardList').empty();
 
-    const col2 = document.createElement('div');
-    col2.classList.add('md:col-span-3');
-    const label2 = document.createElement('label');
-    label2.textContent = 'ระบุความเสียหาย:';
-    label2.classList.add('block', 'text-sm', 'font-medium', 'mb-1');
-    const textarea = document.createElement('textarea');
-    textarea.classList.add('w-full', 'p-2', 'border', 'rounded-lg');
-    textarea.name = `${item.id}Damage`;
-    textarea.rows = 2;
-    col2.appendChild(label2);
-    col2.appendChild(textarea);
+            if (!list.length) {
+                $('#repairCardList').html('<div class="text-center py-20 opacity-20"><i class="fas fa-inbox text-6xl mb-4"></i><p class="font-black uppercase tracking-widest">No Requests Found</p></div>');
+                return;
+            }
 
-    row.appendChild(col1);
-    row.appendChild(col2);
-    detailsDiv.appendChild(row);
-    topic.appendChild(formCheckDiv);
-    topic.appendChild(detailsDiv);
-}
+            list.forEach(item => {
+                const status = parseInt(item.status || 0);
+                const conf = statusMap[status];
 
-function toggleEditDetails(itemId) {
-    const detailsDiv = document.getElementById(`edit_${itemId}Details`);
-    const checkbox = document.getElementById('edit_' + itemId);
-    if (!detailsDiv || !checkbox) return;
-    detailsDiv.style.display = checkbox.checked ? 'block' : 'none';
-}
+                // Generate Steps
+                let stepsHtml = '';
+                for (let i = 0; i < 5; i++) {
+                    const isActive = i <= status;
+                    const color = isActive ? statusMap[i].color : '#e2e8f0';
+                    stepsHtml += `<div class="status-step ${isActive ? 'active' : ''}" style="--step-color: ${color}"></div>`;
+                }
 
-function renderEditFormFields(report = {}) {
-    ['edit_topic1','edit_topic2','edit_topic3'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-    });
-    items.forEach(item => createEditFormElement(item, 'edit_topic1'));
-    items2.forEach(item => createEditFormElement(item, 'edit_topic2'));
-    items3.forEach(item => createEditFormElement(item, 'edit_topic3'));
+                const card = `
+                <div class="repair-card-teacher animate-fade-in group/card cursor-pointer" onclick="viewDetail(${item.id})">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-xl shadow-sm border border-slate-100 dark:border-slate-700 group-hover/card:bg-blue-500 group-hover/card:text-white transition-all">
+                                📍
+                            </div>
+                            <div>
+                                <h3 class="font-black text-slate-800 dark:text-white text-md group-hover/card:text-blue-600 transition-colors">${item.AddLocation || '-'}</h3>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date: ${item.AddDate || '-'}</p>
+                            </div>
+                        </div>
+                        <div class="px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2" style="background: ${conf.color}15; color: ${conf.color}">
+                            <i class="fas ${conf.icon}"></i>
+                            ${conf.label}
+                        </div>
+                    </div>
 
-    if (report && typeof report === 'object') {
-        [...items, ...items2, ...items3].forEach(item => {
-            const checkbox = document.getElementById('edit_' + item.id);
-            const detailsDiv = document.getElementById(`edit_${item.detailsId}`);
-            const checked = (report[item.id + 'Count'] && report[item.id + 'Count'] > 0) ||
-                          (report[item.id + 'Damage'] && report[item.id + 'Damage'] !== '') ||
-                          (report[item.id + 'Details'] && report[item.id + 'Details'] !== '');
-            if (checkbox) checkbox.checked = checked;
-            toggleEditDetails(item.id);
+                    <div class="flex gap-2 mb-6">
+                        ${stepsHtml}
+                    </div>
 
-            const inputNumber = detailsDiv ? detailsDiv.querySelector(`input[name="${item.id}Count"]`) : null;
-            if (inputNumber && report[item.id + 'Count'] !== undefined) inputNumber.value = report[item.id + 'Count'] || '';
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-800">
+                        <div class="flex gap-4">
+                            ${status === 0 ? `
+                                <button onclick="event.stopPropagation(); editRepair(${item.id})" class="text-[10px] font-black text-blue-500 hover:text-blue-600 uppercase tracking-widest flex items-center gap-1">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button onclick="event.stopPropagation(); deleteRepair(${item.id})" class="text-[10px] font-black text-rose-500 hover:text-rose-600 uppercase tracking-widest flex items-center gap-1">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            ` : `
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <i class="fas fa-lock text-[8px]"></i> Locked for Processing
+                                </div>
+                            `}
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity">View Details <i class="fas fa-chevron-right ml-1"></i></span>
+                            <span class="text-[10px] font-black text-slate-300 tracking-tighter">TICKET #${item.id}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+                $('#repairCardList').append(card);
+            });
+        });
+    }
 
-            const textarea = detailsDiv ? detailsDiv.querySelector(`textarea[name="${item.id}Damage"]`) : null;
-            if (textarea && report[item.id + 'Damage'] !== undefined) textarea.value = report[item.id + 'Damage'] || '';
-
-            if (item.id.includes('other')) {
-                const otherInput = detailsDiv ? detailsDiv.querySelector(`input[name="${item.id}Details"]`) : null;
-                if (otherInput && report[item.id + 'Details'] !== undefined) otherInput.value = report[item.id + 'Details'] || '';
+    function handleAddSubmit(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        $.ajax({
+            url: 'api/insert_report_repair.php', type: 'POST', data: formData, processData: false, contentType: false,
+            success: function (res) {
+                if (res.success) {
+                    Swal.fire({ icon: 'success', title: 'ส่งข้อมูลเรียบร้อย', showConfirmButton: false, timer: 1500 });
+                    $('#addReportForm')[0].reset();
+                    $('#AddDate').val(new Date().toISOString().split('T')[0]);
+                    $('.animate-fade-in.pl-10').addClass('hidden'); // Hide all details
+                    fetchRepairs();
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                }
             }
         });
     }
-}
 
-// Edit button click
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('editBtn') || e.target.closest('.editBtn')) {
-        const btn = e.target.classList.contains('editBtn') ? e.target : e.target.closest('.editBtn');
-        const id = btn.dataset.id;
-        fetch('api/fetch_report_detail.php?id=' + encodeURIComponent(id))
-            .then(res => res.json())
-            .then(result => {
-                if (result.success) {
-                    document.getElementById('editId').value = result.report.id;
-                    document.getElementById('editAddDate').value = result.report.AddDate;
-                    document.getElementById('editAddLocation').value = result.report.AddLocation;
-                    renderEditFormFields(result.report);
-                    document.getElementById('editModal').classList.remove('hidden');
-                } else {
-                    Swal.fire('ผิดพลาด', result.message || 'ไม่พบข้อมูล', 'error');
-                }
-            });
+    function editRepair(id) {
+        $.get('api/fetch_report_detail.php?id=' + id, function (res) {
+            if (res.success) {
+                const r = res.report;
+                $('#editId').val(r.id);
+                $('#editAddDate').val(r.AddDate);
+                $('#editAddLocation').val(r.AddLocation);
+
+                // Render Edit Form Fields (Simplified for now)
+                renderEditFields(r);
+                $('#editModal').removeClass('hidden');
+            }
+        });
     }
-});
 
-// Close modal
-document.getElementById('closeEditModal').onclick = function() {
-    document.getElementById('editModal').classList.add('hidden');
-};
+    function renderEditFields(r) {
+        const containers = ['edit_topic1', 'edit_topic2', 'edit_topic3'];
+        containers.forEach(c => $(`#${c}`).empty());
 
-// Edit form submit
-document.getElementById('editRepairForm').onsubmit = function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    fetch('api/update_report_repair.php', {
-        method: 'POST',
-        body: formData
-    }).then(res => res.json()).then(result => {
-        if (result.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'สำเร็จ!',
-                text: 'แก้ไขข้อมูลเรียบร้อย',
-                confirmButtonColor: '#f59e0b'
+        const render = (arr, topicId) => {
+            arr.forEach(item => {
+                const count = r[item.id + 'Count'] || 0;
+                const damage = r[item.id + 'Damage'] || '';
+                const checked = count > 0 || damage !== '';
+
+                $(`#${topicId}`).append(`
+                <div class="space-y-2 mb-2">
+                    <div class="checkbox-modern">
+                        <input type="checkbox" id="edit_${item.id}" class="w-5 h-5 rounded-md text-blue-500" ${checked ? 'checked' : ''} onchange="const $d = $('#edit_${item.id}Details'); $d.toggleClass('hidden', !this.checked); $d.find('input').prop('disabled', !this.checked);">
+                        <label for="edit_${item.id}" class="flex-1 font-bold text-slate-700 dark:text-slate-300 cursor-pointer text-sm">${item.label}</label>
+                    </div>
+                    <div id="edit_${item.id}Details" class="${checked ? '' : 'hidden'} pl-10 pr-4 pb-4 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <input type="number" name="${item.id}Count" class="input-number-modern" min="0" value="${count}" ${checked ? '' : 'disabled'}>
+                            <input type="text" name="${item.id}Damage" class="flex-1 bg-white dark:bg-slate-700 border rounded-xl p-2 text-xs" value="${damage}" placeholder="ระบุอาการ..." ${checked ? '' : 'disabled'}>
+                        </div>
+                    </div>
+                </div>
+            `);
             });
-            document.getElementById('editModal').classList.add('hidden');
-            fetchRepairs();
-        } else {
-            Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาด', 'error');
-        }
-    });
-};
+        };
+        render(items, 'edit_topic1');
+        render(items2, 'edit_topic2');
+        render(items3, 'edit_topic3');
+    }
 
-// Delete button click
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('deleteBtn') || e.target.closest('.deleteBtn')) {
-        const btn = e.target.classList.contains('deleteBtn') ? e.target : e.target.closest('.deleteBtn');
-        const id = btn.dataset.id;
+    $('#editRepairForm').on('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        $.ajax({
+            url: 'api/update_report_repair.php', type: 'POST', data: formData, processData: false, contentType: false,
+            success: function (res) {
+                if (res.success) {
+                    Swal.fire({ icon: 'success', title: 'บันทึกแก้ไขเรียบร้อย', showConfirmButton: false, timer: 1500 });
+                    closeEditModal();
+                    fetchRepairs();
+                }
+            }
+        });
+    });
+
+    function deleteRepair(id) {
         Swal.fire({
-            title: 'ยืนยันการลบ?',
-            text: 'คุณต้องการลบรายการนี้หรือไม่',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'ลบ',
-            cancelButtonText: 'ยกเลิก'
-        }).then(result => {
+            title: 'ยืนยันการลบ?', text: "ข้อมูลจะถูกลบออกจากระบบ", icon: 'warning',
+            showCancelButton: true, confirmButtonColor: '#f43f5e', confirmButtonText: 'ลบข้อมูล'
+        }).then((result) => {
             if (result.isConfirmed) {
-                fetch('api/del_report_repair.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'id=' + encodeURIComponent(id)
-                })
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success) {
-                        Swal.fire('ลบแล้ว', '', 'success');
+                $.post('api/del_report_repair.php', { id }, function (res) {
+                    if (res.success) {
+                        Swal.fire('Deleted!', 'ข้อมูลถูกลบแล้ว', 'success');
                         fetchRepairs();
-                    } else {
-                        Swal.fire('ผิดพลาด', result.message || 'เกิดข้อผิดพลาด', 'error');
                     }
-                })
-                .catch(() => {
-                    Swal.fire('ผิดพลาด', 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์', 'error');
                 });
             }
         });
     }
-});
+
+    function viewDetail(id) {
+        $.get('api/fetch_report_detail.php?id=' + id, function(res) {
+            if (res.success) {
+                const r = res.report;
+                $('#detailTicketId').text('Ticket #' + r.id);
+                $('#detailDate').text(r.AddDate);
+                $('#detailLocation').text(r.AddLocation);
+                
+                // Render Items
+                const list = $('#detailItemsList').empty();
+                [...items, ...items2, ...items3].forEach(item => {
+                    const count = r[item.id + 'Count'];
+                    const damage = r[item.id + 'Damage'];
+                    if (count > 0 || (damage && damage !== '')) {
+                        list.append(`
+                            <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-white dark:bg-slate-700 rounded-xl flex items-center justify-center font-black text-blue-500 shadow-sm border border-slate-100 dark:border-slate-600">
+                                        ${count || 1}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-700 dark:text-white text-sm">${item.label}</p>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${damage || 'ไม่มีรายละเอียดอาการเสีย'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    }
+                });
+
+                // Render Steps
+                const status = parseInt(r.status || 0);
+                const conf = statusMap[status];
+                $('#detailStatusBadge').text(conf.label).css({ background: conf.color + '15', color: conf.color });
+                
+                const steps = $('#detailSteps').empty();
+                for(let i=0; i<5; i++) {
+                    const isActive = i <= status;
+                    const color = isActive ? statusMap[i].color : '#e2e8f0';
+                    steps.append(`<div class="status-step ${isActive ? 'active' : ''}" style="--step-color: ${color}"></div>`);
+                }
+
+                $('#detailModal').removeClass('hidden');
+            }
+        });
+    }
+
+    function closeDetailModal() { $('#detailModal').addClass('hidden'); }
+    function closeEditModal() { $('#editModal').addClass('hidden'); }
 </script>

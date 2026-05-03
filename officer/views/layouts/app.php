@@ -112,39 +112,49 @@ $role = $role ?? $_SESSION['role'] ?? 'เจ้าหน้าที่';
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #d946ef 0%, #c026d3 100%);
-            border-radius: 4px;
+            background: #cbd5e1;
+            border-radius: 20px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #c026d3 0%, #a21caf 100%);
+            background-color: #94a3b8;
         }
         
         /* Glassmorphism */
         .glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .dark .glass {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, #d946ef 0%, #f97316 50%, #eab308 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        /* Sidebar Toggle Animation */
+        .sidebar-mini-active .sidebar-toggle-icon {
+            transform: rotate(180deg);
         }
         
         /* Sidebar animation */
@@ -214,7 +224,7 @@ $role = $role ?? $_SESSION['role'] ?? 'เจ้าหน้าที่';
     <link rel="icon" type="image/png" href="../dist/img/<?php echo $global['logoLink'] ?? 'logo-phicha.png'; ?>">
 </head>
 
-<body class="font-mali bg-gradient-to-br from-slate-50 via-fuchsia-50 to-orange-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-screen transition-colors duration-500">
+<body class="font-mali bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-500">
     
     <!-- Preloader -->
     <div id="preloader" class="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-slate-900 transition-opacity duration-500">
@@ -230,13 +240,13 @@ $role = $role ?? $_SESSION['role'] ?? 'เจ้าหน้าที่';
         <?php include __DIR__ . '/../components/sidebar.php'; ?>
         
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col lg:ml-64">
+        <div id="main-content" class="flex-1 flex flex-col transition-all duration-300 lg:ml-64">
             <!-- Navbar -->
             <?php include __DIR__ . '/../components/navbar.php'; ?>
             
             <!-- Page Content -->
-            <main class="flex-1 p-4 md:p-6 lg:p-8">
-                <div class="max-w-7xl mx-auto animate-fade-in">
+            <main class="flex-1 p-4 md:p-6 lg:p-8 overflow-x-hidden">
+                <div class="max-w-[100%] mx-auto animate-fade-in">
                     <?php echo $content ?? ''; ?>
                 </div>
             </main>
@@ -273,13 +283,41 @@ $role = $role ?? $_SESSION['role'] ?? 'เจ้าหน้าที่';
             document.documentElement.classList.add('dark');
         }
         
-        // Mobile sidebar toggle
+        // Sidebar toggle
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
+            const mainContent = document.getElementById('main-content');
+            const isMobile = window.innerWidth < 1024;
+
+            if (isMobile) {
+                const overlay = document.getElementById('sidebar-overlay');
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            } else {
+                sidebar.classList.toggle('sidebar-mini');
+                mainContent.classList.toggle('lg:ml-64');
+                mainContent.classList.toggle('lg:ml-20');
+                
+                // Toggle icon rotation
+                const toggleIcon = document.querySelector('.sidebar-toggle-icon');
+                if (toggleIcon) toggleIcon.classList.toggle('rotate-180');
+                
+                localStorage.setItem('sidebarMini', sidebar.classList.contains('sidebar-mini'));
+            }
         }
+
+        // Check for saved sidebar preference on desktop
+        window.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            if (window.innerWidth >= 1024 && localStorage.getItem('sidebarMini') === 'true') {
+                sidebar.classList.add('sidebar-mini');
+                mainContent.classList.remove('lg:ml-64');
+                mainContent.classList.add('lg:ml-20');
+                const toggleIcon = document.querySelector('.sidebar-toggle-icon');
+                if (toggleIcon) toggleIcon.classList.add('rotate-180');
+            }
+        });
     </script>
 </body>
 </html>

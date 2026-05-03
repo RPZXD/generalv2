@@ -16,8 +16,9 @@ try {
     
     // ดึงข้อมูลการจองและรถยนต์จาก phichaia_general
     // Hack: CAST id เป็น CHAR เพื่อแก้ปัญหา driver บน production คืนค่า 0
-    $sql = "SELECT CAST(cb.id AS CHAR) as booking_id_str, cb.id, cb.car_id, cb.teacher_id, cb.booking_date, cb.start_time, cb.end_time, 
+    $sql = "SELECT CAST(cb.id AS CHAR) as booking_id_str, cb.id, cb.car_id, cb.teacher_id, cb.driver_id, cb.booking_date, cb.start_time, cb.end_time, 
                    cb.destination, cb.purpose, cb.passenger_count, cb.status, cb.created_at, cb.updated_at,
+                   cb.fuel_project, cb.fuel_cost, cb.mileage_end, cb.agency_type,
                    c.car_model, c.license_plate, c.car_type, c.capacity
             FROM car_bookings cb
             LEFT JOIN cars c ON cb.car_id = c.id
@@ -43,6 +44,14 @@ try {
             $booking['teacher_name'] = '-';
             $booking['teacher_position'] = '';
             $booking['teacher_phone'] = '';
+        }
+
+        // ดึงข้อมูลคนขับรถ
+        if (!empty($booking['driver_id'])) {
+            $driver = $dbUsers->getTeacherById($booking['driver_id']);
+            $booking['driver_name'] = $driver ? $driver['Teach_name'] : 'ไม่พบข้อมูลคนขับ';
+        } else {
+            $booking['driver_name'] = '-';
         }
     }
     unset($booking); // ยกเลิก reference

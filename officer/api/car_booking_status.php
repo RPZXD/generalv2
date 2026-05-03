@@ -21,6 +21,7 @@ if ($input === null && !empty($_POST)) {
 try {
     $id = $input['id'] ?? $_POST['id'] ?? '';
     $status = $input['status'] ?? $_POST['status'] ?? '';
+    $driver_id = $input['driver_id'] ?? $_POST['driver_id'] ?? null;
 
     // ตรวจสอบข้อมูลที่จำเป็น
     if (empty($id) || empty($status)) {
@@ -37,8 +38,14 @@ try {
 
     // อัปเดตสถานะ
     $db = new App\DatabaseGeneral();
-    $sql = "UPDATE car_bookings SET status = ?, updated_at = NOW() WHERE id = ?";
-    $params = [$status, $id];
+    
+    if ($status === 'approved' && $driver_id) {
+        $sql = "UPDATE car_bookings SET status = ?, driver_id = ?, updated_at = NOW() WHERE id = ?";
+        $params = [$status, $driver_id, $id];
+    } else {
+        $sql = "UPDATE car_bookings SET status = ?, updated_at = NOW() WHERE id = ?";
+        $params = [$status, $id];
+    }
 
     $stmt = $db->query($sql, $params);
     

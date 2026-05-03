@@ -1,13 +1,10 @@
 {
     "global": {
-        "pageTitle": "ระบบบริหารงานทั่วไป",
         "nameschool": "โรงเรียนพิชัย",
+        "pageTitle": "ระบบบริหารงานทั่วไป",
         "nameTitle": "GENERAL",
-        "footerCredit": "by ICT @Phichai school. พัฒนาระบบโดย นายทิวา เรืองศรี ทีมงาน ICT โรงเรียนพิชัย",
         "logoLink": "logo-phicha.png",
-        "address": "",
-        "phone": "",
-        "email": ""
+        "footerCredit": "by ICT @Phichai school. พัฒนาระบบโดย นายทิวา เรืองศรี ทีมงาน ICT โรงเรียนพิชัย"
     },
     "meeting": {
         "start_time": "08:00",
@@ -17,10 +14,29 @@
     },
     "car": {
         "advance_days": 15,
-        "require_approval": true
+        "require_approval": 1
     },
     "repair": {
         "default_days": 7,
-        "email_notification": true
+        "email_notification": 1
+    },
+    "notifications": {
+        "car_discord_webhook": "https:\/\/discord.com\/api\/webhooks\/1392375583215714334\/DBG1syD7eINQWBEYXhcOf2ctFh0Qo71N51V2jkZ9g-Lx4DKFZHy3S_w4FcWbyRf1B0xe",
+        "car_discord_enabled": 1,
+        "repair_discord_webhook": "https:\/\/discord.com\/api\/webhooks\/1392374493686665226\/_Sl9fYw2L193asCqZpxyJkw7ApioLhrPBlmImGwFvTY_L6I-kfvzK93W6yJqicbmlF09",
+        "repair_discord_enabled": 1,
+        "driver_discord_webhook": "",
+        "driver_discord_enabled": 0,
+        "line_token": "",
+        "line_enabled": 0,
+        "driver_line_token": "",
+        "driver_line_enabled": 0,
+        "telegram_bot_token": "8651480824:AAFrSmCpnfqjMd6BskpKmv-3vZyVpRk4Zrg",
+        "telegram_chat_id": "",
+        "telegram_enabled": 0,
+        "telegram_repair_chat_id": -1003940681082,
+        "telegram_repair_enabled": 1,
+        "telegram_driver_chat_id": "",
+        "telegram_driver_enabled": 0
     }
 }

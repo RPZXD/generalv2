@@ -8,8 +8,17 @@
             </h1>
             <p class="mt-1 text-gray-600 dark:text-gray-400">ตรวจสอบและอนุมัติการจองรถราชการ</p>
         </div>
-        <div class="flex gap-2">
-            <button id="refreshData" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all flex items-center gap-2">
+        <div class="flex flex-wrap gap-2">
+            <button onclick="sendDriverSchedule()"
+                class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all flex items-center gap-2">
+                <i class="fas fa-paper-plane"></i> ส่งงานให้คนขับ
+            </button>
+            <button onclick="window.location.href='car_booking_report.php'"
+                class="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all flex items-center gap-2">
+                <i class="fas fa-file-invoice"></i> สรุปรายงาน
+            </button>
+            <button id="refreshData"
+                class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all flex items-center gap-2">
                 <i class="fas fa-sync-alt"></i> รีเฟรช
             </button>
         </div>
@@ -19,7 +28,9 @@
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="glass rounded-2xl p-4 border-l-4 border-blue-500 hover:shadow-lg transition-all">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-xl text-2xl">📋</div>
+                <div
+                    class="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-xl text-2xl">
+                    📋</div>
                 <div>
                     <p class="text-2xl font-bold text-gray-900 dark:text-white" id="statTotal">0</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">ทั้งหมด</p>
@@ -28,7 +39,9 @@
         </div>
         <div class="glass rounded-2xl p-4 border-l-4 border-yellow-500 hover:shadow-lg transition-all">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 dark:bg-yellow-900/30 rounded-xl text-2xl">⏳</div>
+                <div
+                    class="w-12 h-12 flex items-center justify-center bg-yellow-100 dark:bg-yellow-900/30 rounded-xl text-2xl">
+                    ⏳</div>
                 <div>
                     <p class="text-2xl font-bold text-yellow-600" id="statPending">0</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">รอการอนุมัติ</p>
@@ -37,7 +50,9 @@
         </div>
         <div class="glass rounded-2xl p-4 border-l-4 border-green-500 hover:shadow-lg transition-all">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-green-100 dark:bg-green-900/30 rounded-xl text-2xl">✅</div>
+                <div
+                    class="w-12 h-12 flex items-center justify-center bg-green-100 dark:bg-green-900/30 rounded-xl text-2xl">
+                    ✅</div>
                 <div>
                     <p class="text-2xl font-bold text-green-600" id="statApproved">0</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">อนุมัติแล้ว</p>
@@ -46,7 +61,9 @@
         </div>
         <div class="glass rounded-2xl p-4 border-l-4 border-red-500 hover:shadow-lg transition-all">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-red-100 dark:bg-red-900/30 rounded-xl text-2xl">❌</div>
+                <div
+                    class="w-12 h-12 flex items-center justify-center bg-red-100 dark:bg-red-900/30 rounded-xl text-2xl">
+                    ❌</div>
                 <div>
                     <p class="text-2xl font-bold text-red-600" id="statRejected">0</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">ยกเลิก</p>
@@ -55,7 +72,9 @@
         </div>
         <div class="glass rounded-2xl p-4 border-l-4 border-emerald-500 hover:shadow-lg transition-all">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-xl text-2xl">📅</div>
+                <div
+                    class="w-12 h-12 flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/30 rounded-xl text-2xl">
+                    📅</div>
                 <div>
                     <p class="text-2xl font-bold text-emerald-600" id="statToday">0</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">วันนี้</p>
@@ -67,13 +86,17 @@
     <!-- Tab Navigation -->
     <div class="glass rounded-2xl p-2">
         <div class="flex flex-wrap gap-2">
-            <button class="tab-btn active px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="list">
+            <button
+                class="tab-btn active px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2"
+                data-tab="list">
                 <span class="text-lg">📋</span> รายการจอง
             </button>
-            <button class="tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="calendar">
+            <button class="tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2"
+                data-tab="calendar">
                 <span class="text-lg">📅</span> ปฏิทิน
             </button>
-            <button class="tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="cars">
+            <button class="tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2"
+                data-tab="cars">
                 <span class="text-lg">🚙</span> รถยนต์
             </button>
         </div>
@@ -86,32 +109,48 @@
             <!-- Filter Buttons -->
             <div class="glass rounded-2xl p-4 mb-6">
                 <div class="flex flex-wrap gap-2 mb-4">
-                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" data-status="">
+                    <button
+                        class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
+                        data-status="">
                         <span class="text-lg">📋</span> ทั้งหมด
                     </button>
-                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400" data-status="pending">
+                    <button
+                        class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400"
+                        data-status="pending">
                         <span class="text-lg">⏳</span> รอการอนุมัติ
                     </button>
-                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400" data-status="approved">
+                    <button
+                        class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400"
+                        data-status="approved">
                         <span class="text-lg">✅</span> อนุมัติแล้ว
                     </button>
-                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400" data-status="rejected">
+                    <button
+                        class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400"
+                        data-status="rejected">
                         <span class="text-lg">❌</span> ยกเลิกแล้ว
                     </button>
                 </div>
-                
+
                 <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <span class="flex items-center text-sm text-gray-500 mr-2">ช่วงเวลา:</span>
-                    <button class="date-filter-btn active px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" data-filter="all">
+                    <button
+                        class="date-filter-btn active px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                        data-filter="all">
                         <span class="text-lg">📅</span> ทั้งหมด
                     </button>
-                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="today">
+                    <button
+                        class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300"
+                        data-filter="today">
                         <span class="text-lg">📆</span> วันนี้
                     </button>
-                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="month">
+                    <button
+                        class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300"
+                        data-filter="month">
                         <span class="text-lg">🗓️</span> เดือนนี้
                     </button>
-                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="year">
+                    <button
+                        class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300"
+                        data-filter="year">
                         <span class="text-lg">📅</span> ปีนี้
                     </button>
                 </div>
@@ -135,7 +174,7 @@
                 <div id="calendarLegend" class="flex flex-wrap gap-3 mb-6 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
                     <span class="text-gray-500">กำลังโหลดข้อมูลรถยนต์...</span>
                 </div>
-                
+
                 <div id="calendar" class="fc-large"></div>
             </div>
         </div>
@@ -154,9 +193,11 @@
 
 <!-- Detail Modal -->
 <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-    <div class="glass rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative mx-4 animate-scale-in">
+    <div
+        class="glass rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative mx-4 animate-scale-in">
         <div class="sticky top-0 bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-t-2xl">
-            <button onclick="closeDetailModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors">
+            <button onclick="closeDetailModal()"
+                class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors">
                 <i class="fas fa-times"></i>
             </button>
             <h3 class="text-xl font-bold text-white flex items-center gap-2" id="detailTitle">
@@ -172,355 +213,464 @@
     </div>
 </div>
 
+<!-- Trip Outcome Modal (Save Fuel/Mileage) -->
+<div id="tripOutcomeModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] hidden">
+    <div class="glass rounded-2xl shadow-2xl w-full max-w-md relative mx-4 animate-scale-in">
+        <div class="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-2xl">
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fas fa-check-circle"></i> บันทึกข้อมูลการเดินทาง
+            </h3>
+        </div>
+        <form id="tripOutcomeForm" class="p-6 space-y-4">
+            <input type="hidden" id="outcomeBookingId">
+            
+            <div>
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">ประเภทงาน/หน่วยงาน</label>
+                <select id="outcomeAgencyType" class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="internal">หน่วยงานภายใน (สังกัด ศธ.)</option>
+                    <option value="external">หน่วยงานภายนอก (อื่นๆ)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">โครงการ/กิจกรรม (น้ำมัน)</label>
+                <input type="text" id="outcomeFuelProject" placeholder="ระบุโครงการที่ใช้น้ำมัน" class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">ค่าน้ำมัน (บาท)</label>
+                    <input type="number" id="outcomeFuelCost" step="0.01" class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">เลขไมล์ล่าสุด</label>
+                    <input type="number" id="outcomeMileageEnd" class="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="closeTripOutcomeModal()" class="flex-1 py-3 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30">บันทึกสำเร็จ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
-/* Loader */
-.loader {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #e5e7eb;
-    border-top-color: #10b981;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+    /* Loader */
+    .loader {
+        width: 48px;
+        height: 48px;
+        border: 4px solid #e5e7eb;
+        border-top-color: #10b981;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 
-/* Scale In Animation */
-@keyframes scale-in {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-.animate-scale-in { animation: scale-in 0.2s ease-out; }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
 
-/* Tab Styles */
-.tab-btn {
-    background: transparent;
-    color: #6b7280;
-}
-.tab-btn:hover {
-    background: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-}
-.tab-btn.active {
-    background: linear-gradient(135deg, #10b981, #14b8a6);
-    color: white;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-}
-.dark .tab-btn {
-    color: #9ca3af;
-}
-.dark .tab-btn:hover {
-    color: #10b981;
-}
+    /* Scale In Animation */
+    @keyframes scale-in {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
 
-/* Car Stat Badge */
-.car-stat-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 9999px;
-    background: rgba(0,0,0,0.05);
-}
-.dark .car-stat-badge {
-    background: rgba(255,255,255,0.1);
-}
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
 
-/* FullCalendar Large */
-.fc-large {
-    font-family: 'Mali', sans-serif !important;
-}
-.fc-large .fc-toolbar-title {
-    font-size: 1.5rem !important;
-    font-weight: 700 !important;
-}
-.fc-large .fc-button {
-    padding: 0.5rem 1rem !important;
-    border-radius: 0.75rem !important;
-    font-weight: 500 !important;
-}
-.fc-large .fc-button-primary {
-    background: linear-gradient(135deg, #10b981, #14b8a6) !important;
-    border: none !important;
-}
-.fc-large .fc-button-primary:hover {
-    background: linear-gradient(135deg, #059669, #0d9488) !important;
-}
-.fc-large .fc-button-primary:disabled {
-    background: linear-gradient(135deg, #10b981, #14b8a6) !important;
-    opacity: 0.7;
-}
-.fc-large .fc-event {
-    border-radius: 6px !important;
-    padding: 4px 8px !important;
-    font-size: 0.8rem !important;
-    cursor: pointer !important;
-    border: none !important;
-}
-.fc-large .fc-daygrid-day-number {
-    font-size: 1rem !important;
-    padding: 8px !important;
-}
-.fc-large .fc-col-header-cell-cushion {
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-}
+    .animate-scale-in {
+        animation: scale-in 0.2s ease-out;
+    }
 
-/* Dark Mode Calendar */
-.dark .fc-large .fc-toolbar-title,
-.dark .fc-large .fc-col-header-cell-cushion,
-.dark .fc-large .fc-daygrid-day-number {
-    color: #e5e7eb !important;
-}
-.dark .fc-large .fc-day {
-    background: rgba(30, 41, 59, 0.5) !important;
-}
-.dark .fc-large .fc-day-today {
-    background: rgba(16, 185, 129, 0.1) !important;
-}
+    /* Tab Styles */
+    .tab-btn {
+        background: transparent;
+        color: #6b7280;
+    }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #10b981; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #059669; }
+    .tab-btn:hover {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
 
-/* Card Hover Effect */
-.booking-card {
-    transition: all 0.3s ease;
-}
-.booking-card:hover {
-    transform: translateY(-2px);
-}
+    .tab-btn.active {
+        background: linear-gradient(135deg, #10b981, #14b8a6);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .dark .tab-btn {
+        color: #9ca3af;
+    }
+
+    .dark .tab-btn:hover {
+        color: #10b981;
+    }
+
+    /* Car Stat Badge */
+    .car-stat-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 9999px;
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .dark .car-stat-badge {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* FullCalendar Large */
+    .fc-large {
+        font-family: 'Mali', sans-serif !important;
+    }
+
+    .fc-large .fc-toolbar-title {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+    }
+
+    .fc-large .fc-button {
+        padding: 0.5rem 1rem !important;
+        border-radius: 0.75rem !important;
+        font-weight: 500 !important;
+    }
+
+    .fc-large .fc-button-primary {
+        background: linear-gradient(135deg, #10b981, #14b8a6) !important;
+        border: none !important;
+    }
+
+    .fc-large .fc-button-primary:hover {
+        background: linear-gradient(135deg, #059669, #0d9488) !important;
+    }
+
+    .fc-large .fc-button-primary:disabled {
+        background: linear-gradient(135deg, #10b981, #14b8a6) !important;
+        opacity: 0.7;
+    }
+
+    .fc-large .fc-event {
+        border-radius: 6px !important;
+        padding: 4px 8px !important;
+        font-size: 0.8rem !important;
+        cursor: pointer !important;
+        border: none !important;
+    }
+
+    .fc-large .fc-daygrid-day-number {
+        font-size: 1rem !important;
+        padding: 8px !important;
+    }
+
+    .fc-large .fc-col-header-cell-cushion {
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+    }
+
+    /* Dark Mode Calendar */
+    .dark .fc-large .fc-toolbar-title,
+    .dark .fc-large .fc-col-header-cell-cushion,
+    .dark .fc-large .fc-daygrid-day-number {
+        color: #e5e7eb !important;
+    }
+
+    .dark .fc-large .fc-day {
+        background: rgba(30, 41, 59, 0.5) !important;
+    }
+
+    .dark .fc-large .fc-day-today {
+        background: rgba(16, 185, 129, 0.1) !important;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #10b981;
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #059669;
+    }
+
+    /* Card Hover Effect */
+    .booking-card {
+        transition: all 0.3s ease;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-2px);
+    }
 </style>
 
 <!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
 <script>
-let calendar;
-let currentFilter = '';
-let currentDateFilter = 'all';
-let allBookings = [];
-let currentTab = 'list';
-let carsData = []; // Store cars data from database
+    let calendar;
+    let currentFilter = '';
+    let currentDateFilter = 'all';
+    let allBookings = [];
+    let currentTab = 'list';
+    let carsData = []; // Store cars data from database
+    let driversData = []; // Store drivers data from database
 
-// Color palette for cars
-const carColors = [
-    { bg: '#3b82f6', name: 'blue', light: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
-    { bg: '#10b981', name: 'emerald', light: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
-    { bg: '#f59e0b', name: 'amber', light: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
-    { bg: '#8b5cf6', name: 'purple', light: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' },
-    { bg: '#ec4899', name: 'pink', light: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400' },
-    { bg: '#06b6d4', name: 'cyan', light: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400' },
-    { bg: '#f97316', name: 'orange', light: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' },
-    { bg: '#ef4444', name: 'red', light: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' }
-];
+    // Color palette for cars
+    const carColors = [
+        { bg: '#3b82f6', name: 'blue', light: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
+        { bg: '#10b981', name: 'emerald', light: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
+        { bg: '#f59e0b', name: 'amber', light: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
+        { bg: '#8b5cf6', name: 'purple', light: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' },
+        { bg: '#ec4899', name: 'pink', light: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400' },
+        { bg: '#06b6d4', name: 'cyan', light: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400' },
+        { bg: '#f97316', name: 'orange', light: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' },
+        { bg: '#ef4444', name: 'red', light: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' }
+    ];
 
-$(document).ready(function() {
-    fetchCarsData(); // Load cars first
-    fetchBookings();
-    setupEventHandlers();
-});
+    $(document).ready(function () {
+        fetchCarsData(); // Load cars first
+        fetchDriversData(); // Load drivers
+        fetchBookings();
+        setupEventHandlers();
+    });
 
-function initCalendar(forceReinit = false) {
-    // If calendar already exists and not forcing reinit, just refetch
-    if (calendar && !forceReinit) {
-        calendar.refetchEvents();
-        return;
-    }
-    
-    // Destroy existing calendar if reinitializing
-    if (calendar) {
-        calendar.destroy();
-        calendar = null;
-    }
-    
-    const calendarEl = document.getElementById('calendar');
-    if (!calendarEl) {
-        console.error('Calendar element not found');
-        return;
-    }
-    
-    // Find the most recent booking date to set as initial date
-    let initialDate = new Date().toISOString().split('T')[0]; // Default to today YYYY-MM-DD
-    if (allBookings.length > 0) {
-        // Sort bookings by date descending and get the most recent one
-        const sortedBookings = [...allBookings].sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
-        const mostRecentDate = sortedBookings[0].booking_date;
-        if (mostRecentDate) {
-            initialDate = mostRecentDate.split(' ')[0]; // Ensure YYYY-MM-DD
-        }
-    }
-    
-    calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        initialDate: initialDate,
-        locale: 'th',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
-        },  
-        height: 700,
-        dayMaxEvents: 3,
-        eventTimeFormat: {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        },
-        events: function(fetchInfo, successCallback, failureCallback) {
-            try {
-                const events = allBookings.filter(b => b.status != 'rejected' && b.status != 2).map(function(booking) {
-                    try {
-                        if (!booking.booking_date) return null;
-
-                        let color = getCarColor(booking.car_id);
-                        let carName = booking.car_model || 'รถยนต์';
-                        
-                        // Get base date from booking_date
-                        let baseDate = booking.booking_date ? booking.booking_date.split(' ')[0] : null;
-                        if (!baseDate) return null;
-                        
-                        // Helper function to parse datetime or time-only fields
-                        function parseDateTimeField(field, fallbackDate, fallbackTime) {
-                            if (!field) return { date: fallbackDate, time: fallbackTime };
-                            
-                            const fieldStr = String(field).trim();
-                            
-                            // Check if it contains a date (has space and starts with year)
-                            if (fieldStr.includes(' ') && /^\d{4}-\d{2}-\d{2}/.test(fieldStr)) {
-                                const parts = fieldStr.split(' ');
-                                const timePart = parts[1] ? parts[1].split(':').slice(0, 2).join(':') : fallbackTime;
-                                return { date: parts[0], time: timePart || fallbackTime };
-                            } else {
-                                // It's time-only, use fallback date
-                                const timePart = fieldStr.split(':').slice(0, 2).join(':');
-                                return { date: fallbackDate, time: timePart || fallbackTime };
-                            }
-                        }
-                        
-                        // Parse start and end
-                        const startInfo = parseDateTimeField(booking.start_time, baseDate, '08:00');
-                        const endInfo = parseDateTimeField(booking.end_time, baseDate, '17:00');
-                        
-                        // Validate dates
-                        if (!startInfo.date || !endInfo.date) return null;
-                        
-                        // Check if multi-day booking (only if both dates are valid)
-                        const isMultiDay = startInfo.date !== endInfo.date;
-                        
-                        // For multi-day events, FullCalendar needs end date to be exclusive
-                        let endDateForCalendar = endInfo.date;
-                        if (isMultiDay) {
-                            try {
-                                const endDateObj = new Date(endInfo.date + 'T00:00:00');
-                                if (!isNaN(endDateObj.getTime())) {
-                                    endDateObj.setDate(endDateObj.getDate() + 1);
-                                    endDateForCalendar = endDateObj.toISOString().split('T')[0];
-                                }
-                            } catch (e) {
-                                // If date parsing fails, keep original endInfo.date
-                                console.warn('Date parsing failed for:', endInfo.date);
-                            }
-                        }
-                        
-                        return {
-                            id: booking.id,
-                            title: `${carName} - ${booking.destination || 'ไม่ระบุ'}`,
-                            start: `${startInfo.date}T${startInfo.time}`,
-                            end: isMultiDay ? endDateForCalendar : `${endInfo.date}T${endInfo.time}`,
-                            allDay: isMultiDay,
-                            color: (booking.status == 0 || booking.status == 'pending') ? '#fbbf24' : color,
-                            extendedProps: { booking: booking }
-                        };
-                    } catch (bookingError) {
-                        console.warn('Error processing booking:', booking.id, bookingError);
-                        return null;
-                    }
-                }).filter(e => e !== null);
-                
-                successCallback(events);
-            } catch (error) {
-                console.error('Error generating calendar events:', error);
-                failureCallback(error);
+    function fetchDriversData() {
+        $.ajax({
+            url: 'api/driver_list.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    driversData = response.list || [];
+                } else {
+                    console.warn('Driver API error:', response.message);
+                    driversData = [];
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to load drivers:', error);
+                driversData = [];
             }
-        },
-        eventClick: function(info) {
-            showDetailModal(info.event.extendedProps.booking);
-        }
-    });
-    calendar.render();
-}
-
-// Fetch cars from database
-function fetchCarsData() {
-    $.ajax({
-        url: 'api/get_cars.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            carsData = response.cars || [];
-            renderCarsTab();
-            renderCalendarLegend();
-        },
-        error: function() {
-            console.error('Failed to load cars');
-            carsData = [];
-        }
-    });
-}
-
-// Get color for car based on its index
-function getCarColor(carId) {
-    const idx = carsData.findIndex(c => c.id == carId);
-    return carColors[idx % carColors.length]?.bg || '#3b82f6';
-}
-
-// Get color class for car
-function getCarColorClass(carId) {
-    const idx = carsData.findIndex(c => c.id == carId);
-    return carColors[idx % carColors.length]?.light || carColors[0].light;
-}
-
-// Render Cars Tab with dynamic data
-function renderCarsTab() {
-    if (carsData.length === 0) {
-        $('#carsGrid').html('<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">🚗</div><p class="text-gray-500">ยังไม่มีรถยนต์ในระบบ</p><p class="text-sm text-gray-400 mt-2">กรุณาเพิ่มรถยนต์ในหน้าตั้งค่า</p></div>');
-        return;
+        });
     }
-    
-    let html = '';
-    carsData.forEach((car, idx) => {
-        if (car.status != 1 && car.status != 'active') return; // Only show active cars
-        
-        const colorIdx = idx % carColors.length;
-        const gradientColors = [
-            'from-blue-500 to-indigo-600',
-            'from-emerald-500 to-teal-600',
-            'from-amber-500 to-orange-600',
-            'from-purple-500 to-violet-600',
-            'from-pink-500 to-rose-600',
-            'from-cyan-500 to-sky-600',
-            'from-orange-500 to-red-600',
-            'from-red-500 to-rose-600'
-        ];
-        const textColors = [
-            'text-blue-500',
-            'text-emerald-500',
-            'text-amber-500',
-            'text-purple-500',
-            'text-pink-500',
-            'text-cyan-500',
-            'text-orange-500',
-            'text-red-500'
-        ];
-        
-        const gradient = gradientColors[colorIdx];
-        const textColor = textColors[colorIdx];
-        const carEmoji = getCarEmoji(car.car_type);
-        
-        html += `
+
+    function initCalendar(forceReinit = false) {
+        // If calendar already exists and not forcing reinit, just refetch
+        if (calendar && !forceReinit) {
+            calendar.refetchEvents();
+            return;
+        }
+
+        // Destroy existing calendar if reinitializing
+        if (calendar) {
+            calendar.destroy();
+            calendar = null;
+        }
+
+        const calendarEl = document.getElementById('calendar');
+        if (!calendarEl) {
+            console.error('Calendar element not found');
+            return;
+        }
+
+        // Find the most recent booking date to set as initial date
+        let initialDate = new Date().toISOString().split('T')[0]; // Default to today YYYY-MM-DD
+        if (allBookings.length > 0) {
+            // Sort bookings by date descending and get the most recent one
+            const sortedBookings = [...allBookings].sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
+            const mostRecentDate = sortedBookings[0].booking_date;
+            if (mostRecentDate) {
+                initialDate = mostRecentDate.split(' ')[0]; // Ensure YYYY-MM-DD
+            }
+        }
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            initialDate: initialDate,
+            locale: 'th',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            height: 700,
+            dayMaxEvents: 3,
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            },
+            events: function (fetchInfo, successCallback, failureCallback) {
+                try {
+                    const events = allBookings.filter(b => b.status != 'rejected' && b.status != 2).map(function (booking) {
+                        try {
+                            if (!booking.booking_date) return null;
+
+                            let color = getCarColor(booking.car_id);
+                            let carName = booking.car_model || 'รถยนต์';
+
+                            // Get base date from booking_date
+                            let baseDate = booking.booking_date ? booking.booking_date.split(' ')[0] : null;
+                            if (!baseDate) return null;
+
+                            // Helper function to parse datetime or time-only fields
+                            function parseDateTimeField(field, fallbackDate, fallbackTime) {
+                                if (!field) return { date: fallbackDate, time: fallbackTime };
+
+                                const fieldStr = String(field).trim();
+
+                                // Check if it contains a date (has space and starts with year)
+                                if (fieldStr.includes(' ') && /^\d{4}-\d{2}-\d{2}/.test(fieldStr)) {
+                                    const parts = fieldStr.split(' ');
+                                    const timePart = parts[1] ? parts[1].split(':').slice(0, 2).join(':') : fallbackTime;
+                                    return { date: parts[0], time: timePart || fallbackTime };
+                                } else {
+                                    // It's time-only, use fallback date
+                                    const timePart = fieldStr.split(':').slice(0, 2).join(':');
+                                    return { date: fallbackDate, time: timePart || fallbackTime };
+                                }
+                            }
+
+                            // Parse start and end
+                            const startInfo = parseDateTimeField(booking.start_time, baseDate, '08:00');
+                            const endInfo = parseDateTimeField(booking.end_time, baseDate, '17:00');
+
+                            // Validate dates
+                            if (!startInfo.date || !endInfo.date) return null;
+
+                            // Check if multi-day booking (only if both dates are valid)
+                            const isMultiDay = startInfo.date !== endInfo.date;
+
+                            // For multi-day events, FullCalendar needs end date to be exclusive
+                            let endDateForCalendar = endInfo.date;
+                            if (isMultiDay) {
+                                try {
+                                    const endDateObj = new Date(endInfo.date + 'T00:00:00');
+                                    if (!isNaN(endDateObj.getTime())) {
+                                        endDateObj.setDate(endDateObj.getDate() + 1);
+                                        endDateForCalendar = endDateObj.toISOString().split('T')[0];
+                                    }
+                                } catch (e) {
+                                    // If date parsing fails, keep original endInfo.date
+                                    console.warn('Date parsing failed for:', endInfo.date);
+                                }
+                            }
+
+                            return {
+                                id: booking.id,
+                                title: `${carName} - ${booking.destination || 'ไม่ระบุ'}`,
+                                start: `${startInfo.date}T${startInfo.time}`,
+                                end: isMultiDay ? endDateForCalendar : `${endInfo.date}T${endInfo.time}`,
+                                allDay: isMultiDay,
+                                color: (booking.status == 0 || booking.status == 'pending') ? '#fbbf24' : color,
+                                extendedProps: { booking: booking }
+                            };
+                        } catch (bookingError) {
+                            console.warn('Error processing booking:', booking.id, bookingError);
+                            return null;
+                        }
+                    }).filter(e => e !== null);
+
+                    successCallback(events);
+                } catch (error) {
+                    console.error('Error generating calendar events:', error);
+                    failureCallback(error);
+                }
+            },
+            eventClick: function (info) {
+                showDetailModal(info.event.extendedProps.booking);
+            }
+        });
+        calendar.render();
+    }
+
+    // Fetch cars from database
+    function fetchCarsData() {
+        $.ajax({
+            url: 'api/get_cars.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                carsData = response.cars || [];
+                renderCarsTab();
+                renderCalendarLegend();
+            },
+            error: function () {
+                console.error('Failed to load cars');
+                carsData = [];
+            }
+        });
+    }
+
+    // Get color for car based on its index
+    function getCarColor(carId) {
+        const idx = carsData.findIndex(c => c.id == carId);
+        return carColors[idx % carColors.length]?.bg || '#3b82f6';
+    }
+
+    // Get color class for car
+    function getCarColorClass(carId) {
+        const idx = carsData.findIndex(c => c.id == carId);
+        return carColors[idx % carColors.length]?.light || carColors[0].light;
+    }
+
+    // Render Cars Tab with dynamic data
+    function renderCarsTab() {
+        if (carsData.length === 0) {
+            $('#carsGrid').html('<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">🚗</div><p class="text-gray-500">ยังไม่มีรถยนต์ในระบบ</p><p class="text-sm text-gray-400 mt-2">กรุณาเพิ่มรถยนต์ในหน้าตั้งค่า</p></div>');
+            return;
+        }
+
+        let html = '';
+        carsData.forEach((car, idx) => {
+            if (car.status != 1 && car.status != 'active') return; // Only show active cars
+
+            const colorIdx = idx % carColors.length;
+            const gradientColors = [
+                'from-blue-500 to-indigo-600',
+                'from-emerald-500 to-teal-600',
+                'from-amber-500 to-orange-600',
+                'from-purple-500 to-violet-600',
+                'from-pink-500 to-rose-600',
+                'from-cyan-500 to-sky-600',
+                'from-orange-500 to-red-600',
+                'from-red-500 to-rose-600'
+            ];
+            const textColors = [
+                'text-blue-500',
+                'text-emerald-500',
+                'text-amber-500',
+                'text-purple-500',
+                'text-pink-500',
+                'text-cyan-500',
+                'text-orange-500',
+                'text-red-500'
+            ];
+
+            const gradient = gradientColors[colorIdx];
+            const textColor = textColors[colorIdx];
+            const carEmoji = getCarEmoji(car.car_type);
+
+            html += `
         <div class="glass rounded-2xl overflow-hidden group hover:shadow-xl transition-all">
             <div class="h-32 bg-gradient-to-br ${gradient} flex items-center justify-center relative">
                 <span class="text-6xl transform group-hover:scale-110 transition-transform">${carEmoji}</span>
@@ -544,312 +694,334 @@ function renderCarsTab() {
             </div>
         </div>
         `;
-    });
-    
-    $('#carsGrid').html(html || '<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">🚗</div><p class="text-gray-500">ไม่มีรถยนต์ที่เปิดใช้งาน</p></div>');
-}
+        });
 
-// Get car emoji based on type
-function getCarEmoji(carType) {
-    if (!carType) return '🚗';
-    const type = carType.toLowerCase();
-    if (type.includes('รถตู้') || type.includes('van')) return '🚐';
-    if (type.includes('รถบัส') || type.includes('bus')) return '🚌';
-    if (type.includes('กระบะ') || type.includes('pickup')) return '🛻';
-    if (type.includes('suv')) return '🚙';
-    if (type.includes('มอเตอร์ไซค์') || type.includes('motorcycle')) return '🏍️';
-    return '🚗';
-}
-
-// Render Calendar Legend dynamically
-function renderCalendarLegend() {
-    if (carsData.length === 0) {
-        $('#calendarLegend').html('<span class="text-gray-500">ไม่มีข้อมูลรถยนต์</span>');
-        return;
+        $('#carsGrid').html(html || '<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">🚗</div><p class="text-gray-500">ไม่มีรถยนต์ที่เปิดใช้งาน</p></div>');
     }
-    
-    let html = '<span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-medium text-sm mr-2"><span class="w-3 h-3 rounded-full bg-yellow-500"></span> รออนุมัติ</span>';
-    
-    carsData.forEach((car, idx) => {
-        if (car.status != 1 && car.status != 'active') return;
-        const colorIdx = idx % carColors.length;
-        const color = carColors[colorIdx];
-        const carEmoji = getCarEmoji(car.car_type);
-        
-        html += `
+
+    // Get car emoji based on type
+    function getCarEmoji(carType) {
+        if (!carType) return '🚗';
+        const type = carType.toLowerCase();
+        if (type.includes('รถตู้') || type.includes('van')) return '🚐';
+        if (type.includes('รถบัส') || type.includes('bus')) return '🚌';
+        if (type.includes('กระบะ') || type.includes('pickup')) return '🛻';
+        if (type.includes('suv')) return '🚙';
+        if (type.includes('มอเตอร์ไซค์') || type.includes('motorcycle')) return '🏍️';
+        return '🚗';
+    }
+
+    // Render Calendar Legend dynamically
+    function renderCalendarLegend() {
+        if (carsData.length === 0) {
+            $('#calendarLegend').html('<span class="text-gray-500">ไม่มีข้อมูลรถยนต์</span>');
+            return;
+        }
+
+        let html = '<span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-medium text-sm mr-2"><span class="w-3 h-3 rounded-full bg-yellow-500"></span> รออนุมัติ</span>';
+
+        carsData.forEach((car, idx) => {
+            if (car.status != 1 && car.status != 'active') return;
+            const colorIdx = idx % carColors.length;
+            const color = carColors[colorIdx];
+            const carEmoji = getCarEmoji(car.car_type);
+
+            html += `
         <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg ${color.light} font-medium text-sm">
             <span class="w-3 h-3 rounded-full" style="background-color: ${color.bg}"></span> ${carEmoji} ${car.car_model || 'รถยนต์'}
         </span>
         `;
-    });
-    
-    $('#calendarLegend').html(html || '<span class="text-gray-500">ไม่มีรถยนต์ที่เปิดใช้งาน</span>');
-}
+        });
 
-function fetchBookings() {
-    $.ajax({
-        url: 'api/car_booking_list.php',
-        type: 'GET',
-        dataType: 'json',
-        beforeSend: function() {
-            $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="loader mx-auto mb-4"></div><p class="text-gray-400">กำลังโหลด...</p></div>');
-        },
-        success: function(response) {
-            let bookings = response.list || [];
-            
-            // Normalize booking ID to ensure we have a valid ID
-            // Priority: booking_id_str (casted) > booking_id > id
-            bookings = bookings.map(b => {
-                const rawId = b.booking_id_str || b.booking_id || b.id;
-                b.id = parseInt(rawId); // Convert back to int for consistency
-                return b;
+        $('#calendarLegend').html(html || '<span class="text-gray-500">ไม่มีรถยนต์ที่เปิดใช้งาน</span>');
+    }
+
+    function fetchBookings() {
+        $.ajax({
+            url: 'api/car_booking_list.php',
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+                $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="loader mx-auto mb-4"></div><p class="text-gray-400">กำลังโหลด...</p></div>');
+            },
+            success: function (response) {
+                let bookings = response.list || [];
+
+                // Normalize booking ID to ensure we have a valid ID
+                // Priority: booking_id_str (casted) > booking_id > id
+                bookings = bookings.map(b => {
+                    const rawId = b.booking_id_str || b.booking_id || b.id;
+                    b.id = parseInt(rawId); // Convert back to int for consistency
+                    return b;
+                });
+
+                // Debug logging
+                // console.log('Bookings loaded:', bookings.length);
+                if (bookings.length > 0) {
+                    // console.log('Sample booking:', bookings[0], 'Raw ID source:', bookings[0].booking_id_str);
+                }
+
+                allBookings = bookings;
+                updateStats();
+                renderBookings(filterBookings());
+                updateCarStats();
+                // Reinit calendar if on calendar tab, or just refetch if it exists
+                if (currentTab === 'calendar') {
+                    initCalendar(true); // Force reinit to update initialDate
+                } else if (calendar) {
+                    calendar.refetchEvents();
+                }
+            },
+            error: function () {
+                $('#bookingList').html('<div class="col-span-full text-center py-12 text-red-500"><i class="fas fa-exclamation-circle text-5xl mb-4"></i><p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>');
+            }
+        });
+    }
+
+    function updateStats() {
+        const today = new Date().toISOString().split('T')[0];
+        const pending = allBookings.filter(b => b.status == 0 || b.status == 'pending').length;
+        const approved = allBookings.filter(b => b.status == 1 || b.status == 'approved').length;
+        const rejected = allBookings.filter(b => b.status == 2 || b.status == 'rejected').length;
+        const todayCount = allBookings.filter(b => b.booking_date === today && (b.status == 1 || b.status == 'approved')).length;
+
+        $('#statTotal').text(allBookings.length);
+        $('#statPending').text(pending);
+        $('#statApproved').text(approved);
+        $('#statRejected').text(rejected);
+        $('#statToday').text(todayCount);
+    }
+
+    function updateCarStats() {
+        carsData.forEach(car => {
+            if (car.status != 1 && car.status != 'active') return;
+            const pending = allBookings.filter(b => b.car_id == car.id && (b.status == 0 || b.status == 'pending')).length;
+            const approved = allBookings.filter(b => b.car_id == car.id && (b.status == 1 || b.status == 'approved')).length;
+            $(`.car-stat-badge[data-car-id="${car.id}"][data-type="pending"]`).text(`⏳ ${pending}`);
+            $(`.car-stat-badge[data-car-id="${car.id}"][data-type="approved"]`).text(`✅ ${approved}`);
+        });
+    }
+
+    function filterBookings() {
+        let filtered = allBookings;
+
+        // Filter by status
+        if (currentFilter !== '') {
+            filtered = filtered.filter(b => {
+                if (currentFilter === 'pending') return b.status == 0 || b.status == 'pending';
+                if (currentFilter === 'approved') return b.status == 1 || b.status == 'approved';
+                if (currentFilter === 'rejected') return b.status == 2 || b.status == 'rejected';
+                return true;
             });
-            
-            // Debug logging
-            // console.log('Bookings loaded:', bookings.length);
-            if (bookings.length > 0) {
-                // console.log('Sample booking:', bookings[0], 'Raw ID source:', bookings[0].booking_id_str);
-            }
-            
-            allBookings = bookings;
-            updateStats();
-            renderBookings(filterBookings());
-            updateCarStats();
-            // Reinit calendar if on calendar tab, or just refetch if it exists
-            if (currentTab === 'calendar') {
-                initCalendar(true); // Force reinit to update initialDate
-            } else if (calendar) {
-                calendar.refetchEvents();
-            }
-        },
-        error: function() {
-            $('#bookingList').html('<div class="col-span-full text-center py-12 text-red-500"><i class="fas fa-exclamation-circle text-5xl mb-4"></i><p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>');
         }
-    });
-}
 
-function updateStats() {
-    const today = new Date().toISOString().split('T')[0];
-    const pending = allBookings.filter(b => b.status == 0 || b.status == 'pending').length;
-    const approved = allBookings.filter(b => b.status == 1 || b.status == 'approved').length;
-    const rejected = allBookings.filter(b => b.status == 2 || b.status == 'rejected').length;
-    const todayCount = allBookings.filter(b => b.booking_date === today && (b.status == 1 || b.status == 'approved')).length;
-    
-    $('#statTotal').text(allBookings.length);
-    $('#statPending').text(pending);
-    $('#statApproved').text(approved);
-    $('#statRejected').text(rejected);
-    $('#statToday').text(todayCount);
-}
+        // Filter by date
+        if (currentDateFilter !== 'all') {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            const currentDate = today.getDate();
 
-function updateCarStats() {
-    carsData.forEach(car => {
-        if (car.status != 1 && car.status != 'active') return;
-        const pending = allBookings.filter(b => b.car_id == car.id && (b.status == 0 || b.status == 'pending')).length;
-        const approved = allBookings.filter(b => b.car_id == car.id && (b.status == 1 || b.status == 'approved')).length;
-        $(`.car-stat-badge[data-car-id="${car.id}"][data-type="pending"]`).text(`⏳ ${pending}`);
-        $(`.car-stat-badge[data-car-id="${car.id}"][data-type="approved"]`).text(`✅ ${approved}`);
-    });
-}
+            filtered = filtered.filter(b => {
+                const bookingDate = new Date(b.booking_date);
+                const bookingYear = bookingDate.getFullYear();
+                const bookingMonth = bookingDate.getMonth();
+                const bookingDay = bookingDate.getDate();
 
-function filterBookings() {
-    let filtered = allBookings;
-    
-    // Filter by status
-    if (currentFilter !== '') {
-        filtered = filtered.filter(b => {
-            if (currentFilter === 'pending') return b.status == 0 || b.status == 'pending';
-            if (currentFilter === 'approved') return b.status == 1 || b.status == 'approved';
-            if (currentFilter === 'rejected') return b.status == 2 || b.status == 'rejected';
-            return true;
-        });
-    }
-    
-    // Filter by date
-    if (currentDateFilter !== 'all') {
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const currentDate = today.getDate();
-        
-        filtered = filtered.filter(b => {
-            const bookingDate = new Date(b.booking_date);
-            const bookingYear = bookingDate.getFullYear();
-            const bookingMonth = bookingDate.getMonth();
-            const bookingDay = bookingDate.getDate();
-            
-            if (currentDateFilter === 'today') {
-                return bookingYear === currentYear && bookingMonth === currentMonth && bookingDay === currentDate;
-            } else if (currentDateFilter === 'month') {
-                return bookingYear === currentYear && bookingMonth === currentMonth;
-            } else if (currentDateFilter === 'year') {
-                return bookingYear === currentYear;
-            }
-            return true;
-        });
-    }
-    
-    return filtered;
-}
+                if (currentDateFilter === 'today') {
+                    return bookingYear === currentYear && bookingMonth === currentMonth && bookingDay === currentDate;
+                } else if (currentDateFilter === 'month') {
+                    return bookingYear === currentYear && bookingMonth === currentMonth;
+                } else if (currentDateFilter === 'year') {
+                    return bookingYear === currentYear;
+                }
+                return true;
+            });
+        }
 
-function renderBookings(bookings) {
-    if (bookings.length === 0) {
-        $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">📭</div><p class="text-gray-500">ไม่พบรายการจอง</p></div>');
-        return;
+        return filtered;
     }
 
-    let html = '';
-    bookings.forEach(function(booking) {
-        let statusInfo = getStatusInfo(booking.status);
-        let carEmoji = getCarEmoji(booking.car_type);
-        let carName = booking.car_model || 'รถยนต์';
-        if (booking.license_plate) carName += ` (${booking.license_plate})`;
-        
-        // Get car color for identification
-        const carColor = getCarColor(booking.car_id);
-        
-        // Format date and time in Thai
-        const formattedDate = formatThaiDateShort(booking.booking_date);
-        const formattedTime = formatThaiTimeRange(booking.start_time, booking.end_time);
+    function renderBookings(bookings) {
+        if (bookings.length === 0) {
+            $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">📭</div><p class="text-gray-500">ไม่พบรายการจอง</p></div>');
+            return;
+        }
 
-        html += `
-        <div class="booking-card bg-white dark:bg-slate-800 rounded-2xl border-l-4 shadow-sm hover:shadow-lg overflow-hidden" style="border-left-color: ${carColor}">
-            <div class="p-5">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="relative">
-                            <span class="text-3xl">${carEmoji}</span>
-                            <span class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-slate-800" style="background-color: ${carColor}"></span>
+        let html = '';
+        bookings.forEach(function (booking) {
+            let statusInfo = getStatusInfo(booking.status);
+            let carEmoji = getCarEmoji(booking.car_type);
+            let carName = booking.car_model || 'รถยนต์';
+            if (booking.license_plate) carName += ` (${booking.license_plate})`;
+
+            // Get car color for identification
+            const carColor = getCarColor(booking.car_id);
+
+            // Format date and time in Thai
+            const formattedDate = formatThaiDateShort(booking.booking_date);
+            const formattedTime = formatThaiTimeRange(booking.start_time, booking.end_time);
+
+            html += `
+            <div class="booking-card bg-white dark:bg-slate-800 rounded-2xl border-l-4 shadow-sm hover:shadow-lg overflow-hidden transition-all duration-300" style="border-left-color: ${carColor}">
+                <div class="p-5">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <span class="text-3xl">${carEmoji}</span>
+                                <span class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-slate-800" style="background-color: ${carColor}"></span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white">${carName}</h4>
+                                <p class="text-xs text-gray-500">#${booking.id}</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-gray-900 dark:text-white">${carName}</h4>
-                            <p class="text-xs text-gray-500">#${booking.id}</p>
+                        ${statusInfo.badge}
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                            <span class="text-emerald-500">📅</span>
+                            <span class="truncate">${formattedDate}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                            <span class="text-emerald-500">⏰</span>
+                            <span class="truncate">${formattedTime}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                            <span class="text-emerald-500">👨‍🏫</span>
+                            <span class="truncate" title="${booking.teacher_name}">${booking.teacher_name || 'รหัส: ' + booking.teacher_id}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium">
+                            <span class="text-sm">📍</span>
+                            <span class="truncate" title="${booking.destination}">${booking.destination || '-'}</span>
                         </div>
                     </div>
-                    ${statusInfo.badge}
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3 text-sm mb-4">
-                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <span class="text-emerald-500">📅</span>
-                        <span>${formattedDate}</span>
+
+                    ${(booking.status == 1 || booking.status == 'approved') ? `
+                    <div class="mb-4 p-2 ${booking.driver_id ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800' : 'bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-800'} rounded-xl border flex items-center gap-2">
+                        <span class="text-lg">${booking.driver_id ? '👷' : '⚠️'}</span>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] ${booking.driver_id ? 'text-blue-600 dark:text-blue-400' : 'text-amber-600 dark:text-amber-400'} uppercase font-bold tracking-wider">คนขับรถ</span>
+                            <span class="text-xs font-bold ${booking.driver_id ? 'text-gray-900 dark:text-white' : 'text-amber-700 dark:text-amber-500'}">
+                                ${booking.driver_id ? (booking.driver_name || 'รหัส: ' + booking.driver_id) : '--- ยังไม่ระบุคนขับ ---'}
+                            </span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <span class="text-emerald-500">⏰</span>
-                        <span>${formattedTime}</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <span class="text-emerald-500">👨‍🏫</span>
-                        <span class="truncate">${booking.teacher_name || 'รหัส: ' + booking.teacher_id}</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <span class="text-emerald-500">📍</span>
-                        <span class="truncate">${booking.destination || '-'}</span>
-                    </div>
-                </div>
-                
-                <div class="mb-4 p-3 bg-gray-50 dark:bg-slate-700 rounded-xl">
-                    <p class="text-sm text-gray-700 dark:text-gray-300"><strong>🎯 วัตถุประสงค์:</strong> ${booking.purpose || '-'}</p>
-                </div>
-                
-                <div class="flex flex-wrap gap-2">
-                    <button onclick='showDetailModal(${JSON.stringify(booking).replace(/'/g, "\\'")})' class="flex-1 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-xl text-sm font-medium hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors">
-                        <i class="fas fa-eye mr-1"></i>ดู
-                    </button>
-                    ${statusInfo.statusText === 'pending' ? `
-                    <button onclick="updateStatus(${booking.id}, 1)" class="px-4 py-2 bg-green-500 text-white rounded-xl text-sm font-medium hover:bg-green-600 transition-colors" title="อนุมัติ">
-                        <i class="fas fa-check"></i>
-                    </button>
-                    <button onclick="updateStatus(${booking.id}, 2)" class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors" title="ยกเลิก">
-                        <i class="fas fa-times"></i>
-                    </button>
                     ` : ''}
+                    
+                    <div class="mb-4 p-3 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                        <p class="text-xs text-gray-500 mb-1 font-bold uppercase tracking-widest">วัตถุประสงค์:</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">${booking.purpose || '-'}</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="viewBookingDetail(${booking.id})" class="flex-1 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-xl text-sm font-bold hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>รายละเอียด
+                        </button>
+                        ${statusInfo.statusText === 'pending' ? `
+                        <button onclick="viewBookingDetail(${booking.id})" class="px-4 py-2 bg-green-500 text-white rounded-xl text-sm font-bold hover:bg-green-600 transition-all hover:scale-105 shadow-md shadow-green-500/20" title="ดูเพื่ออนุมัติ">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button onclick="updateStatus(${booking.id}, 2); closeDetailModal();" class="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 transition-all hover:scale-105 shadow-md shadow-red-500/20" title="ยกเลิก">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
-        </div>
-        `;
-    });
-    $('#bookingList').html(html);
-}
-
-function setupEventHandlers() {
-    // Tab switching
-    $('.tab-btn').on('click', function() {
-        const tab = $(this).data('tab');
-        switchTab(tab);
-    });
-
-    // Filter buttons
-    $('.status-filter-btn').on('click', function() {
-        $('.status-filter-btn').removeClass('ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400');
-        $(this).addClass('ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400');
-        currentFilter = $(this).data('status');
-        renderBookings(filterBookings());
-    });
-
-    // Date Filter buttons
-    $('.date-filter-btn').on('click', function() {
-        $('.date-filter-btn').removeClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
-        $('.date-filter-btn').addClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
-        
-        $(this).removeClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
-        $(this).addClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
-        
-        currentDateFilter = $(this).data('filter');
-        renderBookings(filterBookings());
-    });
-
-    // Refresh
-    $('#refreshData').on('click', function() {
-        fetchCarsData();
-        fetchBookings();
-    });
-}
-
-function switchTab(tab) {
-    currentTab = tab;
-    $('.tab-btn').removeClass('active');
-    $(`.tab-btn[data-tab="${tab}"]`).addClass('active');
-    $('.tab-pane').addClass('hidden');
-    $(`#tab-${tab}`).removeClass('hidden');
-    
-    if (tab === 'calendar') {
-        setTimeout(() => {
-            // Force reinit if calendar doesn't exist yet
-            if (!calendar) {
-                initCalendar(true);
-            } else {
-                // If calendar exists, ensure we jump to the latest data date
-                if (allBookings.length > 0) {
-                    const sortedBookings = [...allBookings].sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
-                    const mostRecentDate = sortedBookings[0].booking_date;
-                    if (mostRecentDate) {
-                        let datePart = mostRecentDate.split(' ')[0];
-                        calendar.gotoDate(datePart);
-                    }
-                }
-                calendar.refetchEvents();
-                calendar.render(); // Force layout update
-            }
-        }, 100);
+            `;
+        });
+        $('#bookingList').html(html);
     }
-}
 
-function showDetailModal(booking) {
-    // Format date and time in Thai
-    const formattedDate = formatThaiDateFull(booking.booking_date);
-    const formattedTime = formatThaiTimeRange(booking.start_time, booking.end_time);
-    const statusInfo = getStatusInfo(booking.status);
-    const carEmoji = getCarEmoji(booking.car_type);
-    let carName = booking.car_model || 'รถยนต์';
-    if (booking.license_plate) carName += ` (${booking.license_plate})`;
-    
-    $('#detailTitle').html(`<span class="text-2xl mr-2">${carEmoji}</span>${carName}`);
-    
-    // Get detailed date/time info for pickup and return
-    const dateTimeInfo = formatThaiDateTimeDetail(booking.start_time, booking.end_time);
-    
-    $('#detailContent').html(`
+    function setupEventHandlers() {
+        // Tab switching
+        $('.tab-btn').on('click', function () {
+            const tab = $(this).data('tab');
+            switchTab(tab);
+        });
+
+        // Filter buttons
+        $('.status-filter-btn').on('click', function () {
+            $('.status-filter-btn').removeClass('ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400');
+            $(this).addClass('ring-2 ring-emerald-500 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400');
+            currentFilter = $(this).data('status');
+            renderBookings(filterBookings());
+        });
+
+        // Date Filter buttons
+        $('.date-filter-btn').on('click', function () {
+            $('.date-filter-btn').removeClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+            $('.date-filter-btn').addClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+
+            $(this).removeClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+            $(this).addClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+
+            currentDateFilter = $(this).data('filter');
+            renderBookings(filterBookings());
+        });
+
+        // Refresh
+        $('#refreshData').on('click', function () {
+            fetchCarsData();
+            fetchBookings();
+        });
+    }
+
+    function viewBookingDetail(id) {
+        const booking = allBookings.find(b => b.id == id);
+        if (booking) {
+            showDetailModal(booking);
+        } else {
+            Swal.fire('ผิดพลาด', 'ไม่พบข้อมูลการจอง', 'error');
+        }
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        $('.tab-btn').removeClass('active');
+        $(`.tab-btn[data-tab="${tab}"]`).addClass('active');
+        $('.tab-pane').addClass('hidden');
+        $(`#tab-${tab}`).removeClass('hidden');
+
+        if (tab === 'calendar') {
+            setTimeout(() => {
+                // Force reinit if calendar doesn't exist yet
+                if (!calendar) {
+                    initCalendar(true);
+                } else {
+                    // If calendar exists, ensure we jump to the latest data date
+                    if (allBookings.length > 0) {
+                        const sortedBookings = [...allBookings].sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date));
+                        const mostRecentDate = sortedBookings[0].booking_date;
+                        if (mostRecentDate) {
+                            let datePart = mostRecentDate.split(' ')[0];
+                            calendar.gotoDate(datePart);
+                        }
+                    }
+                    calendar.refetchEvents();
+                    calendar.render(); // Force layout update
+                }
+            }, 100);
+        }
+    }
+
+    function showDetailModal(booking) {
+        // Format date and time in Thai
+        const formattedDate = formatThaiDateFull(booking.booking_date);
+        const formattedTime = formatThaiTimeRange(booking.start_time, booking.end_time);
+        const statusInfo = getStatusInfo(booking.status);
+        const carEmoji = getCarEmoji(booking.car_type);
+        let carName = booking.car_model || 'รถยนต์';
+        if (booking.license_plate) carName += ` (${booking.license_plate})`;
+
+        $('#detailTitle').html(`<span class="text-2xl mr-2">${carEmoji}</span>${carName}`);
+
+        // Get detailed date/time info for pickup and return
+        const dateTimeInfo = formatThaiDateTimeDetail(booking.start_time, booking.end_time);
+
+        $('#detailContent').html(`
         <div class="space-y-4">
             <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
                 <span class="text-gray-600 dark:text-gray-400">สถานะ</span>
@@ -914,202 +1086,342 @@ function showDetailModal(booking) {
                     <p class="font-medium text-gray-900 dark:text-white">${booking.car_type || '-'}</p>
                 </div>
             </div>
+
+            ${statusInfo.statusText === 'pending' ? `
+            <div class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                <p class="text-xs text-emerald-600 dark:text-emerald-400 mb-2 font-bold uppercase tracking-wider">👷 เลือกคนขับรถ</p>
+                ${driversData.length > 0 ? `
+                <select id="driverSelect" class="w-full px-4 py-3 bg-white dark:bg-slate-800 rounded-xl border border-emerald-200 dark:border-emerald-700 focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                    <option value="">-- ไม่ระบุคนขับ (หรือให้จองคนขับเอง) --</option>
+                    ${driversData.map(d => `<option value="${d.Teach_id}">${d.Teach_name}</option>`).join('')}
+                </select>
+                ` : `
+                <div class="p-3 bg-red-100 text-red-700 rounded-lg text-sm flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    ไม่พบรายชื่อคนขับรถในระบบ (DRV)
+                </div>
+                <input type="hidden" id="driverSelect" value="">
+                `}
+            </div>
+            ` : ((booking.status == 1 || booking.status == 'approved') ? `
+            <div class="p-4 ${booking.driver_id ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800' : 'bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-800'} rounded-xl border">
+                <p class="text-xs ${booking.driver_id ? 'text-blue-600 dark:text-blue-400' : 'text-amber-600 dark:text-amber-400'} mb-1 font-bold uppercase tracking-wider">👷 คนขับรถที่มอบหมาย</p>
+                <p class="font-bold ${booking.driver_id ? 'text-gray-900 dark:text-white' : 'text-amber-700 dark:text-amber-500'}">${booking.driver_id ? (booking.driver_name || 'รหัส: ' + booking.driver_id) : '--- ยังไม่ระบุคนขับ ---'}</p>
+            </div>
+            ` : '')}
         </div>
     `);
-    
-    let actionsHtml = '';
-    
-    if (statusInfo.statusText === 'pending') {
-        actionsHtml = `
-            <button onclick="updateStatus(${booking.id}, 1); closeDetailModal();" class="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+
+        let actionsHtml = '';
+
+        if (statusInfo.statusText === 'pending') {
+            actionsHtml = `
+            <button onclick="approveWithDriver(${booking.id})" class="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
                 <i class="fas fa-check"></i> อนุมัติ
             </button>
             <button onclick="updateStatus(${booking.id}, 2); closeDetailModal();" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
                 <i class="fas fa-times"></i> ยกเลิก
             </button>
         `;
+        } else if (statusInfo.statusText === 'approved') {
+            actionsHtml = `
+            <button onclick="showTripOutcomeModal(${booking.id})" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30">
+                <i class="fas fa-check-double"></i> พบงานสำเร็จ (Complete)
+            </button>
+        `;
+        }
+
+        $('#detailActions').html(actionsHtml);
+        $('#detailModal').removeClass('hidden');
     }
-    
-    $('#detailActions').html(actionsHtml);
-    $('#detailModal').removeClass('hidden');
-}
 
-function closeDetailModal() {
-    $('#detailModal').addClass('hidden');
-}
+    function closeDetailModal() {
+        $('#detailModal').addClass('hidden');
+    }
 
-function updateStatus(id, status) {
-    const action = status == 1 ? 'อนุมัติ' : 'ยกเลิก';
-    const statusMap = {0: 'pending', 1: 'approved', 2: 'rejected'};
-    
-    Swal.fire({
-        title: `ยืนยัน${action}?`,
-        text: `คุณต้องการ${action}การจองนี้ใช่หรือไม่?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: status == 1 ? '#22c55e' : '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: `ใช่, ${action}`,
-        cancelButtonText: 'ยกเลิก'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: 'api/car_booking_status.php',
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify({ id: id, status: statusMap[status] || status }),
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({icon: 'success', title: 'สำเร็จ!', text: `${action}เรียบร้อยแล้ว`, timer: 1500, showConfirmButton: false});
-                        fetchBookings();
-                    } else {
-                        Swal.fire({icon: 'error', title: 'ผิดพลาด', text: response.message || 'ไม่สามารถอัปเดตสถานะได้'});
+    function approveWithDriver(id) {
+        const driverId = $('#driverSelect').val();
+        updateStatus(id, 1, driverId);
+        closeDetailModal();
+    }
+
+    function updateStatus(id, status, driverId = null) {
+        const action = status == 1 ? 'อนุมัติ' : 'ยกเลิก';
+        const statusMap = { 0: 'pending', 1: 'approved', 2: 'rejected' };
+
+        Swal.fire({
+            title: `ยืนยัน${action}?`,
+            text: status == 1 && !driverId ? `คุณยังไม่ได้เลือกคนขับรถ ต้องการ${action}โดยไม่ระบุคนขับใช่หรือไม่?` : `คุณต้องการ${action}การจองนี้ใช่หรือไม่?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: status == 1 ? '#22c55e' : '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: `ใช่, ${action}`,
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'api/car_booking_status.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        id: id,
+                        status: statusMap[status] || status,
+                        driver_id: driverId
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'สำเร็จ!', text: `${action}เรียบร้อยแล้ว`, timer: 1500, showConfirmButton: false });
+                            fetchBookings();
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: response.message || 'ไม่สามารถอัปเดตสถานะได้' });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ' });
                     }
-                },
-                error: function() {
-                    Swal.fire({icon: 'error', title: 'ผิดพลาด', text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ'});
-                }
-            });
-        }
-    });
-}
-
-// Helper Functions
-function getStatusInfo(status) {
-    let statusText = '';
-    if (status == 0 || status == 'pending') {
-        statusText = 'pending';
-        return { 
-            badge: '<span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full font-medium">⏳ รอการอนุมัติ</span>', 
-            border: 'border-yellow-400',
-            statusText: statusText
-        };
-    } else if (status == 1 || status == 'approved') {
-        statusText = 'approved';
-        return { 
-            badge: '<span class="px-3 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full font-medium">✅ อนุมัติแล้ว</span>', 
-            border: 'border-green-400',
-            statusText: statusText
-        };
-    } else {
-        statusText = 'rejected';
-        return { 
-            badge: '<span class="px-3 py-1 text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded-full font-medium">❌ ยกเลิก</span>', 
-            border: 'border-red-400',
-            statusText: statusText
-        };
+                });
+            }
+        });
     }
-}
 
-// Thai Date/Time Formatting Helper Functions
-const thaiMonthsShort = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-const thaiMonthsFull = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-const thaiDaysFull = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
-
-// Format date as "24 ธ.ค. 68"
-function formatThaiDateShort(dateStr) {
-    if (!dateStr) return '-';
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '-';
-    const day = date.getDate();
-    const month = thaiMonthsShort[date.getMonth() + 1];
-    const year = (date.getFullYear() + 543) % 100; // Buddhist year, last 2 digits
-    return `${day} ${month} ${year}`;
-}
-
-// Format date as "วันอังคารที่ 24 ธันวาคม 2568"
-function formatThaiDateFull(dateStr) {
-    if (!dateStr) return '-';
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '-';
-    const dayName = thaiDaysFull[date.getDay()];
-    const day = date.getDate();
-    const month = thaiMonthsFull[date.getMonth() + 1];
-    const year = date.getFullYear() + 543; // Buddhist year
-    return `วัน${dayName}ที่ ${day} ${month} ${year}`;
-}
-
-// Format time range - handles both single day and multi-day bookings
-// Returns "08:30-14:00 น." for same day or "24 ธ.ค. 08:30 ถึง 25 ธ.ค. 14:00" for multi-day
-function formatThaiTimeRange(startTime, endTime) {
-    const parseDateTime = (dateTimeStr) => {
-        if (!dateTimeStr) return null;
-        // Handle both "08:30:00", "08:30" and "2025-12-24 08:30:00" formats
-        if (dateTimeStr.includes(' ')) {
-            const [datePart, timePart] = dateTimeStr.split(' ');
-            const timeFormatted = timePart.split(':').slice(0, 2).join(':');
-            return { date: datePart, time: timeFormatted };
+    // Helper Functions
+    function getStatusInfo(status) {
+        let statusText = '';
+        if (status == 0 || status == 'pending') {
+            statusText = 'pending';
+            return {
+                badge: '<span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full font-medium">⏳ รอการอนุมัติ</span>',
+                border: 'border-yellow-400',
+                statusText: statusText
+            };
+        } else if (status == 1 || status == 'approved') {
+            statusText = 'approved';
+            return {
+                badge: '<span class="px-3 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full font-medium">✅ อนุมัติแล้ว</span>',
+                border: 'border-green-400',
+                statusText: statusText
+            };
         } else {
-            const timeFormatted = dateTimeStr.split(':').slice(0, 2).join(':');
-            return { date: null, time: timeFormatted };
+            statusText = 'rejected';
+            return {
+                badge: '<span class="px-3 py-1 text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded-full font-medium">❌ ยกเลิก</span>',
+                border: 'border-red-400',
+                statusText: statusText
+            };
         }
-    };
-    
-    const start = parseDateTime(startTime);
-    const end = parseDateTime(endTime);
-    
-    if (!start || !end) {
-        return `${start?.time || '08:00'}-${end?.time || '17:00'} น.`;
     }
-    
-    // Check if multi-day booking (dates are different)
-    if (start.date && end.date && start.date !== end.date) {
-        const startDateShort = formatThaiDateShort(start.date);
-        const endDateShort = formatThaiDateShort(end.date);
-        return `${startDateShort} ${start.time} ถึง ${endDateShort} ${end.time}`;
-    }
-    
-    // Same day booking
-    return `${start.time}-${end.time} น.`;
-}
 
-// Format datetime for detailed view - shows "รับ: 24 ธ.ค. 68 เวลา 08:30 น." / "ส่ง: 25 ธ.ค. 68 เวลา 14:00 น."
-function formatThaiDateTimeDetail(startTime, endTime) {
-    const parseDateTime = (dateTimeStr, fallbackDate) => {
-        if (!dateTimeStr) return null;
-        if (dateTimeStr.includes(' ')) {
-            const [datePart, timePart] = dateTimeStr.split(' ');
-            const timeFormatted = timePart.split(':').slice(0, 2).join(':');
-            return { date: datePart, time: timeFormatted };
-        } else {
-            const timeFormatted = dateTimeStr.split(':').slice(0, 2).join(':');
-            return { date: fallbackDate, time: timeFormatted };
+    // Thai Date/Time Formatting Helper Functions
+    const thaiMonthsShort = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+    const thaiMonthsFull = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+    const thaiDaysFull = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+
+    // Format date as "24 ธ.ค. 68"
+    function formatThaiDateShort(dateStr) {
+        if (!dateStr) return '-';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return '-';
+        const day = date.getDate();
+        const month = thaiMonthsShort[date.getMonth() + 1];
+        const year = (date.getFullYear() + 543) % 100; // Buddhist year, last 2 digits
+        return `${day} ${month} ${year}`;
+    }
+
+    // Format date as "วันอังคารที่ 24 ธันวาคม 2568"
+    function formatThaiDateFull(dateStr) {
+        if (!dateStr) return '-';
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return '-';
+        const dayName = thaiDaysFull[date.getDay()];
+        const day = date.getDate();
+        const month = thaiMonthsFull[date.getMonth() + 1];
+        const year = date.getFullYear() + 543; // Buddhist year
+        return `วัน${dayName}ที่ ${day} ${month} ${year}`;
+    }
+
+    // Format time range - handles both single day and multi-day bookings
+    // Returns "08:30-14:00 น." for same day or "24 ธ.ค. 08:30 ถึง 25 ธ.ค. 14:00" for multi-day
+    function formatThaiTimeRange(startTime, endTime) {
+        const parseDateTime = (dateTimeStr) => {
+            if (!dateTimeStr) return null;
+            // Handle both "08:30:00", "08:30" and "2025-12-24 08:30:00" formats
+            if (dateTimeStr.includes(' ')) {
+                const [datePart, timePart] = dateTimeStr.split(' ');
+                const timeFormatted = timePart.split(':').slice(0, 2).join(':');
+                return { date: datePart, time: timeFormatted };
+            } else {
+                const timeFormatted = dateTimeStr.split(':').slice(0, 2).join(':');
+                return { date: null, time: timeFormatted };
+            }
+        };
+
+        const start = parseDateTime(startTime);
+        const end = parseDateTime(endTime);
+
+        if (!start || !end) {
+            return `${start?.time || '08:00'}-${end?.time || '17:00'} น.`;
         }
-    };
-    
-    const start = parseDateTime(startTime, null);
-    const end = parseDateTime(endTime, null);
-    
-    if (!start || !end) {
+
+        // Check if multi-day booking (dates are different)
+        if (start.date && end.date && start.date !== end.date) {
+            const startDateShort = formatThaiDateShort(start.date);
+            const endDateShort = formatThaiDateShort(end.date);
+            return `${startDateShort} ${start.time} ถึง ${endDateShort} ${end.time}`;
+        }
+
+        // Same day booking
+        return `${start.time}-${end.time} น.`;
+    }
+
+    // Format datetime for detailed view - shows "รับ: 24 ธ.ค. 68 เวลา 08:30 น." / "ส่ง: 25 ธ.ค. 68 เวลา 14:00 น."
+    function formatThaiDateTimeDetail(startTime, endTime) {
+        const parseDateTime = (dateTimeStr, fallbackDate) => {
+            if (!dateTimeStr) return null;
+            if (dateTimeStr.includes(' ')) {
+                const [datePart, timePart] = dateTimeStr.split(' ');
+                const timeFormatted = timePart.split(':').slice(0, 2).join(':');
+                return { date: datePart, time: timeFormatted };
+            } else {
+                const timeFormatted = dateTimeStr.split(':').slice(0, 2).join(':');
+                return { date: fallbackDate, time: timeFormatted };
+            }
+        };
+
+        const start = parseDateTime(startTime, null);
+        const end = parseDateTime(endTime, null);
+
+        if (!start || !end) {
+            return {
+                pickup: `${start?.time || '08:00'} น.`,
+                return: `${end?.time || '17:00'} น.`,
+                isMultiDay: false
+            };
+        }
+
+        const isMultiDay = start.date && end.date && start.date !== end.date;
+
+        if (isMultiDay) {
+            return {
+                pickup: `${formatThaiDateShort(start.date)} เวลา ${start.time} น.`,
+                return: `${formatThaiDateShort(end.date)} เวลา ${end.time} น.`,
+                isMultiDay: true
+            };
+        }
+
         return {
-            pickup: `${start?.time || '08:00'} น.`,
-            return: `${end?.time || '17:00'} น.`,
+            pickup: `${start.time} น.`,
+            return: `${end.time} น.`,
             isMultiDay: false
         };
     }
-    
-    const isMultiDay = start.date && end.date && start.date !== end.date;
-    
-    if (isMultiDay) {
-        return {
-            pickup: `${formatThaiDateShort(start.date)} เวลา ${start.time} น.`,
-            return: `${formatThaiDateShort(end.date)} เวลา ${end.time} น.`,
-            isMultiDay: true
-        };
-    }
-    
-    return {
-        pickup: `${start.time} น.`,
-        return: `${end.time} น.`,
-        isMultiDay: false
-    };
-}
 
-// Close modals on outside click
-$('#detailModal').on('click', function(e) {
-    if (e.target === this) {
-        $(this).addClass('hidden');
+    // Trip Outcome Functions
+    function showTripOutcomeModal(id) {
+        const booking = allBookings.find(b => b.id == id);
+        if (!booking) return;
+
+        $('#outcomeBookingId').val(id);
+        $('#outcomeFuelProject').val(booking.fuel_project || '');
+        $('#outcomeFuelCost').val(booking.fuel_cost || '');
+        $('#outcomeMileageEnd').val(booking.mileage_end || '');
+        $('#outcomeAgencyType').val(booking.agency_type || 'internal');
+        
+        $('#tripOutcomeModal').removeClass('hidden');
     }
-});
+
+    function closeTripOutcomeModal() {
+        $('#tripOutcomeModal').addClass('hidden');
+    }
+
+    // Trip Outcome Form Submission
+    $(document).on('submit', '#tripOutcomeForm', function(e) {
+        e.preventDefault();
+        
+        const data = {
+            id: $('#outcomeBookingId').val(),
+            fuel_project: $('#outcomeFuelProject').val(),
+            fuel_cost: $('#outcomeFuelCost').val(),
+            mileage_end: $('#outcomeMileageEnd').val(),
+            agency_type: $('#outcomeAgencyType').val(),
+            status: 'completed'
+        };
+
+        Swal.fire({
+            title: 'ยืนยันบันทึกข้อมูล?',
+            text: "ข้อมูลการเดินทางจะถูกบันทึกและสถานะจะเปลี่ยนเป็นสำเร็จ",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'บันทึกสำเร็จ',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'api/save_trip_info.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('สำเร็จ', response.message, 'success');
+                            closeTripOutcomeModal();
+                            closeDetailModal();
+                            fetchBookings();
+                        } else {
+                            Swal.fire('ผิดพลาด', response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อ API ได้', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    function sendDriverSchedule() {
+        Swal.fire({
+            title: 'ส่งตารางงานให้คนขับ?',
+            text: "ระบบจะส่งสรุปรายการจองรถที่ 'อนุมัติแล้ว' ของวันพรุ่งนี้ไปยังกลุ่มแจ้งเตือน",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'ส่งเลย',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#f97316'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'กำลังดำเนินการ...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: 'api/driver_schedule_alert.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('สำเร็จ', response.message, 'success');
+                        } else {
+                            Swal.fire('หมายเหตุ', response.message, 'info');
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('ผิดพลาด', 'ไม่สามารถเชื่อมต่อ API ได้', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    // Close modals on outside click
+    $('#detailModal, #tripOutcomeModal').on('click', function (e) {
+        if (e.target === this) {
+            $(this).addClass('hidden');
+        }
+    });
 </script>

@@ -41,6 +41,14 @@ try {
             $booking['teacher_position'] = '';
             $booking['teacher_phone'] = '';
         }
+
+        // ดึงข้อมูลคนขับรถ
+        if (!empty($booking['driver_id'])) {
+            $driver = $dbUsers->getTeacherById($booking['driver_id']);
+            $booking['driver_name'] = $driver ? $driver['Teach_name'] : 'ไม่พบข้อมูลคนขับ';
+        } else {
+            $booking['driver_name'] = '-';
+        }
     }
     unset($booking); // ยกเลิก reference
     

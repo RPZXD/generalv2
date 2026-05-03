@@ -1,0 +1,763 @@
+ <!-- Meeting Room Report - Tab Layout with Full Calendar -->
+<div class="space-y-6">
+    <!-- Page Header with Stats -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold gradient-text flex items-center gap-3">
+                <span class="text-4xl">🏢</span> รายงานการจองห้องประชุม
+            </h1>
+            <p class="mt-1 text-gray-600 dark:text-gray-400">ตรวจสอบและดูรายงานการจองห้องประชุมราชการ</p>
+        </div>
+        <div class="flex gap-2">
+            <button id="refreshData" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                <i class="fas fa-sync-alt"></i> รีเฟรช
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="glass rounded-2xl p-4 border-l-4 border-blue-500">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-xl text-2xl">📋</div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" id="statTotal">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">ทั้งหมด</p>
+                </div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-4 border-l-4 border-yellow-500">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 flex items-center justify-center bg-yellow-100 dark:bg-yellow-900/30 rounded-xl text-2xl">⏳</div>
+                <div>
+                    <p class="text-2xl font-bold text-yellow-600" id="statPending">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">รอการอนุมัติ</p>
+                </div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-4 border-l-4 border-green-500">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 flex items-center justify-center bg-green-100 dark:bg-green-900/30 rounded-xl text-2xl">✅</div>
+                <div>
+                    <p class="text-2xl font-bold text-green-600" id="statApproved">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">อนุมัติแล้ว</p>
+                </div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-4 border-l-4 border-red-500">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 flex items-center justify-center bg-red-100 dark:bg-red-900/30 rounded-xl text-2xl">❌</div>
+                <div>
+                    <p class="text-2xl font-bold text-red-600" id="statCanceled">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">ยกเลิก</p>
+                </div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-4 border-l-4 border-fuchsia-500">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 flex items-center justify-center bg-fuchsia-100 dark:bg-fuchsia-900/30 rounded-xl text-2xl">📅</div>
+                <div>
+                    <p class="text-2xl font-bold text-fuchsia-600" id="statToday">0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">วันนี้</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="glass rounded-2xl p-2">
+        <div class="flex flex-wrap gap-2">
+            <button class="tab-btn active px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="list">
+                <span class="text-lg">📋</span> รายการจอง
+            </button>
+            <button class="tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="calendar">
+                <span class="text-lg">📅</span> ปฏิทิน
+            </button>
+            <button class="tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="rooms">
+                <span class="text-lg">🏛️</span> ห้องประชุม
+            </button>
+        </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="tabContent">
+        <!-- List Tab -->
+        <div id="tab-list" class="tab-pane">
+            <!-- Filter Buttons -->
+            <div class="glass rounded-2xl p-4 mb-6">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-fuchsia-500 bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400" data-status="">
+                        <span class="text-lg">📋</span> ทั้งหมด
+                    </button>
+                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400" data-status="0">
+                        <span class="text-lg">⏳</span> รอการอนุมัติ
+                    </button>
+                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400" data-status="1">
+                        <span class="text-lg">✅</span> อนุมัติแล้ว
+                    </button>
+                    <button class="status-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400" data-status="2">
+                        <span class="text-lg">❌</span> ยกเลิกแล้ว
+                    </button>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <span class="flex items-center text-sm text-gray-500 mr-2">ช่วงเวลา:</span>
+                    <button class="date-filter-btn active px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" data-filter="all">
+                        <span class="text-lg">📅</span> ทั้งหมด
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="today">
+                        <span class="text-lg">📆</span> วันนี้
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="month">
+                        <span class="text-lg">🗓️</span> เดือนนี้
+                    </button>
+                    <button class="date-filter-btn px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300" data-filter="year">
+                        <span class="text-lg">📅</span> ปีนี้
+                    </button>
+                </div>
+            </div>
+
+            <!-- Booking List -->
+            <div class="glass rounded-2xl p-6">
+                <div id="bookingList" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="col-span-full text-center py-12 text-gray-400">
+                        <div class="loader mx-auto mb-4"></div>
+                        <p>กำลังโหลดข้อมูล...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div id="tab-calendar" class="tab-pane hidden">
+            <div class="glass rounded-2xl p-6">
+                <!-- Legend (Dynamic from Database) -->
+                <div id="calendarLegend" class="flex flex-wrap gap-3 mb-6 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl">
+                    <span class="text-gray-500">กำลังโหลดห้องประชุม...</span>
+                </div>
+                
+                <div id="calendar" class="fc-large"></div>
+            </div>
+        </div>
+
+        <!-- Rooms Tab (Dynamic from Database) -->
+        <div id="tab-rooms" class="tab-pane hidden">
+            <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="col-span-full text-center py-12 text-gray-400">
+                    <div class="loader mx-auto mb-4"></div>
+                    <p>กำลังโหลดข้อมูลห้องประชุม...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="glass rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative mx-4 animate-scale-in">
+        <div class="sticky top-0 bg-gradient-to-r from-fuchsia-600 to-purple-600 p-6 rounded-t-2xl">
+            <button onclick="closeDetailModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2" id="detailTitle">
+                <span class="text-2xl">🏢</span> รายละเอียดการจอง
+            </h3>
+        </div>
+        <div class="p-6" id="detailContent">
+            <!-- Content will be loaded here -->
+        </div>
+        <!-- Actions removed for Director -->
+    </div>
+</div>
+
+<style>
+/* Loader */
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #d946ef;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Scale In Animation */
+@keyframes scale-in {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.animate-scale-in { animation: scale-in 0.2s ease-out; }
+
+/* Tab Styles */
+.tab-btn {
+    background: transparent;
+    color: #6b7280;
+}
+.tab-btn:hover {
+    background: rgba(217, 70, 239, 0.1);
+    color: #d946ef;
+}
+.tab-btn.active {
+    background: linear-gradient(135deg, #d946ef, #a855f7);
+    color: white;
+    box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3);
+}
+.dark .tab-btn {
+    color: #9ca3af;
+}
+.dark .tab-btn:hover {
+    color: #d946ef;
+}
+
+/* Room Stat Badge */
+.room-stat-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    background: rgba(0,0,0,0.05);
+}
+.dark .room-stat-badge {
+    background: rgba(255,255,255,0.1);
+}
+
+/* FullCalendar Large */
+.fc-large {
+    font-family: 'Mali', sans-serif !important;
+}
+.fc-large .fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+}
+.fc-large .fc-button {
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.75rem !important;
+    font-weight: 500 !important;
+}
+.fc-large .fc-button-primary {
+    background: linear-gradient(135deg, #d946ef, #a855f7) !important;
+    border: none !important;
+}
+.fc-large .fc-button-primary:hover {
+    background: linear-gradient(135deg, #c026d3, #9333ea) !important;
+}
+.fc-large .fc-event {
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+    cursor: pointer !important;
+    border: none !important;
+}
+.fc-large .fc-daygrid-day-number {
+    font-size: 1rem !important;
+    padding: 8px !important;
+}
+.fc-large .fc-col-header-cell-cushion {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d946ef; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #c026d3; }
+</style>
+
+<!-- FullCalendar -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+<script>
+let calendar;
+let currentFilter = '';
+let currentDateFilter = 'all';
+let allBookings = [];
+let currentTab = 'list';
+let roomsData = []; // Store rooms data from database
+
+$(document).ready(function() {
+    fetchRoomsData(); // Load rooms first
+    fetchBookings();
+    setupEventHandlers();
+});
+
+function initCalendar() {
+    if (calendar) return;
+    
+    const calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'th',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+        },
+        height: 700,
+        dayMaxEvents: 3,
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            const events = allBookings.filter(b => b.status != 2).map(function(booking) {
+                let color = getRoomColor(booking.location);
+                
+                return {
+                    id: booking.id,
+                    title: `${booking.location.substring(0, 8)} - ${booking.teacher_name || 'ไม่ระบุ'}`,
+                    start: `${booking.date}T${booking.time_start}`,
+                    end: `${booking.date}T${booking.time_end}`,
+                    color: booking.status == 0 ? '#fbbf24' : color,
+                    extendedProps: { booking: booking }
+                };
+            });
+            successCallback(events);
+        },
+        eventClick: function(info) {
+            showDetailModal(info.event.extendedProps.booking);
+        }
+    });
+    calendar.render();
+}
+
+// Fetch rooms from database
+function fetchRoomsData() {
+    $.ajax({
+        url: '../officer/api/get_rooms.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            roomsData = response.rooms || [];
+            renderRoomsTab();
+            renderCalendarLegend();
+        },
+        error: function() {
+            console.error('Failed to load rooms');
+            roomsData = [];
+        }
+    });
+}
+
+// Render Rooms Tab with dynamic data
+function renderRoomsTab() {
+    if (roomsData.length === 0) {
+        $('#roomsGrid').html('<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">🏢</div><p class="text-gray-500">ยังไม่มีห้องประชุมในระบบ</p></div>');
+        return;
+    }
+    
+    let html = '';
+    roomsData.forEach(room => {
+        if (room.status != 1) return; // Only show active rooms
+        
+        const emoji = room.emoji || '🏢';
+        const color = room.color || 'blue';
+        const gradientMap = {
+            'red': 'from-red-500 to-rose-600',
+            'blue': 'from-blue-500 to-indigo-600',
+            'green': 'from-green-500 to-emerald-600',
+            'amber': 'from-amber-500 to-orange-600',
+            'purple': 'from-purple-500 to-violet-600',
+            'pink': 'from-pink-500 to-rose-600',
+            'cyan': 'from-cyan-500 to-teal-600',
+            'orange': 'from-orange-500 to-red-600'
+        };
+        const textColorMap = {
+            'red': 'text-red-500',
+            'blue': 'text-blue-500',
+            'green': 'text-green-500',
+            'amber': 'text-amber-500',
+            'purple': 'text-purple-500',
+            'pink': 'text-pink-500',
+            'cyan': 'text-cyan-500',
+            'orange': 'text-orange-500'
+        };
+        const gradient = gradientMap[color] || 'from-blue-500 to-indigo-600';
+        const textColor = textColorMap[color] || 'text-blue-500';
+        
+        html += `
+        <div class="glass rounded-2xl overflow-hidden group hover:shadow-xl transition-all">
+            <div class="h-32 bg-gradient-to-br ${gradient} flex items-center justify-center">
+                <span class="text-6xl">${emoji}</span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">${room.room_name}</h3>
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                    <p><i class="fas fa-users mr-2 ${textColor}"></i>ความจุ: ${room.capacity || 0} คน</p>
+                    <p><i class="fas fa-map-marker-alt mr-2 ${textColor}"></i>${room.building || '-'}</p>
+                    <p><i class="fas fa-cog mr-2 ${textColor}"></i>${room.equipment || '-'}</p>
+                </div>
+                <div class="mt-4 flex gap-2">
+                    <span class="room-stat-badge" data-room="${room.room_name}" data-type="pending">⏳ 0</span>
+                    <span class="room-stat-badge" data-room="${room.room_name}" data-type="approved">✅ 0</span>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    
+    $('#roomsGrid').html(html || '<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">🏢</div><p class="text-gray-500">ไม่มีห้องประชุมที่เปิดใช้งาน</p></div>');
+}
+
+// Render Calendar Legend dynamically
+function renderCalendarLegend() {
+    if (roomsData.length === 0) {
+        $('#calendarLegend').html('<span class="text-gray-500">ไม่มีข้อมูลห้องประชุม</span>');
+        return;
+    }
+    
+    const bgColorMap = {
+        'red': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+        'blue': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+        'green': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+        'amber': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+        'purple': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+        'pink': 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
+        'cyan': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
+        'orange': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+    };
+    const dotColorMap = {
+        'red': 'bg-red-500',
+        'blue': 'bg-blue-500',
+        'green': 'bg-green-500',
+        'amber': 'bg-amber-500',
+        'purple': 'bg-purple-500',
+        'pink': 'bg-pink-500',
+        'cyan': 'bg-cyan-500',
+        'orange': 'bg-orange-500'
+    };
+    
+    let html = '';
+    roomsData.forEach(room => {
+        if (room.status != 1) return;
+        const color = room.color || 'blue';
+        const bgClass = bgColorMap[color] || 'bg-blue-100 text-blue-700';
+        const dotClass = dotColorMap[color] || 'bg-blue-500';
+        
+        html += `
+        <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg ${bgClass} font-medium text-sm">
+            <span class="w-3 h-3 rounded-full ${dotClass}"></span> ${room.room_name}
+        </span>
+        `;
+    });
+    
+    $('#calendarLegend').html(html || '<span class="text-gray-500">ไม่มีห้องประชุมที่เปิดใช้งาน</span>');
+}
+
+// Get room color by name from database
+function getRoomColor(roomName) {
+    const room = roomsData.find(r => roomName.includes(r.room_name) || r.room_name.includes(roomName));
+    if (room) {
+        const colorHex = {
+            'red': '#ef4444',
+            'blue': '#3b82f6',
+            'green': '#22c55e',
+            'amber': '#f59e0b',
+            'purple': '#8b5cf6',
+            'pink': '#ec4899',
+            'cyan': '#06b6d4',
+            'orange': '#f97316'
+        };
+        return colorHex[room.color] || '#8b5cf6';
+    }
+    return '#8b5cf6';
+}
+
+// Get room emoji by name from database
+function getRoomEmoji(roomName) {
+    const room = roomsData.find(r => roomName.includes(r.room_name) || r.room_name.includes(roomName));
+    return room ? (room.emoji || '🏢') : '🏢';
+}
+
+function fetchBookings() {
+    $.ajax({
+        url: 'api/meeting_booking_list.php',
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function() {
+            $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="loader mx-auto mb-4"></div><p class="text-gray-400">กำลังโหลด...</p></div>');
+        },
+        success: function(response) {
+            allBookings = response.list || [];
+            updateStats();
+            renderBookings(filterBookings());
+            updateRoomStats();
+            if (calendar) calendar.refetchEvents();
+        },
+        error: function() {
+            $('#bookingList').html('<div class="col-span-full text-center py-12 text-red-500"><i class="fas fa-exclamation-circle text-5xl mb-4"></i><p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>');
+        }
+    });
+}
+
+function updateStats() {
+    const today = new Date().toISOString().split('T')[0];
+    const pending = allBookings.filter(b => b.status == 0).length;
+    const approved = allBookings.filter(b => b.status == 1).length;
+    const canceled = allBookings.filter(b => b.status == 2).length;
+    const todayCount = allBookings.filter(b => b.date === today && b.status == 1).length;
+    
+    $('#statTotal').text(allBookings.length);
+    $('#statPending').text(pending);
+    $('#statApproved').text(approved);
+    $('#statCanceled').text(canceled);
+    $('#statToday').text(todayCount);
+}
+
+function updateRoomStats() {
+    roomsData.forEach(room => {
+        if (room.status != 1) return;
+        const pending = allBookings.filter(b => b.location.includes(room.room_name) && b.status == 0).length;
+        const approved = allBookings.filter(b => b.location.includes(room.room_name) && b.status == 1).length;
+        $(`.room-stat-badge[data-room="${room.room_name}"][data-type="pending"]`).text(`⏳ ${pending}`);
+        $(`.room-stat-badge[data-room="${room.room_name}"][data-type="approved"]`).text(`✅ ${approved}`);
+    });
+}
+
+function filterBookings() {
+    let filtered = allBookings;
+    
+    // Filter by status
+    if (currentFilter !== '') {
+        filtered = filtered.filter(b => b.status == currentFilter);
+    }
+    
+    // Filter by date
+    if (currentDateFilter !== 'all') {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDate = today.getDate();
+        
+        filtered = filtered.filter(b => {
+            const bookingDate = new Date(b.date);
+            const bookingYear = bookingDate.getFullYear();
+            const bookingMonth = bookingDate.getMonth();
+            const bookingDay = bookingDate.getDate();
+            
+            if (currentDateFilter === 'today') {
+                return bookingYear === currentYear && bookingMonth === currentMonth && bookingDay === currentDate;
+            } else if (currentDateFilter === 'month') {
+                return bookingYear === currentYear && bookingMonth === currentMonth;
+            } else if (currentDateFilter === 'year') {
+                return bookingYear === currentYear;
+            }
+            return true;
+        });
+    }
+    
+    return filtered;
+}
+
+function renderBookings(bookings) {
+    if (bookings.length === 0) {
+        $('#bookingList').html('<div class="col-span-full text-center py-12"><div class="text-6xl mb-4">📭</div><p class="text-gray-500">ไม่พบรายการจอง</p></div>');
+        return;
+    }
+
+    let html = '';
+    bookings.forEach(function(booking) {
+        let statusInfo = getStatusInfo(booking.status);
+        let roomEmoji = getRoomEmoji(booking.location);
+        let layoutInfo = getRoomLayoutInfo(booking.room_layout);
+        
+        const dateObj = new Date(booking.date);
+        const formattedDate = dateObj.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' });
+
+        html += `
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border-l-4 ${statusInfo.border} shadow-sm hover:shadow-lg transition-all overflow-hidden">
+            <div class="p-5">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">${roomEmoji}</span>
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white">${booking.location}</h4>
+                            <p class="text-xs text-gray-500">#${booking.id}</p>
+                        </div>
+                    </div>
+                    ${statusInfo.badge}
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        <span class="text-fuchsia-500">📅</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        <span class="text-fuchsia-500">⏰</span>
+                        <span>${booking.time_start} - ${booking.time_end}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        <span class="text-fuchsia-500">👨‍🏫</span>
+                        <span class="truncate">${booking.teacher_name || 'รหัส: ' + booking.teach_id}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        <span class="text-fuchsia-500">${layoutInfo.emoji}</span>
+                        <span>${layoutInfo.name}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-4 p-3 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-sm text-gray-700 dark:text-gray-300"><strong>🎯 วัตถุประสงค์:</strong> ${booking.purpose}</p>
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showDetailModal(${JSON.stringify(booking).replace(/"/g, '&quot;')})" class="flex-1 px-4 py-2 bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-400 rounded-xl text-sm font-medium hover:bg-fuchsia-200 dark:hover:bg-fuchsia-900/50 transition-colors">
+                        <i class="fas fa-eye mr-2"></i>ดูรายละเอียด
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    $('#bookingList').html(html);
+}
+
+function setupEventHandlers() {
+    // Tab switching
+    $('.tab-btn').on('click', function() {
+        const tab = $(this).data('tab');
+        switchTab(tab);
+    });
+
+    // Filter buttons
+    $('.status-filter-btn').on('click', function() {
+        $('.status-filter-btn').removeClass('ring-2 ring-fuchsia-500 bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400');
+        $(this).addClass('ring-2 ring-fuchsia-500 bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/30 dark:text-fuchsia-400');
+        currentFilter = $(this).data('status');
+        renderBookings(filterBookings());
+    });
+
+    // Date Filter buttons
+    $('.date-filter-btn').on('click', function() {
+        $('.date-filter-btn').removeClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+        $('.date-filter-btn').addClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+        
+        $(this).removeClass('bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300');
+        $(this).addClass('active ring-2 ring-blue-500 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400');
+        
+        currentDateFilter = $(this).data('filter');
+        renderBookings(filterBookings());
+    });
+
+    // Refresh
+    $('#refreshData').on('click', function() {
+        fetchBookings();
+    });
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    $('.tab-btn').removeClass('active');
+    $(`.tab-btn[data-tab="${tab}"]`).addClass('active');
+    $('.tab-pane').addClass('hidden');
+    $(`#tab-${tab}`).removeClass('hidden');
+    
+    if (tab === 'calendar') {
+        setTimeout(() => initCalendar(), 100);
+    }
+}
+
+function showDetailModal(booking) {
+    const dateObj = new Date(booking.date);
+    const formattedDate = dateObj.toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const statusInfo = getStatusInfo(booking.status);
+    const layoutInfo = getRoomLayoutInfo(booking.room_layout);
+    const roomEmoji = getRoomEmoji(booking.location);
+    
+    $('#detailTitle').html(`<span class="text-2xl mr-2">${roomEmoji}</span>${booking.location}`);
+    
+    $('#detailContent').html(`
+        <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                <span class="text-gray-600 dark:text-gray-400">สถานะ</span>
+                ${statusInfo.badge}
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-xs text-gray-500 mb-1">📅 วันที่</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${formattedDate}</p>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-xs text-gray-500 mb-1">⏰ เวลา</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${booking.time_start} - ${booking.time_end} น.</p>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                <p class="text-xs text-gray-500 mb-1">🎯 วัตถุประสงค์</p>
+                <p class="font-medium text-gray-900 dark:text-white">${booking.purpose}</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-xs text-gray-500 mb-1">👨‍🏫 ผู้จอง</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${booking.teacher_name || 'รหัส: ' + booking.teach_id}</p>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-xs text-gray-500 mb-1">📞 เบอร์โทร</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${booking.phone || '-'}</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-xs text-gray-500 mb-1">🪑 รูปแบบจัดโต๊ะเก้าอี้</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${layoutInfo.emoji} ${layoutInfo.name}</p>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-slate-700 rounded-xl">
+                    <p class="text-xs text-gray-500 mb-1">🛠️ อุปกรณ์</p>
+                    <p class="font-medium text-gray-900 dark:text-white">${booking.media || '-'}</p>
+                </div>
+            </div>
+        </div>
+    `);
+    
+    $('#detailModal').removeClass('hidden');
+}
+
+function closeDetailModal() {
+    $('#detailModal').addClass('hidden');
+}
+
+// Helper Functions
+function getStatusInfo(status) {
+    const statuses = {
+        0: { badge: '<span class="px-3 py-1 text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full font-medium">⏳ รอการอนุมัติ</span>', border: 'border-yellow-400' },
+        1: { badge: '<span class="px-3 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full font-medium">✅ อนุมัติแล้ว</span>', border: 'border-green-400' },
+        2: { badge: '<span class="px-3 py-1 text-xs bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded-full font-medium">❌ ยกเลิก</span>', border: 'border-red-400' }
+    };
+    return statuses[status] || statuses[0];
+}
+
+function getRoomLayoutInfo(layout) {
+    const layouts = {
+        'none': { emoji: '➖', name: 'ไม่ระบุ' },
+        'theater': { emoji: '🎭', name: 'แบบโรงภาพยนตร์' },
+        'classroom': { emoji: '🏫', name: 'แบบห้องเรียน' },
+        'u-shape': { emoji: '🔲', name: 'แบบตัว U' },
+        'boardroom': { emoji: '📋', name: 'แบบโต๊ะประชุม' },
+        'banquet': { emoji: '🍽️', name: 'แบบโต๊ะกลม' },
+        'other': { emoji: '✏️', name: 'อื่นๆ' }
+    };
+
+    // Handle custom layout with value (e.g., "custom:วงกลม")
+    if (layout && layout.startsWith('custom:')) {
+        return { emoji: '✏️', name: layout.replace('custom:', '') };
+    }
+
+    return layouts[layout] || { emoji: '✏️', name: layout || '-' };
+}
+
+// Close modals on outside click
+$('#detailModal').on('click', function(e) {
+    if (e.target === this) {
+        $(this).addClass('hidden');
+    }
+});
+</script>

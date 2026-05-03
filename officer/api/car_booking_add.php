@@ -130,34 +130,73 @@ try {
 
     if ($stmt && $stmt->rowCount() > 0) {
         // แจ้งเตือน Discord
-        $webhookUrl = 'https://discord.com/api/webhooks/1392375583215714334/DBG1syD7eINQWBEYXhcOf2ctFh0Qo71N51V2jkZ9g-Lx4DKFZHy3S_w4FcWbyRf1B0xe'; // เปลี่ยนเป็น Webhook URL ของคุณ
+        $config = json_decode(file_get_contents('../../config.json'), true);
+        $webhookUrl = $config['notifications']['car_discord_webhook'] ?? '';
+        $isEnabled = $config['notifications']['car_discord_enabled'] ?? false;
 
-        $msg = "-----------------------------\n"
-            . "🚗 **เจ้าหน้าที่จองรถใหม่!**\n"
-            . "-----------------------------\n"
-            . "👤 **ผู้จอง:** {$teacher_name} ({$teacher_position})\n"
-            . "📞 **เบอร์โทร:** {$teacher_phone}\n"
-            . "🆔 **รหัสผู้จอง:** {$teacher_id}\n"
-            . "🚘 **รถ:** {$carDesc}\n"
-            . "📅 **วันที่เดินทาง:** " . thaiDatetime($start_time) . "\n"
-            . "🏁 **สิ้นสุดการเดินทาง:** " . thaiDatetime($end_time) . "\n"
-            . "📍 **ปลายทาง:** {$destination}\n"
-            . "🎯 **วัตถุประสงค์:** {$purpose}\n"
-            . "🧑‍🤝‍🧑 **จำนวนผู้โดยสาร:** {$passenger_count}\n"
-            . "🎓 **นักเรียน:** {$student_count}\n"
-            . "📝 **รายละเอียดผู้โดยสาร:** {$passengers_detail}\n"
-            . "🗒️ **หมายเหตุ:** {$notes}\n"
-            . "-----------------------------";
+        if ($isEnabled && !empty($webhookUrl)) {
+            $msg = "-----------------------------\n"
+                . " เจ้าหน้าที่จองรถใหม่!\n"
+                . "-----------------------------\n"
+                . " ผู้จอง: {$teacher_name} ({$teacher_position})\n"
+                . " เบอร์โทร: {$teacher_phone}\n"
+                . " รหัสผู้จอง: {$teacher_id}\n"
+                . " รถ: {$carDesc}\n"
+                . " วันที่เดินทาง: " . thaiDatetime($start_time) . "\n"
+                . " สิ้นสุดการเดินทาง: " . thaiDatetime($end_time) . "\n"
+                . " ปลายทาง: {$destination}\n"
+                . " วัตถุประสงค์: {$purpose}\n"
+                . " จำนวนผู้โดยสาร: {$passenger_count}\n"
+                . " นักเรียน: {$student_count}\n"
+                . " รายละเอียดผู้โดยสาร: {$passengers_detail}\n"
+                . " หมายเหตุ: {$notes}\n"
+                . "-----------------------------";
 
-        $payload = json_encode(['content' => $msg]);
+            $payload = json_encode(['content' => $msg]);
 
-        $ch = curl_init($webhookUrl);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($ch);
-        curl_close($ch);
+            $ch = curl_init($webhookUrl);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+            curl_close($ch);
+        }
+
+        // แจ้งเตือน Line
+        $lineToken = $config['notifications']['line_token'] ?? '';
+        $isLineEnabled = $config['notifications']['line_enabled'] ?? false;
+
+        if ($isLineEnabled && !empty($lineToken)) {
+            $ch = curl_init('https://notify-api.line.me/api/notify');
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['message' => "\n" . $msg]));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/x-www-form-urlencoded',
+                'Authorization: Bearer ' . $lineToken
+            ]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+            curl_close($ch);
+        }
+
+        // แจ้งเตือน Telegram
+        $tgToken = $config['notifications']['telegram_bot_token'] ?? '';
+        $tgChatId = $config['notifications']['telegram_chat_id'] ?? '';
+        $isTgEnabled = $config['notifications']['telegram_enabled'] ?? false;
+
+        if ($isTgEnabled && !empty($tgToken) && !empty($tgChatId)) {
+            $tgUrl = "https://api.telegram.org/bot{$tgToken}/sendMessage";
+            $ch = curl_init($tgUrl);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'chat_id' => $tgChatId,
+                'text' => $msg
+            ]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_exec($ch);
+            curl_close($ch);
+        }
 
         echo json_encode(['success' => true, 'message' => 'บันทึกการจองเรียบร้อยแล้ว']);
     } else {

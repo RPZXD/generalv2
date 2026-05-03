@@ -48,6 +48,7 @@
                         <option value="">-- เลือกบทบาท --</option>
                         <option value="ครู" selected>👨‍🏫 ครู</option>
                         <option value="เจ้าหน้าที่">🧑‍💼 เจ้าหน้าที่</option>
+                        <option value="คนขับรถ">🚗 คนขับรถ</option>
                         <option value="ผู้บริหาร">👔 ผู้บริหาร</option>
                         <option value="admin">🛠️ admin</option>
                     </select>
