@@ -100,7 +100,33 @@ $menuItems = [
                 <li class="my-4 border-t border-white/10"></li>
 
                 <!-- Login/Logout -->
-                <?php if (isset($_SESSION['user_id']) || isset($_SESSION['username'])): ?>
+                <?php if (isset($_SESSION['user_id']) || isset($_SESSION['username'])): 
+                    $dashboardUrl = 'login.php';
+                    $role = $_SESSION['role'] ?? '';
+                    if ($role === 'ครู') {
+                        $dashboardUrl = 'teacher/index.php';
+                    } else if ($role === 'นักเรียน') {
+                        $dashboardUrl = 'student/index.php';
+                    } else if ($role === 'คนขับรถ') {
+                        $dashboardUrl = 'driver/index.php';
+                    } else if ($role === 'เจ้าหน้าที่') {
+                        $dashboardUrl = 'officer/index.php';
+                    } else if ($role === 'ผู้บริหาร') {
+                        $dashboardUrl = 'director/index.php';
+                    } else if ($role === 'admin') {
+                        $dashboardUrl = 'admin/index.php';
+                    }
+                    ?>
+                    <li>
+                        <a href="<?php echo htmlspecialchars($dashboardUrl); ?>"
+                            class="sidebar-item flex items-center px-4 py-3 text-gray-300 rounded-xl hover:bg-white/10 hover:text-white group">
+                            <span
+                                class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-lg shadow-emerald-500/30 group-hover:shadow-emerald-500/50 transition-shadow">
+                                <i class="fas fa-desktop text-white"></i>
+                            </span>
+                            <span class="ml-3 font-medium">กลับสู่ระบบ</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="logout.php"
                             class="sidebar-item flex items-center px-4 py-3 text-gray-300 rounded-xl hover:bg-white/10 hover:text-white group">

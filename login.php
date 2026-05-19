@@ -5,6 +5,26 @@
  */
 session_start();
 
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $redirect = 'index.php';
+    $role = $_SESSION['role'] ?? '';
+    if ($role === 'ครู') {
+        $redirect = 'teacher/index.php';
+    } else if ($role === 'นักเรียน') {
+        $redirect = 'student/index.php';
+    } else if ($role === 'คนขับรถ') {
+        $redirect = 'driver/index.php';
+    } else if ($role === 'เจ้าหน้าที่') {
+        $redirect = 'officer/index.php';
+    } else if ($role === 'ผู้บริหาร') {
+        $redirect = 'director/index.php';
+    } else if ($role === 'admin') {
+        $redirect = 'admin/index.php';
+    }
+    header("Location: " . $redirect);
+    exit;
+}
+
 // โหลด config
 $config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
 $global = $config['global'];
