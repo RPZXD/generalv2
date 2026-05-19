@@ -114,10 +114,30 @@ try {
             
             $statusText = $booking['status'] == 1 ? '✅ อนุมัติแล้ว' : '⏳ รออนุมัติ';
             
+            // Translate room layout
+            $layoutMap = [
+                "theater" => "🎭 โรงภาพยนตร์",
+                "classroom" => "🏫 ห้องเรียน",
+                "u-shape" => "🔲 ตัว U",
+                "boardroom" => "📋 โต๊ะประชุม",
+                "banquet" => "🍽️ โต๊ะกลม",
+                "none" => "-"
+            ];
+            $roomLayoutText = "-";
+            if (!empty($booking['room_layout'])) {
+                if (strpos($booking['room_layout'], "custom:") === 0) {
+                    $roomLayoutText = "✏️ " . substr($booking['room_layout'], 7);
+                } else {
+                    $roomLayoutText = $layoutMap[$booking['room_layout']] ?? "-";
+                }
+            }
+            
             $roomMessage .= ($index + 1) . ". 🏢 " . ($booking['room_name'] ?? $booking['location']) . "\n"
                           . "   ⏰ เวลา: " . substr($booking['time_start'], 0, 5) . " - " . substr($booking['time_end'], 0, 5) . " น.\n"
-                          . "   👤 ผู้จอง: {$teacherName}\n"
+                          . "   👤 ผู้จอง: {$teacherName}" . (!empty($booking['phone']) ? " (โทร: {$booking['phone']})" : "") . "\n"
                           . "   🎯 วัตถุประสงค์: {$booking['purpose']}\n"
+                          . "   🪑 จัดห้อง: {$roomLayoutText}\n"
+                          . "   📺 อุปกรณ์: " . (!empty($booking['media']) ? $booking['media'] : "-") . "\n"
                           . "   สถานะ: {$statusText}\n"
                           . "-----------------------------\n";
         }
