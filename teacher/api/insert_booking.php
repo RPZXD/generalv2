@@ -333,6 +333,8 @@ try {
             flush();
         }
         
+        /*
+        // ปิดการแจ้งเตือนทันที เพื่อเปลี่ยนเป็นแบบสรุปรอบเวลา (05.00 และ 18.00 น.)
         // Now send notifications in background (client already got response)
         // Send LINE Notification
         sendLineFlexMessage($channelAccessToken, $groupId, $flexContent);
@@ -349,6 +351,7 @@ try {
             "https://discord.com/api/webhooks/1324990236822241300/lZk9s-t-l324_uD6s-kK4v-lZk9s-t-l324_uD6s-kK4v",
             $discordMessage
         );
+        */
         
         exit; // Stop here, response already sent
     }

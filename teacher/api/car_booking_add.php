@@ -137,6 +137,8 @@ try {
         : $car_id;
 
     if ($stmt && $stmt->rowCount() > 0) {
+        /*
+        // ปิดการแจ้งเตือนทันที เพื่อเปลี่ยนเป็นแบบสรุปรอบเวลา (05.00 และ 18.00 น.)
         // แจ้งเตือน Discord
         $config = json_decode(file_get_contents('../../config.json'), true);
         $webhookUrl = $config['notifications']['car_discord_webhook'] ?? '';
@@ -205,6 +207,7 @@ try {
             curl_exec($ch);
             curl_close($ch);
         }
+        */
 
         echo json_encode(['success' => true, 'message' => 'บันทึกการจองเรียบร้อยแล้ว']);
     } else {
