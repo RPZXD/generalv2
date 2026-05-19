@@ -86,6 +86,9 @@ try {
     $sysSettings = new App\SystemSettings();
     $dbSettings = $sysSettings->getAll();
 
+    // Load config.json
+    $config = json_decode(file_get_contents(__DIR__ . '/../config.json'), true);
+
     // --- SECTION 1: ROOM BOOKINGS ---
     // Fetch active room bookings for target date (status != 2, 2 is typically rejected/cancelled)
     $roomSql = "SELECT b.*, mr.room_name 
@@ -147,65 +150,83 @@ try {
         $groupId = $dbSettings['room_group_id'] ?? '';
         $discordWebhook = $dbSettings['room_discord_webhook'] ?? '';
 
-        // Send LINE Bot Notification for Rooms
-        $lineUrl = "https://api.line.me/v2/bot/message/push";
-        $lineHeaders = [
-            "Content-Type: application/json; charset=UTF-8",
-            "Authorization: Bearer {$channelAccessToken}",
-            "User-Agent: PHP LINE Bot"
-        ];
-        $lineBody = [
-            "to" => $groupId,
-            "messages" => [
-                [
-                    "type" => "text",
-                    "text" => $roomMessage
-                ]
-            ]
-        ];
+        // Toggles from config.json (default to true if not set)
+        $roomLineEnabled = $config['notifications']['room_line_enabled'] ?? true;
+        $roomDiscordEnabled = $config['notifications']['room_discord_enabled'] ?? true;
 
-        $ch = curl_init($lineUrl);
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($lineBody, JSON_UNESCAPED_UNICODE),
-            CURLOPT_HTTPHEADER => $lineHeaders,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 15,
-            CURLOPT_SSL_VERIFYPEER => false
-        ]);
-        $lineRes = curl_exec($ch);
-        $lineCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        $results['room_notifications']['line'] = [
-            'sent' => true,
-            'http_code' => $lineCode,
-            'response' => json_decode($lineRes, true) ?: $lineRes
-        ];
+        // Send LINE Bot Notification for Rooms
+        if ($roomLineEnabled && !empty($channelAccessToken) && !empty($groupId)) {
+            $lineUrl = "https://api.line.me/v2/bot/message/push";
+            $lineHeaders = [
+                "Content-Type: application/json; charset=UTF-8",
+                "Authorization: Bearer {$channelAccessToken}",
+                "User-Agent: PHP LINE Bot"
+            ];
+            $lineBody = [
+                "to" => $groupId,
+                "messages" => [
+                    [
+                        "type" => "text",
+                        "text" => $roomMessage
+                    ]
+                ]
+            ];
+
+            $ch = curl_init($lineUrl);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode($lineBody, JSON_UNESCAPED_UNICODE),
+                CURLOPT_HTTPHEADER => $lineHeaders,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+            $lineRes = curl_exec($ch);
+            $lineCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            $results['room_notifications']['line'] = [
+                'sent' => true,
+                'http_code' => $lineCode,
+                'response' => json_decode($lineRes, true) ?: $lineRes
+            ];
+        } else {
+            $results['room_notifications']['line'] = [
+                'sent' => false,
+                'reason' => 'Disabled or credentials missing'
+            ];
+        }
 
         // Send Discord Notification for Rooms
-        $discordBody = [
-            "content" => $roomMessage,
-            "username" => "ระบบจองห้องประชุม",
-            "avatar_url" => "https://cdn-icons-png.flaticon.com/512/2111/2111615.png"
-        ];
-        $ch = curl_init($discordWebhook);
-        curl_setopt_array($ch, [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($discordBody, JSON_UNESCAPED_UNICODE),
-            CURLOPT_HTTPHEADER => ["Content-Type: application/json; charset=UTF-8"],
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 15,
-            CURLOPT_SSL_VERIFYPEER => false
-        ]);
-        $discordRes = curl_exec($ch);
-        $discordCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        if ($roomDiscordEnabled && !empty($discordWebhook)) {
+            $discordBody = [
+                "content" => $roomMessage,
+                "username" => "ระบบจองห้องประชุม",
+                "avatar_url" => "https://cdn-icons-png.flaticon.com/512/2111/2111615.png"
+            ];
+            $ch = curl_init($discordWebhook);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode($discordBody, JSON_UNESCAPED_UNICODE),
+                CURLOPT_HTTPHEADER => ["Content-Type: application/json; charset=UTF-8"],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+            $discordRes = curl_exec($ch);
+            $discordCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
 
-        $results['room_notifications']['discord'] = [
-            'sent' => true,
-            'http_code' => $discordCode
-        ];
+            $results['room_notifications']['discord'] = [
+                'sent' => true,
+                'http_code' => $discordCode
+            ];
+        } else {
+            $results['room_notifications']['discord'] = [
+                'sent' => false,
+                'reason' => 'Disabled or credentials missing'
+            ];
+        }
     } else {
         $results['room_notifications']['status'] = "No bookings found for target date";
     }
@@ -243,9 +264,6 @@ try {
                          . "   สถานะ: {$statusText}\n"
                          . "-----------------------------\n";
         }
-
-        // Load credentials from config.json & dbSettings
-        $config = json_decode(file_get_contents(__DIR__ . '/../config.json'), true);
 
         // Discord Notification
         $webhookUrl = $dbSettings['car_discord_webhook'] ?? '';

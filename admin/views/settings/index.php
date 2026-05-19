@@ -132,10 +132,20 @@ if (!isset($config)) {
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Line Group ID</label>
                                 <input type="text" name="db_settings[room_group_id]" value="<?php echo htmlspecialchars($dbSettings['room_group_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
                             </div>
+                            <div class="flex items-center space-x-3 md:col-span-2">
+                                <input type="hidden" name="notifications[room_line_enabled]" value="false">
+                                <input type="checkbox" id="room-line-enabled" name="notifications[room_line_enabled]" value="true" <?php echo ($config['notifications']['room_line_enabled'] ?? true) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
+                                <label for="room-line-enabled" class="text-sm text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">เปิดใช้งานการแจ้งเตือนห้องประชุมผ่าน Line</label>
+                            </div>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Webhook URL สำหรับการจองห้องประชุม</label>
                             <input type="text" name="db_settings[room_discord_webhook]" value="<?php echo htmlspecialchars($dbSettings['room_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
+                            <div class="flex items-center space-x-3 mt-2">
+                                <input type="hidden" name="notifications[room_discord_enabled]" value="false">
+                                <input type="checkbox" id="room-discord-enabled" name="notifications[room_discord_enabled]" value="true" <?php echo ($config['notifications']['room_discord_enabled'] ?? true) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
+                                <label for="room-discord-enabled" class="text-sm text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">เปิดใช้งานการแจ้งเตือนห้องประชุมผ่าน Discord</label>
+                            </div>
                         </div>
                     </div>
                 </div>
