@@ -117,15 +117,39 @@ if (!isset($config)) {
 
             <!-- Notification Settings -->
             <div id="content-notifications" class="tab-content hidden space-y-8">
+                <!-- Room Booking Notifications -->
+                <div class="p-6 bg-purple-50 dark:bg-purple-900/10 rounded-3xl border border-purple-100 dark:border-purple-900/20">
+                    <h4 class="text-lg font-bold text-purple-800 dark:text-purple-300 mb-4 flex items-center gap-2">
+                        💬 การแจ้งเตือนห้องประชุม (เก็บใน Database)
+                    </h4>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Line Channel Access Token</label>
+                                <input type="text" name="db_settings[room_line_token]" value="<?php echo htmlspecialchars($dbSettings['room_line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Line Group ID</label>
+                                <input type="text" name="db_settings[room_group_id]" value="<?php echo htmlspecialchars($dbSettings['room_group_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Webhook URL สำหรับการจองห้องประชุม</label>
+                            <input type="text" name="db_settings[room_discord_webhook]" value="<?php echo htmlspecialchars($dbSettings['room_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discord Webhook Settings -->
                 <div class="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/20">
                     <h4 class="text-lg font-bold text-blue-800 dark:text-blue-300 mb-4 flex items-center gap-2">
-                        Discord Webhook
+                        Discord Webhook (เก็บใน Database)
                     </h4>
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 gap-6">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Webhook URL สำหรับการจองรถ</label>
-                                <input type="text" name="notifications[car_discord_webhook]" value="<?php echo htmlspecialchars($config['notifications']['car_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
+                                <input type="text" name="db_settings[car_discord_webhook]" value="<?php echo htmlspecialchars($dbSettings['car_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
                                 <div class="flex items-center space-x-3 mt-2">
                                     <input type="hidden" name="notifications[car_discord_enabled]" value="false">
                                     <input type="checkbox" id="car-discord-enabled" name="notifications[car_discord_enabled]" value="true" <?php echo ($config['notifications']['car_discord_enabled'] ?? true) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
@@ -134,7 +158,7 @@ if (!isset($config)) {
                             </div>
                             <div class="space-y-2 border-t border-gray-100 dark:border-gray-800 pt-6">
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Webhook URL สำหรับแจ้งซ่อม</label>
-                                <input type="text" name="notifications[repair_discord_webhook]" value="<?php echo htmlspecialchars($config['notifications']['repair_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
+                                <input type="text" name="db_settings[repair_discord_webhook]" value="<?php echo htmlspecialchars($dbSettings['repair_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
                                 <div class="flex items-center space-x-3 mt-2">
                                     <input type="hidden" name="notifications[repair_discord_enabled]" value="false">
                                     <input type="checkbox" id="repair-discord-enabled" name="notifications[repair_discord_enabled]" value="true" <?php echo ($config['notifications']['repair_discord_enabled'] ?? true) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
@@ -143,7 +167,7 @@ if (!isset($config)) {
                             </div>
                             <div class="space-y-2 border-t border-gray-100 dark:border-gray-800 pt-6">
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Webhook URL สำหรับกลุ่มคนขับรถ (สรุปงานรายวัน)</label>
-                                <input type="text" name="notifications[driver_discord_webhook]" value="<?php echo htmlspecialchars($config['notifications']['driver_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
+                                <input type="text" name="db_settings[driver_discord_webhook]" value="<?php echo htmlspecialchars($dbSettings['driver_discord_webhook'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="https://discord.com/api/webhooks/...">
                                 <div class="flex items-center space-x-3 mt-2">
                                     <input type="hidden" name="notifications[driver_discord_enabled]" value="false">
                                     <input type="checkbox" id="driver-discord-enabled" name="notifications[driver_discord_enabled]" value="true" <?php echo ($config['notifications']['driver_discord_enabled'] ?? false) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
@@ -154,15 +178,16 @@ if (!isset($config)) {
                     </div>
                 </div>
 
+                <!-- LINE Notify Settings -->
                 <div class="p-6 bg-green-50 dark:bg-green-900/10 rounded-3xl border border-green-100 dark:border-green-900/20">
                     <h4 class="text-lg font-bold text-green-800 dark:text-green-300 mb-4 flex items-center gap-2">
-                        Line Notify
+                        Line Notify (เก็บใน Database)
                     </h4>
                     <div class="space-y-6">
                         <div class="space-y-4">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Token สำหรับแจ้งบุคลากรทั่วไป (จองรถ/แจ้งซ่อม)</label>
-                                <input type="text" name="notifications[line_token]" value="<?php echo htmlspecialchars($config['notifications']['line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Token ของ Line Notify">
+                                <input type="text" name="db_settings[car_line_token]" value="<?php echo htmlspecialchars($dbSettings['car_line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Token ของ Line Notify">
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="hidden" name="notifications[line_enabled]" value="false">
@@ -173,7 +198,7 @@ if (!isset($config)) {
                         <div class="space-y-4 border-t border-gray-100 dark:border-gray-800 pt-6">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Token สำหรับกลุ่มคนขับรถ (สรุปงานรายวัน)</label>
-                                <input type="text" name="notifications[driver_line_token]" value="<?php echo htmlspecialchars($config['notifications']['driver_line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Token ของ Line Notify">
+                                <input type="text" name="db_settings[driver_line_token]" value="<?php echo htmlspecialchars($dbSettings['driver_line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Token ของ Line Notify">
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="hidden" name="notifications[driver_line_enabled]" value="false">
@@ -184,22 +209,23 @@ if (!isset($config)) {
                     </div>
                 </div>
 
+                <!-- Telegram Settings -->
                 <div class="p-6 bg-sky-50 dark:bg-sky-900/10 rounded-3xl border border-sky-100 dark:border-sky-900/20">
                     <h4 class="text-lg font-bold text-sky-800 dark:text-sky-300 mb-4 flex items-center gap-2">
-                        Telegram
+                        Telegram (เก็บใน Database)
                     </h4>
                     <div class="space-y-6">
                         <div class="space-y-4">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Telegram Bot Token</label>
-                                <input type="text" name="notifications[telegram_bot_token]" value="<?php echo htmlspecialchars($config['notifications']['telegram_bot_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="123456789:ABCDefgh...">
+                                <input type="text" name="db_settings[telegram_bot_token]" value="<?php echo htmlspecialchars($dbSettings['telegram_bot_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="123456789:ABCDefgh...">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-100 dark:border-gray-800">
                             <div class="space-y-4">
                                 <div class="space-y-2">
                                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Chat ID สำหรับทั่วไป</label>
-                                    <input type="text" name="notifications[telegram_chat_id]" value="<?php echo htmlspecialchars($config['notifications']['telegram_chat_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="-100123456789">
+                                    <input type="text" name="db_settings[telegram_chat_id]" value="<?php echo htmlspecialchars($dbSettings['telegram_chat_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="-100123456789">
                                 </div>
                                 <div class="flex items-center space-x-3">
                                     <input type="hidden" name="notifications[telegram_enabled]" value="false">
@@ -210,7 +236,7 @@ if (!isset($config)) {
                             <div class="space-y-4">
                                 <div class="space-y-2">
                                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Chat ID สำหรับงานแจ้งซ่อม</label>
-                                    <input type="text" name="notifications[telegram_repair_chat_id]" value="<?php echo htmlspecialchars($config['notifications']['telegram_repair_chat_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="-100555666777">
+                                    <input type="text" name="db_settings[telegram_repair_chat_id]" value="<?php echo htmlspecialchars($dbSettings['telegram_repair_chat_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="-100555666777">
                                 </div>
                                 <div class="flex items-center space-x-3">
                                     <input type="hidden" name="notifications[telegram_repair_enabled]" value="false">
@@ -221,7 +247,7 @@ if (!isset($config)) {
                             <div class="space-y-4">
                                 <div class="space-y-2">
                                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Chat ID สำหรับกลุ่มคนขับรถ</label>
-                                    <input type="text" name="notifications[telegram_driver_chat_id]" value="<?php echo htmlspecialchars($config['notifications']['telegram_driver_chat_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="-100987654321">
+                                    <input type="text" name="db_settings[telegram_driver_chat_id]" value="<?php echo htmlspecialchars($dbSettings['telegram_driver_chat_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="-100987654321">
                                 </div>
                                 <div class="flex items-center space-x-3">
                                     <input type="hidden" name="notifications[telegram_driver_enabled]" value="false">

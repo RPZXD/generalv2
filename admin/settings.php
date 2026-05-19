@@ -14,6 +14,11 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['rol
 $config = json_decode(file_get_contents('../config.json'), true);
 $global = $config['global'];
 
+// Load database settings
+require_once __DIR__ . '/../classes/SystemSettings.php';
+$sysSettingsObj = new App\SystemSettings();
+$dbSettings = $sysSettingsObj->getAll();
+
 $username = $_SESSION['username'] ?? 'ผู้ใช้';
 $fullname = $_SESSION['user']['Teach_name'] ?? $_SESSION['fullname'] ?? $username;
 $role = $_SESSION['role'] ?? 'admin';

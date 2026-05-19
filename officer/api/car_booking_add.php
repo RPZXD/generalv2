@@ -132,8 +132,12 @@ try {
         /*
         // ปิดการแจ้งเตือนทันที เพื่อเปลี่ยนเป็นแบบสรุปรอบเวลา (05.00 และ 18.00 น.)
         // แจ้งเตือน Discord
+        require_once '../../classes/SystemSettings.php';
+        $sysSettings = new App\SystemSettings();
+        $dbSettings = $sysSettings->getAll();
+
         $config = json_decode(file_get_contents('../../config.json'), true);
-        $webhookUrl = $config['notifications']['car_discord_webhook'] ?? '';
+        $webhookUrl = $dbSettings['car_discord_webhook'] ?? '';
         $isEnabled = $config['notifications']['car_discord_enabled'] ?? false;
 
         if ($isEnabled && !empty($webhookUrl)) {
@@ -162,11 +166,11 @@ try {
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_exec($ch);
-            curl_close($ch);
+            $ch_close = curl_close($ch);
         }
 
         // แจ้งเตือน Line
-        $lineToken = $config['notifications']['line_token'] ?? '';
+        $lineToken = $dbSettings['car_line_token'] ?? '';
         $isLineEnabled = $config['notifications']['line_enabled'] ?? false;
 
         if ($isLineEnabled && !empty($lineToken)) {
@@ -183,8 +187,8 @@ try {
         }
 
         // แจ้งเตือน Telegram
-        $tgToken = $config['notifications']['telegram_bot_token'] ?? '';
-        $tgChatId = $config['notifications']['telegram_chat_id'] ?? '';
+        $tgToken = $dbSettings['telegram_bot_token'] ?? '';
+        $tgChatId = $dbSettings['telegram_chat_id'] ?? '';
         $isTgEnabled = $config['notifications']['telegram_enabled'] ?? false;
 
         if ($isTgEnabled && !empty($tgToken) && !empty($tgChatId)) {

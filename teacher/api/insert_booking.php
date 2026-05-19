@@ -177,9 +177,11 @@ try {
     $result = $controller->create($data);
 
     if (!empty($result["success"])) {
-        // Configuration
-        $channelAccessToken = "3K7fh1bhbCn0uPjgNoGQpN3jNgpwpSoMA0QaE6m4dOMJkly+SeGyDyS73+EV6wSVuLoB6M/+FwdbxRWlY6ZGuQymNTYSrFzA5xQ7AhwlwOufu+et60PnAnYK2vpyvUyy3ye0yBe7cTu+PoiFDxsmmgdB04t89/1O/w1cDnyilFU=";
-        $groupId = "Cafbcad04d9e78bbee85b2447ee768baf";
+        // Load credentials from database settings
+        require_once __DIR__ . '/../../classes/SystemSettings.php';
+        $sysSettings = new \App\SystemSettings();
+        $channelAccessToken = $sysSettings->get('room_line_token', '');
+        $groupId = $sysSettings->get('room_group_id', '');
         
         // Get Teacher Name
         $userDb = new \App\DatabaseUsers();
@@ -347,8 +349,9 @@ try {
             "**ผู้จอง:** " . $teacherName . "\n" .
             "**หัวข้อ:** " . $data["purpose"];
             
+        $roomDiscordWebhook = $sysSettings->get('room_discord_webhook', '');
         sendDiscordNotification(
-            "https://discord.com/api/webhooks/1324990236822241300/lZk9s-t-l324_uD6s-kK4v-lZk9s-t-l324_uD6s-kK4v",
+            $roomDiscordWebhook,
             $discordMessage
         );
         */

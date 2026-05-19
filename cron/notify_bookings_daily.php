@@ -81,6 +81,11 @@ try {
     $dbUsers = new DatabaseUsers();
     $pdoUsers = $dbUsers->getTeacherByUsername('test'); // test connection
 
+    // Initialize SystemSettings
+    require_once __DIR__ . '/../classes/SystemSettings.php';
+    $sysSettings = new App\SystemSettings();
+    $dbSettings = $sysSettings->getAll();
+
     // --- SECTION 1: ROOM BOOKINGS ---
     // Fetch active room bookings for target date (status != 2, 2 is typically rejected/cancelled)
     $roomSql = "SELECT b.*, mr.room_name 
@@ -117,10 +122,10 @@ try {
                           . "-----------------------------\n";
         }
 
-        // Room hardcoded credentials from insert_booking.php
-        $channelAccessToken = "3K7fh1bhbCn0uPjgNoGQpN3jNgpwpSoMA0QaE6m4dOMJkly+SeGyDyS73+EV6wSVuLoB6M/+FwdbxRWlY6ZGuQymNTYSrFzA5xQ7AhwlwOufu+et60PnAnYK2vpyvUyy3ye0yBe7cTu+PoiFDxsmmgdB04t89/1O/w1cDnyilFU=";
-        $groupId = "Cafbcad04d9e78bbee85b2447ee768baf";
-        $discordWebhook = "https://discord.com/api/webhooks/1324990236822241300/lZk9s-t-l324_uD6s-kK4v-lZk9s-t-l324_uD6s-kK4v";
+        // Room credentials from system settings database table
+        $channelAccessToken = $dbSettings['room_line_token'] ?? '';
+        $groupId = $dbSettings['room_group_id'] ?? '';
+        $discordWebhook = $dbSettings['room_discord_webhook'] ?? '';
 
         // Send LINE Bot Notification for Rooms
         $lineUrl = "https://api.line.me/v2/bot/message/push";
@@ -219,11 +224,11 @@ try {
                          . "-----------------------------\n";
         }
 
-        // Load credentials from config.json
+        // Load credentials from config.json & dbSettings
         $config = json_decode(file_get_contents(__DIR__ . '/../config.json'), true);
 
         // Discord Notification
-        $webhookUrl = $config['notifications']['car_discord_webhook'] ?? '';
+        $webhookUrl = $dbSettings['car_discord_webhook'] ?? '';
         $isEnabled = $config['notifications']['car_discord_enabled'] ?? false;
 
         if ($isEnabled && !empty($webhookUrl)) {
@@ -252,7 +257,7 @@ try {
         }
 
         // LINE Notify Notification
-        $lineToken = $config['notifications']['line_token'] ?? '';
+        $lineToken = $dbSettings['car_line_token'] ?? '';
         $isLineEnabled = $config['notifications']['line_enabled'] ?? false;
 
         if ($isLineEnabled && !empty($lineToken)) {
@@ -280,8 +285,8 @@ try {
         }
 
         // Telegram Notification
-        $tgToken = $config['notifications']['telegram_bot_token'] ?? '';
-        $tgChatId = $config['notifications']['telegram_chat_id'] ?? '';
+        $tgToken = $dbSettings['telegram_bot_token'] ?? '';
+        $tgChatId = $dbSettings['telegram_chat_id'] ?? '';
         $isTgEnabled = $config['notifications']['telegram_enabled'] ?? false;
 
         if ($isTgEnabled && !empty($tgToken) && !empty($tgChatId)) {

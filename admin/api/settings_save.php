@@ -16,9 +16,33 @@ try {
         exit;
     }
 
+    // Save database settings if present
+    if (isset($data['db_settings']) && is_array($data['db_settings'])) {
+        require_once __DIR__ . '/../../classes/SystemSettings.php';
+        $sysSettings = new App\SystemSettings();
+        foreach ($data['db_settings'] as $key => $value) {
+            $sysSettings->set($key, $value);
+        }
+        // Remove from config data to prevent saving to config.json
+        unset($data['db_settings']);
+    }
+
+    // Sanitize/clear sensitive tokens from config.json so they are not tracked in git
+    if (isset($data['notifications']) && is_array($data['notifications'])) {
+        $data['notifications']['car_discord_webhook'] = '';
+        $data['notifications']['repair_discord_webhook'] = '';
+        $data['notifications']['driver_discord_webhook'] = '';
+        $data['notifications']['line_token'] = '';
+        $data['notifications']['driver_line_token'] = '';
+        $data['notifications']['telegram_bot_token'] = '';
+        $data['notifications']['telegram_chat_id'] = '';
+        $data['notifications']['telegram_repair_chat_id'] = '';
+        $data['notifications']['telegram_driver_chat_id'] = '';
+    }
+
     $configPath = '../../config.json';
     
-    // Read current config to preserve any keys not sent in the form (unlikely but safe)
+    // Read current config to preserve any keys not sent in the form
     $currentConfig = json_decode(file_get_contents($configPath), true);
     
     // Update config with new data

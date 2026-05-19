@@ -31,7 +31,11 @@ try {
         exit;
     }
 
-    // Load notification config
+    // Load notification config from DB & config.json
+    require_once '../../classes/SystemSettings.php';
+    $sysSettings = new App\SystemSettings();
+    $dbSettings = $sysSettings->getAll();
+
     $config = json_decode(file_get_contents('../../config.json'), true);
     $notif = $config['notifications'] ?? [];
 
@@ -55,8 +59,9 @@ try {
     $results = [];
 
     // 1. Send to Discord Driver Group
-    if (($notif['driver_discord_enabled'] ?? false) && !empty($notif['driver_discord_webhook'])) {
-        $ch = curl_init($notif['driver_discord_webhook']);
+    $driverDiscordWebhook = $dbSettings['driver_discord_webhook'] ?? '';
+    if (($notif['driver_discord_enabled'] ?? false) && !empty($driverDiscordWebhook)) {
+        $ch = curl_init($driverDiscordWebhook);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['content' => $msg]));
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -67,13 +72,14 @@ try {
     }
 
     // 2. Send to Line Notify Driver Group
-    if (($notif['driver_line_enabled'] ?? false) && !empty($notif['driver_line_token'])) {
+    $driverLineToken = $dbSettings['driver_line_token'] ?? '';
+    if (($notif['driver_line_enabled'] ?? false) && !empty($driverLineToken)) {
         $ch = curl_init('https://notify-api.line.me/api/notify');
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['message' => "\n" . $msg]));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/x-www-form-urlencoded',
-            'Authorization: Bearer ' . $notif['driver_line_token']
+            'Authorization: Bearer ' . $driverLineToken
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);
@@ -82,8 +88,8 @@ try {
     }
 
     // 3. Send to Telegram Driver Group
-    $tgToken = $notif['telegram_bot_token'] ?? '';
-    $tgChatId = $notif['telegram_driver_chat_id'] ?? '';
+    $tgToken = $dbSettings['telegram_bot_token'] ?? '';
+    $tgChatId = $dbSettings['telegram_driver_chat_id'] ?? '';
     $isTgEnabled = $notif['telegram_driver_enabled'] ?? false;
 
     if ($isTgEnabled && !empty($tgToken) && !empty($tgChatId)) {
