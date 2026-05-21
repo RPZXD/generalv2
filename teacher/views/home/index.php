@@ -78,6 +78,21 @@
             </div>
         </a>
 
+        <!-- จองรถ -->
+        <a href="car_booking.php" class="card-hover glass rounded-2xl p-6 relative overflow-hidden group">
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-500 opacity-20 rounded-full -mr-16 -mt-16 group-hover:opacity-30 transition-opacity">
+            </div>
+            <div class="relative">
+                <div
+                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl shadow-lg text-white mb-4">
+                    <i class="fas fa-car text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">🚗 จองรถ</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">ตรวจสอบและจองรถใช้งาน</p>
+            </div>
+        </a>
+
         <!-- จดหมายข่าว -->
         <a href="newsletter.php" class="card-hover glass rounded-2xl p-6 relative overflow-hidden group">
             <div
