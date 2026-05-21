@@ -1,8 +1,8 @@
 <!-- Repair Request - Teacher View Modernized -->
-<div class="space-y-8 animate-fade-in px-2 pb-12">
+<div class="space-y-8 animate-fade-in px-1 sm:px-2 pb-24 sm:pb-12">
     <!-- Page Header -->
     <div
-        class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md p-6 rounded-[2.5rem] border border-white/20 shadow-xl">
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md p-4 sm:p-6 rounded-2xl sm:rounded-[2.5rem] border border-white/20 shadow-xl">
         <div class="flex items-center gap-5">
             <div
                 class="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-600 text-white rounded-[1.5rem] shadow-lg shadow-amber-500/20 text-2xl">
@@ -28,7 +28,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- New Request Form (Left) -->
         <div
-            class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 shadow-2xl">
+            class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-2xl">
             <div class="flex items-center gap-3 mb-8">
                 <div
                     class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600">
@@ -37,8 +37,8 @@
                 <h2 class="text-xl font-black text-slate-800 dark:text-white">แบบฟอร์มแจ้งซ่อม</h2>
             </div>
 
-            <form id="addReportForm" method="POST" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form id="addReportForm" method="POST" class="space-y-4 sm:space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                         <label
                             class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 pl-1">วันที่แจ้ง</label>
@@ -59,7 +59,7 @@
                     <label
                         class="block text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">เลือกรายการที่เสียหาย</label>
                     <div
-                        class="bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] p-6 space-y-6 border border-slate-100 dark:border-slate-800">
+                        class="bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-[2rem] p-3 sm:p-6 space-y-4 sm:space-y-6 border border-slate-100 dark:border-slate-800">
                         <!-- Categories dynamically loaded -->
                         <div id="topic1" class="space-y-3"></div>
                         <div class="border-t border-slate-200 dark:border-slate-700 my-4"></div>
@@ -71,11 +71,20 @@
 
                 <input type="hidden" name="teach_id" value="<?php echo $teacher_id; ?>">
 
+                <!-- Desktop submit button -->
                 <button type="submit"
-                    class="w-full py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3">
+                    class="hidden sm:flex w-full py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black rounded-2xl shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-1 active:scale-95 transition-all items-center justify-center gap-3">
                     <i class="fas fa-paper-plane"></i>
                     ส่งข้อมูลแจ้งซ่อม
                 </button>
+                <!-- Mobile sticky submit button -->
+                <div class="sm:hidden fixed bottom-0 left-0 right-0 z-40 p-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-t border-slate-200 dark:border-slate-700 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+                    <button type="submit"
+                        class="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center gap-3 text-sm">
+                        <i class="fas fa-paper-plane"></i>
+                        ส่งข้อมูลแจ้งซ่อม
+                    </button>
+                </div>
             </form>
         </div>
 
@@ -89,7 +98,7 @@
                 <h2 class="text-xl font-black text-slate-800 dark:text-white">สถานะการแจ้งซ่อมของคุณ</h2>
             </div>
 
-            <div id="repairCardList" class="space-y-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar-thin">
+            <div id="repairCardList" class="space-y-4 max-h-[500px] sm:max-h-[800px] overflow-y-auto pr-1 sm:pr-2 custom-scrollbar-thin">
                 <!-- Cards render here -->
                 <div class="flex flex-col items-center justify-center py-20 opacity-30">
                     <div class="loader mb-4"></div>
@@ -101,41 +110,50 @@
 </div>
 
 <!-- Edit Modal -->
-<div id="editModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+<div id="editModal" class="fixed inset-0 z-50 items-center justify-center p-2 sm:p-4" style="display: none;">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeEditModal()"></div>
     <div
-        class="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl relative z-10 border border-white/20">
-        <div class="p-8 overflow-y-auto max-h-[90vh] custom-scrollbar-thin" id="editModalContent">
+        class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2.5rem] w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden shadow-2xl relative z-10 border border-white/20">
+        <div class="p-4 sm:p-8 overflow-y-auto max-h-[95vh] sm:max-h-[90vh] custom-scrollbar-thin" id="editModalContent">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-black text-slate-800 dark:text-white">แก้ไขข้อมูลการแจ้งซ่อม</h2>
                 <button onclick="closeEditModal()" class="text-slate-400 hover:text-rose-500 transition-colors"><i
                         class="fas fa-times text-xl"></i></button>
             </div>
-            <form id="editRepairForm" class="space-y-6">
+            <form id="editRepairForm" class="space-y-4 sm:space-y-6">
                 <input type="hidden" name="id" id="editId">
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="date" name="AddDate" id="editAddDate"
-                        class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold" required>
-                    <input type="text" name="AddLocation" id="editAddLocation"
-                        class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold" required>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 pl-1 sm:hidden">วันที่แจ้ง</label>
+                        <input type="date" name="AddDate" id="editAddDate"
+                            class="w-full p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 pl-1 sm:hidden">สถานที่/ห้อง</label>
+                        <input type="text" name="AddLocation" id="editAddLocation"
+                            class="w-full p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold" required>
+                    </div>
                 </div>
-                <div id="edit_topics_container" class="bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] p-6 space-y-6">
+                <div id="edit_topics_container" class="bg-slate-50 dark:bg-slate-800/50 rounded-xl sm:rounded-[2rem] p-3 sm:p-6 space-y-4 sm:space-y-6">
                     <div id="edit_topic1"></div>
                     <div id="edit_topic2"></div>
                     <div id="edit_topic3"></div>
                 </div>
                 <button type="submit"
-                    class="w-full py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg">บันทึกการแก้ไข</button>
+                    class="w-full py-4 sm:py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black rounded-xl sm:rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i class="fas fa-save"></i>
+                    บันทึกการแก้ไข
+                </button>
             </form>
         </div>
     </div>
 </div>
 
 <!-- Detail Modal -->
-<div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+<div id="detailModal" class="fixed inset-0 z-50 items-center justify-center p-2 sm:p-4" style="display: none;">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="closeDetailModal()"></div>
-    <div class="bg-white dark:bg-slate-900 rounded-[3rem] w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl relative z-10 border border-white/20 transform transition-all scale-100">
-        <div class="p-8 md:p-12 overflow-y-auto max-h-[85vh] custom-scrollbar-thin">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[3rem] w-full max-w-2xl max-h-[95vh] sm:max-h-[85vh] overflow-hidden shadow-2xl relative z-10 border border-white/20 transform transition-all scale-100">
+        <div class="p-4 sm:p-8 md:p-12 overflow-y-auto max-h-[95vh] sm:max-h-[85vh] custom-scrollbar-thin">
             <div class="flex justify-between items-start mb-8">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-blue-600 text-2xl">
@@ -153,7 +171,7 @@
 
             <div class="space-y-8">
                 <!-- Info Grid -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-[1.5rem] border border-slate-100 dark:border-slate-800">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">วันที่แจ้ง</span>
                         <p class="font-bold text-slate-700 dark:text-white" id="detailDate">-</p>
@@ -335,12 +353,16 @@
                         <input type="checkbox" id="${item.id}" class="w-5 h-5 rounded-md border-slate-300 text-amber-500 focus:ring-amber-500" onchange="toggleDetails('${item.id}')">
                         <label for="${item.id}" class="flex-1 font-bold text-slate-700 dark:text-slate-300 cursor-pointer text-sm">${item.label}</label>
                     </div>
-                    <div id="${item.detailsId}" class="hidden pl-10 pr-4 pb-4 space-y-3 animate-fade-in">
-                        <div class="flex items-center gap-3">
-                            <span class="text-[10px] font-black uppercase text-slate-400">จำนวน</span>
-                            <input type="number" name="${item.id}Count" class="input-number-modern" min="0" value="1" disabled>
-                            <span class="text-[10px] font-black uppercase text-slate-400">อาการเสีย</span>
-                            <input type="text" name="${item.id}Damage" class="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs" placeholder="ระบุอาการ..." disabled>
+                    <div id="${item.detailsId}" class="hidden pl-4 sm:pl-10 pr-2 sm:pr-4 pb-4 space-y-3 animate-fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-black uppercase text-slate-400">จำนวน</span>
+                                <input type="number" name="${item.id}Count" class="input-number-modern" min="0" value="1" disabled>
+                            </div>
+                            <div class="flex items-center gap-2 flex-1">
+                                <span class="text-[10px] font-black uppercase text-slate-400 shrink-0">อาการเสีย</span>
+                                <input type="text" name="${item.id}Damage" class="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs" placeholder="ระบุอาการ..." disabled>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -460,7 +482,7 @@
 
                 // Render Edit Form Fields (Simplified for now)
                 renderEditFields(r);
-                $('#editModal').removeClass('hidden');
+                $('#editModal').css('display', 'flex');
             }
         });
     }
@@ -481,8 +503,8 @@
                         <input type="checkbox" id="edit_${item.id}" class="w-5 h-5 rounded-md text-blue-500" ${checked ? 'checked' : ''} onchange="const $d = $('#edit_${item.id}Details'); $d.toggleClass('hidden', !this.checked); $d.find('input').prop('disabled', !this.checked);">
                         <label for="edit_${item.id}" class="flex-1 font-bold text-slate-700 dark:text-slate-300 cursor-pointer text-sm">${item.label}</label>
                     </div>
-                    <div id="edit_${item.id}Details" class="${checked ? '' : 'hidden'} pl-10 pr-4 pb-4 space-y-3">
-                        <div class="flex items-center gap-3">
+                    <div id="edit_${item.id}Details" class="${checked ? '' : 'hidden'} pl-4 sm:pl-10 pr-2 sm:pr-4 pb-4 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                             <input type="number" name="${item.id}Count" class="input-number-modern" min="0" value="${count}" ${checked ? '' : 'disabled'}>
                             <input type="text" name="${item.id}Damage" class="flex-1 bg-white dark:bg-slate-700 border rounded-xl p-2 text-xs" value="${damage}" placeholder="ระบุอาการ..." ${checked ? '' : 'disabled'}>
                         </div>
@@ -569,11 +591,11 @@
                     steps.append(`<div class="status-step ${isActive ? 'active' : ''}" style="--step-color: ${color}"></div>`);
                 }
 
-                $('#detailModal').removeClass('hidden');
+                $('#detailModal').css('display', 'flex');
             }
         });
     }
 
-    function closeDetailModal() { $('#detailModal').addClass('hidden'); }
-    function closeEditModal() { $('#editModal').addClass('hidden'); }
+    function closeDetailModal() { $('#detailModal').css('display', 'none'); }
+    function closeEditModal() { $('#editModal').css('display', 'none'); }
 </script>
