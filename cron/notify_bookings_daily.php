@@ -15,9 +15,11 @@ date_default_timezone_set('Asia/Bangkok');
 // Load database files
 require_once __DIR__ . '/../classes/DatabaseGeneral.php';
 require_once __DIR__ . '/../classes/DatabaseUsers.php';
+require_once __DIR__ . '/../classes/SystemSettings.php';
 
 use App\DatabaseGeneral;
 use App\DatabaseUsers;
+use App\SystemSettings;
 
 // Helper function to format Thai date
 function thaiDate($date) {
@@ -46,33 +48,6 @@ if ($isCli) {
     $round = $_GET['round'] ?? $_GET['action'] ?? '';
 }
 
-// Auto-detect round based on current time if not specified
-if (empty($round) || !in_array($round, ['morning', 'evening'])) {
-    $hour = (int)date('H');
-    if ($hour < 12) {
-        $round = 'morning';
-    } else {
-        $round = 'evening';
-    }
-}
-
-// Calculate target date based on round
-if ($round === 'morning') {
-    $targetDate = date('Y-m-d');
-    $dayLabel = "วันนี้ (" . thaiDate($targetDate) . ")";
-} else {
-    $targetDate = date('Y-m-d', strtotime('+1 day'));
-    $dayLabel = "วันพรุ่งนี้ (" . thaiDate($targetDate) . ")";
-}
-
-$results = [
-    'success' => true,
-    'round' => $round,
-    'target_date' => $targetDate,
-    'room_notifications' => [],
-    'car_notifications' => []
-];
-
 try {
     // Initialize DB connections
     $dbGeneral = new DatabaseGeneral();
@@ -82,22 +57,102 @@ try {
     $pdoUsers = $dbUsers->getTeacherByUsername('test'); // test connection
 
     // Initialize SystemSettings
-    require_once __DIR__ . '/../classes/SystemSettings.php';
-    $sysSettings = new App\SystemSettings();
+    $sysSettings = new SystemSettings();
     $dbSettings = $sysSettings->getAll();
+
+    // Load configuration values from DB settings
+    $morningEnabled = ($dbSettings['notify_morning_enabled'] ?? '1') === '1';
+    $morningTime = $dbSettings['notify_morning_time'] ?? '05:00';
+    $morningAdvance = (int)($dbSettings['notify_morning_advance_days'] ?? 0);
+
+    $eveningEnabled = ($dbSettings['notify_evening_enabled'] ?? '1') === '1';
+    $eveningTime = $dbSettings['notify_evening_time'] ?? '18:00';
+    $eveningAdvance = (int)($dbSettings['notify_evening_advance_days'] ?? 1);
+
+    // Auto-detect round based on current time and settings if not specified
+    if (empty($round) || !in_array($round, ['morning', 'evening'])) {
+        $currentHour = (int)date('H');
+        $morningHour = (int)explode(':', $morningTime)[0];
+        $eveningHour = (int)explode(':', $eveningTime)[0];
+
+        if ($currentHour === $morningHour && $morningEnabled) {
+            $round = 'morning';
+        } elseif ($currentHour === $eveningHour && $eveningEnabled) {
+            $round = 'evening';
+        } else {
+            // If it is run manually (e.g. from browser or CLI with no matches)
+            // Fallback to simple AM/PM logic
+            if (!$isCli) {
+                if ($currentHour < 12) {
+                    $round = 'morning';
+                } else {
+                    $round = 'evening';
+                }
+            } else {
+                echo "No scheduled notification for current hour ($currentHour). Configured: Morning={$morningTime} (Enabled: " . ($morningEnabled ? 'Yes' : 'No') . "), Evening={$eveningTime} (Enabled: " . ($eveningEnabled ? 'Yes' : 'No') . ")\n";
+                exit;
+            }
+        }
+    }
+
+    // Check if the chosen round is disabled
+    if ($round === 'morning' && !$morningEnabled) {
+        $results = ['success' => false, 'message' => 'Morning notification is disabled'];
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($results, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
+    if ($round === 'evening' && !$eveningEnabled) {
+        $results = ['success' => false, 'message' => 'Evening notification is disabled'];
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($results, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    // Determine target start and end dates based on advance days setting
+    if ($round === 'morning') {
+        $startDate = date('Y-m-d');
+        $endDate = date('Y-m-d', strtotime("+$morningAdvance day"));
+        
+        if ($morningAdvance === 0) {
+            $dayLabel = "วันนี้ (" . thaiDate($startDate) . ")";
+        } elseif ($morningAdvance === 1) {
+            $dayLabel = "วันนี้ - วันพรุ่งนี้ (" . thaiDate($startDate) . " - " . thaiDate($endDate) . ")";
+        } else {
+            $dayLabel = "วันนี้ - {$morningAdvance} วันล่วงหน้า (" . thaiDate($startDate) . " - " . thaiDate($endDate) . ")";
+        }
+    } else {
+        $startDate = date('Y-m-d', strtotime('+1 day'));
+        $endDate = date('Y-m-d', strtotime("+$eveningAdvance day"));
+        
+        if ($eveningAdvance <= 1) {
+            $dayLabel = "วันพรุ่งนี้ (" . thaiDate($startDate) . ")";
+        } else {
+            $dayLabel = "วันพรุ่งนี้ - {$eveningAdvance} วันล่วงหน้า (" . thaiDate($startDate) . " - " . thaiDate($endDate) . ")";
+        }
+    }
+
+    $results = [
+        'success' => true,
+        'round' => $round,
+        'start_date' => $startDate,
+        'end_date' => $endDate,
+        'room_notifications' => [],
+        'car_notifications' => []
+    ];
 
     // Load config.json
     $config = json_decode(file_get_contents(__DIR__ . '/../config.json'), true);
 
     // --- SECTION 1: ROOM BOOKINGS ---
-    // Fetch active room bookings for target date (status != 2, 2 is typically rejected/cancelled)
+    // Fetch active room bookings for target date range (status != 2, 2 is typically rejected/cancelled)
     $roomSql = "SELECT b.*, mr.room_name 
                 FROM bookings b 
                 LEFT JOIN meeting_rooms mr ON b.room_id = mr.id 
-                WHERE b.date = :target_date AND b.status != 2
-                ORDER BY b.time_start ASC";
+                WHERE b.date >= :start_date AND b.date <= :end_date AND b.status != 2
+                ORDER BY b.date ASC, b.time_start ASC";
     $stmt = $pdoGeneral->prepare($roomSql);
-    $stmt->execute(['target_date' => $targetDate]);
+    $stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
     $roomBookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (!empty($roomBookings)) {
@@ -107,42 +162,51 @@ try {
                      . "สำหรับ{$dayLabel}\n"
                      . "-----------------------------\n";
 
-        foreach ($roomBookings as $index => $booking) {
-            // Find teacher name
-            $teacherName = $booking['teach_id'];
-            $teacher = $dbUsers->getTeacherByUsername($booking['teach_id']);
-            if ($teacher) {
-                $teacherName = $teacher['Teach_name'];
-            }
-            
-            $statusText = $booking['status'] == 1 ? '✅ อนุมัติแล้ว' : '⏳ รออนุมัติ';
-            
-            // Translate room layout
-            $layoutMap = [
-                "theater" => "🎭 โรงภาพยนตร์",
-                "classroom" => "🏫 ห้องเรียน",
-                "u-shape" => "🔲 ตัว U",
-                "boardroom" => "📋 โต๊ะประชุม",
-                "banquet" => "🍽️ โต๊ะกลม",
-                "none" => "-"
-            ];
-            $roomLayoutText = "-";
-            if (!empty($booking['room_layout'])) {
-                if (strpos($booking['room_layout'], "custom:") === 0) {
-                    $roomLayoutText = "✏️ " . substr($booking['room_layout'], 7);
-                } else {
-                    $roomLayoutText = $layoutMap[$booking['room_layout']] ?? "-";
+        // Group by date
+        $groupedRoomBookings = [];
+        foreach ($roomBookings as $booking) {
+            $groupedRoomBookings[$booking['date']][] = $booking;
+        }
+
+        foreach ($groupedRoomBookings as $bookingDate => $dayBookings) {
+            $roomMessage .= "📅 วันที่ " . thaiDate($bookingDate) . "\n";
+            foreach ($dayBookings as $index => $booking) {
+                // Find teacher name
+                $teacherName = $booking['teach_id'];
+                $teacher = $dbUsers->getTeacherByUsername($booking['teach_id']);
+                if ($teacher) {
+                    $teacherName = $teacher['Teach_name'];
                 }
+                
+                $statusText = $booking['status'] == 1 ? '✅ อนุมัติแล้ว' : '⏳ รออนุมัติ';
+                
+                // Translate room layout
+                $layoutMap = [
+                    "theater" => "🎭 โรงภาพยนตร์",
+                    "classroom" => "🏫 ห้องเรียน",
+                    "u-shape" => "🔲 ตัว U",
+                    "boardroom" => "📋 โต๊ะประชุม",
+                    "banquet" => "🍽️ โต๊ะกลม",
+                    "none" => "-"
+                ];
+                $roomLayoutText = "-";
+                if (!empty($booking['room_layout'])) {
+                    if (strpos($booking['room_layout'], "custom:") === 0) {
+                        $roomLayoutText = "✏️ " . substr($booking['room_layout'], 7);
+                    } else {
+                        $roomLayoutText = $layoutMap[$booking['room_layout']] ?? "-";
+                    }
+                }
+                
+                $roomMessage .= "  " . ($index + 1) . ". 🏢 " . ($booking['room_name'] ?? $booking['location']) . "\n"
+                              . "     ⏰ เวลา: " . substr($booking['time_start'], 0, 5) . " - " . substr($booking['time_end'], 0, 5) . " น.\n"
+                              . "     👤 ผู้จอง: {$teacherName}" . (!empty($booking['phone']) ? " (โทร: {$booking['phone']})" : "") . "\n"
+                              . "     🎯 วัตถุประสงค์: {$booking['purpose']}\n"
+                              . "     🪑 จัดห้อง: {$roomLayoutText}\n"
+                              . "     📺 อุปกรณ์: " . (!empty($booking['media']) ? $booking['media'] : "-") . "\n"
+                              . "     สถานะ: {$statusText}\n";
             }
-            
-            $roomMessage .= ($index + 1) . ". 🏢 " . ($booking['room_name'] ?? $booking['location']) . "\n"
-                          . "   ⏰ เวลา: " . substr($booking['time_start'], 0, 5) . " - " . substr($booking['time_end'], 0, 5) . " น.\n"
-                          . "   👤 ผู้จอง: {$teacherName}" . (!empty($booking['phone']) ? " (โทร: {$booking['phone']})" : "") . "\n"
-                          . "   🎯 วัตถุประสงค์: {$booking['purpose']}\n"
-                          . "   🪑 จัดห้อง: {$roomLayoutText}\n"
-                          . "   📺 อุปกรณ์: " . (!empty($booking['media']) ? $booking['media'] : "-") . "\n"
-                          . "   สถานะ: {$statusText}\n"
-                          . "-----------------------------\n";
+            $roomMessage .= "-----------------------------\n";
         }
 
         // Room credentials from system settings database table
@@ -228,18 +292,18 @@ try {
             ];
         }
     } else {
-        $results['room_notifications']['status'] = "No bookings found for target date";
+        $results['room_notifications']['status'] = "No bookings found for target date range";
     }
 
     // --- SECTION 2: CAR BOOKINGS ---
-    // Fetch active car bookings for target date (status != 'rejected')
+    // Fetch active car bookings for target date range (status != 'rejected')
     $carSql = "SELECT cb.*, c.car_model, c.license_plate 
                FROM car_bookings cb 
                LEFT JOIN cars c ON cb.car_id = c.id 
-               WHERE cb.booking_date = :target_date AND cb.status != 'rejected'
-               ORDER BY cb.start_time ASC";
+               WHERE cb.booking_date >= :start_date AND cb.booking_date <= :end_date AND cb.status != 'rejected'
+               ORDER BY cb.booking_date ASC, cb.start_time ASC";
     $stmt = $pdoGeneral->prepare($carSql);
-    $stmt->execute(['target_date' => $targetDate]);
+    $stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
     $carBookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (!empty($carBookings)) {
@@ -249,20 +313,29 @@ try {
                     . "สำหรับ{$dayLabel}\n"
                     . "-----------------------------\n";
 
-        foreach ($carBookings as $index => $booking) {
-            $carDesc = $booking['car_model'] 
-                ? "{$booking['car_model']} ({$booking['license_plate']})" 
-                : $booking['car_id'];
+        // Group by date
+        $groupedCarBookings = [];
+        foreach ($carBookings as $booking) {
+            $groupedCarBookings[$booking['booking_date']][] = $booking;
+        }
+
+        foreach ($groupedCarBookings as $bookingDate => $dayBookings) {
+            $carMessage .= "📅 วันที่ " . thaiDate($bookingDate) . "\n";
+            foreach ($dayBookings as $index => $booking) {
+                $carDesc = $booking['car_model'] 
+                    ? "{$booking['car_model']} ({$booking['license_plate']})" 
+                    : $booking['car_id'];
+                    
+                $statusText = $booking['status'] === 'approved' ? '✅ อนุมัติแล้ว' : ($booking['status'] === 'pending' ? '⏳ รออนุมัติ' : $booking['status']);
                 
-            $statusText = $booking['status'] === 'approved' ? '✅ อนุมัติแล้ว' : ($booking['status'] === 'pending' ? '⏳ รออนุมัติ' : $booking['status']);
-            
-            $carMessage .= ($index + 1) . ". 🚐 " . $carDesc . "\n"
-                         . "   ⏰ เวลา: " . date('H:i', strtotime($booking['start_time'])) . " - " . date('H:i', strtotime($booking['end_time'])) . " น.\n"
-                         . "   👤 ผู้จอง: {$booking['teacher_name']} ({$booking['teacher_position']})\n"
-                         . "   📍 ปลายทาง: {$booking['destination']}\n"
-                         . "   🎯 วัตถุประสงค์: {$booking['purpose']}\n"
-                         . "   สถานะ: {$statusText}\n"
-                         . "-----------------------------\n";
+                $carMessage .= "  " . ($index + 1) . ". 🚐 " . $carDesc . "\n"
+                             . "     ⏰ เวลา: " . date('H:i', strtotime($booking['start_time'])) . " - " . date('H:i', strtotime($booking['end_time'])) . " น.\n"
+                             . "     👤 ผู้จอง: {$booking['teacher_name']} ({$booking['teacher_position']})\n"
+                             . "     📍 ปลายทาง: {$booking['destination']}\n"
+                             . "     🎯 วัตถุประสงค์: {$booking['purpose']}\n"
+                             . "     สถานะ: {$statusText}\n";
+            }
+            $carMessage .= "-----------------------------\n";
         }
 
         // Discord Notification
@@ -351,7 +424,7 @@ try {
             ];
         }
     } else {
-        $results['car_notifications']['status'] = "No bookings found for target date";
+        $results['car_notifications']['status'] = "No bookings found for target date range";
     }
 
 } catch (Exception $e) {

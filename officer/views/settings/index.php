@@ -18,6 +18,9 @@
             <button class="settings-tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="cars">
                 <span class="text-lg">🚗</span> รถยนต์
             </button>
+            <button class="settings-tab-btn px-6 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-2" data-tab="notifications">
+                <span class="text-lg">📢</span> การแจ้งเตือน
+            </button>
         </div>
     </div>
 
@@ -74,6 +77,97 @@
                         <p>กำลังโหลด...</p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Notifications Tab -->
+        <div id="tab-notifications" class="settings-tab-pane hidden">
+            <div class="glass rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-fuchsia-500 to-pink-500 rounded-xl shadow-lg text-white">
+                            <i class="fas fa-bell text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">จัดการการแจ้งเตือน</h2>
+                            <p class="text-sm text-gray-500">ตั้งค่าเวลา รอบการแจ้งเตือน และจำนวนวันล่วงหน้า</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="notificationSettingsForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Morning Round -->
+                        <div class="p-5 bg-fuchsia-50/50 dark:bg-slate-700/30 rounded-2xl border border-fuchsia-100 dark:border-slate-700">
+                            <h3 class="text-lg font-bold text-fuchsia-700 dark:text-fuchsia-400 mb-4 flex items-center gap-2">
+                                🌅 รอบเช้า (Morning Round)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งานรอบเช้า</label>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="notify_morning_enabled" value="1" <?php echo ($dbSettings['notify_morning_enabled'] ?? '1') === '1' ? 'checked' : ''; ?> class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-fuchsia-600"></div>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">⏰ เวลาแจ้งเตือนรอบเช้า</label>
+                                    <input type="time" name="notify_morning_time" value="<?php echo htmlspecialchars($dbSettings['notify_morning_time'] ?? '05:00'); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">📅 แจ้งเตือนสำหรับรายการจองของ</label>
+                                    <select name="notify_morning_advance_days" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                                        <option value="0" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '0' ? 'selected' : ''; ?>>วันนี้ (Today)</option>
+                                        <option value="1" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '1' ? 'selected' : ''; ?>>วันพรุ่งนี้ (Tomorrow)</option>
+                                        <option value="2" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
+                                        <option value="3" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Evening Round -->
+                        <div class="p-5 bg-pink-50/50 dark:bg-slate-700/30 rounded-2xl border border-pink-100 dark:border-slate-700">
+                            <h3 class="text-lg font-bold text-pink-700 dark:text-pink-400 mb-4 flex items-center gap-2">
+                                🌆 รอบเย็น (Evening Round)
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งานรอบเย็น</label>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="notify_evening_enabled" value="1" <?php echo ($dbSettings['notify_evening_enabled'] ?? '1') === '1' ? 'checked' : ''; ?> class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-pink-600"></div>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">⏰ เวลาแจ้งเตือนรอบเย็น</label>
+                                    <input type="time" name="notify_evening_time" value="<?php echo htmlspecialchars($dbSettings['notify_evening_time'] ?? '18:00'); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">📅 แจ้งเตือนสำหรับรายการจองของ</label>
+                                    <select name="notify_evening_advance_days" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-pink-500 outline-none transition-all">
+                                        <option value="0" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '0' ? 'selected' : ''; ?>>วันนี้ (Today)</option>
+                                        <option value="1" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '1' ? 'selected' : ''; ?>>วันพรุ่งนี้ (Tomorrow)</option>
+                                        <option value="2" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
+                                        <option value="3" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-4">
+                        <button type="submit" class="px-8 py-3 bg-gradient-to-r from-fuchsia-500 to-pink-500 hover:from-fuchsia-600 hover:to-pink-600 text-white rounded-xl shadow-lg transition-all text-sm font-medium">
+                            <i class="fas fa-save mr-2"></i>บันทึกการตั้งค่าการแจ้งเตือน
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -591,5 +685,36 @@ function deleteCar(id) {
 // Close modals on outside click
 $('#roomModal, #carModal').on('click', function(e) {
     if (e.target === this) $(this).addClass('hidden');
+});
+
+$('#notificationSettingsForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    const data = {
+        notify_morning_enabled: $('input[name="notify_morning_enabled"]').is(':checked') ? '1' : '0',
+        notify_morning_time: $('input[name="notify_morning_time"]').val(),
+        notify_morning_advance_days: $('select[name="notify_morning_advance_days"]').val(),
+        notify_evening_enabled: $('input[name="notify_evening_enabled"]').is(':checked') ? '1' : '0',
+        notify_evening_time: $('input[name="notify_evening_time"]').val(),
+        notify_evening_advance_days: $('select[name="notify_evening_advance_days"]').val()
+    };
+    
+    $.post('api/save_notification_settings.php', data, function(response) {
+        if (response.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'สำเร็จ!',
+                text: 'บันทึกการตั้งค่าการแจ้งเตือนเรียบร้อยแล้ว',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'ผิดพลาด',
+                text: response.message || 'ไม่สามารถบันทึกได้'
+            });
+        }
+    }, 'json');
 });
 </script>

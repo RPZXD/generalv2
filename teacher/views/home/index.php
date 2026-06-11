@@ -1,5 +1,5 @@
 <!-- Teacher Home Page Content -->
-<div class="space-y-8">
+<div class="space-y-8 container mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Page Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Welcome Alert -->
-    <div class="glass rounded-2xl p-6 border-l-4 border-green-500 flex items-center gap-4">
+    <div class="glass rounded-2xl p-4 sm:p-6 border-l-4 border-green-500 flex flex-col md:flex-row items-start md:items-center gap-4">
         <span class="text-4xl animate-bounce">👋</span>
         <div>
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">ยินดีต้อนรับเข้าสู่ระบบ</h3>
@@ -28,7 +28,7 @@
     </div>
 
     <!-- System Info Card -->
-    <div class="glass rounded-2xl p-8 relative overflow-hidden">
+    <div class="glass rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div
             class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500 to-indigo-600 opacity-10 rounded-full -mr-32 -mt-32">
         </div>
@@ -49,14 +49,14 @@
     <!-- Feature Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- แจ้งซ่อม -->
-        <a href="repair_request.php" class="card-hover glass rounded-2xl p-6 relative overflow-hidden group">
+        <a href="repair_request.php" class="card-hover glass rounded-2xl p-4 sm:p-6 relative overflow-hidden group block">
             <div
                 class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500 to-orange-500 opacity-20 rounded-full -mr-16 -mt-16 group-hover:opacity-30 transition-opacity">
             </div>
             <div class="relative">
                 <div
-                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl shadow-lg text-white mb-4">
-                    <i class="fas fa-tools text-2xl"></i>
+                    class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl shadow-lg text-white mb-4">
+                    <i class="fas fa-tools text-xl sm:text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">📋 แจ้งซ่อม</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400">แจ้งปัญหาและติดตามสถานะการซ่อมแซม</p>
@@ -64,14 +64,14 @@
         </a>
 
         <!-- จองห้องประชุม -->
-        <a href="room_booking.php" class="card-hover glass rounded-2xl p-6 relative overflow-hidden group">
+        <a href="room_booking.php" class="card-hover glass rounded-2xl p-4 sm:p-6 relative overflow-hidden group block">
             <div
                 class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500 to-purple-500 opacity-20 rounded-full -mr-16 -mt-16 group-hover:opacity-30 transition-opacity">
             </div>
             <div class="relative">
                 <div
-                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl shadow-lg text-white mb-4">
-                    <i class="fas fa-door-open text-2xl"></i>
+                    class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl shadow-lg text-white mb-4">
+                    <i class="fas fa-door-open text-xl sm:text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">🏢 จองห้องประชุม</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400">ตรวจสอบและจองห้องประชุม</p>
@@ -79,14 +79,14 @@
         </a>
 
         <!-- จองรถ -->
-        <a href="car_booking.php" class="card-hover glass rounded-2xl p-6 relative overflow-hidden group">
+        <a href="car_booking.php" class="card-hover glass rounded-2xl p-4 sm:p-6 relative overflow-hidden group block">
             <div
                 class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-500 opacity-20 rounded-full -mr-16 -mt-16 group-hover:opacity-30 transition-opacity">
             </div>
             <div class="relative">
                 <div
-                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl shadow-lg text-white mb-4">
-                    <i class="fas fa-car text-2xl"></i>
+                    class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl shadow-lg text-white mb-4">
+                    <i class="fas fa-car text-xl sm:text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">🚗 จองรถ</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400">ตรวจสอบและจองรถใช้งาน</p>
@@ -94,14 +94,14 @@
         </a>
 
         <!-- จดหมายข่าว -->
-        <a href="newsletter.php" class="card-hover glass rounded-2xl p-6 relative overflow-hidden group">
+        <a href="newsletter.php" class="card-hover glass rounded-2xl p-4 sm:p-6 relative overflow-hidden group block">
             <div
                 class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-500 to-sky-500 opacity-20 rounded-full -mr-16 -mt-16 group-hover:opacity-30 transition-opacity">
             </div>
             <div class="relative">
                 <div
-                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-cyan-500 to-sky-500 rounded-xl shadow-lg text-white mb-4">
-                    <i class="fas fa-newspaper text-2xl"></i>
+                    class="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-gradient-to-br from-cyan-500 to-sky-500 rounded-xl shadow-lg text-white mb-4">
+                    <i class="fas fa-newspaper text-xl sm:text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">📰 จดหมายข่าว</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400">ติดตามข่าวสารของโรงเรียน</p>
