@@ -69,29 +69,21 @@ try {
     $eveningTime = $dbSettings['notify_evening_time'] ?? '18:00';
     $eveningAdvance = (int)($dbSettings['notify_evening_advance_days'] ?? 1);
 
-    // Auto-detect round based on current time and settings if not specified
+    // Match exact time (HH:MM) if round is not specified
     if (empty($round) || !in_array($round, ['morning', 'evening'])) {
-        $currentHour = (int)date('H');
-        $morningHour = (int)explode(':', $morningTime)[0];
-        $eveningHour = (int)explode(':', $eveningTime)[0];
-
-        if ($currentHour === $morningHour && $morningEnabled) {
+        $currentTime = date('H:i');
+        if ($currentTime === $morningTime && $morningEnabled) {
             $round = 'morning';
-        } elseif ($currentHour === $eveningHour && $eveningEnabled) {
+        } elseif ($currentTime === $eveningTime && $eveningEnabled) {
             $round = 'evening';
         } else {
-            // If it is run manually (e.g. from browser or CLI with no matches)
-            // Fallback to simple AM/PM logic
-            if (!$isCli) {
-                if ($currentHour < 12) {
-                    $round = 'morning';
-                } else {
-                    $round = 'evening';
-                }
-            } else {
-                echo "No scheduled notification for current hour ($currentHour). Configured: Morning={$morningTime} (Enabled: " . ($morningEnabled ? 'Yes' : 'No') . "), Evening={$eveningTime} (Enabled: " . ($eveningEnabled ? 'Yes' : 'No') . ")\n";
-                exit;
-            }
+            $results = [
+                'success' => false,
+                'message' => "No scheduled notification for current time ($currentTime). Configured: Morning={$morningTime} (Enabled: " . ($morningEnabled ? 'Yes' : 'No') . "), Evening={$eveningTime} (Enabled: " . ($eveningEnabled ? 'Yes' : 'No') . ")"
+            ];
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($results, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
         }
     }
 
