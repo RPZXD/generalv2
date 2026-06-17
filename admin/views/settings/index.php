@@ -299,6 +299,11 @@ if (!isset($config)) {
                                     <option value="3" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
                                 </select>
                             </div>
+                            <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
+                                <button type="button" onclick="triggerManualNotify('morning')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-paper-plane"></i> ส่งการแจ้งเตือนรอบเช้าทันที
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Evening Round -->
@@ -323,6 +328,11 @@ if (!isset($config)) {
                                     <option value="2" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
                                     <option value="3" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
                                 </select>
+                            </div>
+                            <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
+                                <button type="button" onclick="triggerManualNotify('evening')" class="w-full py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-paper-plane"></i> ส่งการแจ้งเตือนรอบเย็นทันที
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -412,6 +422,60 @@ if (!isset($config)) {
             });
         });
     });
+
+    function triggerManualNotify(round) {
+        const roundText = round === 'morning' ? 'รอบเช้า' : 'รอบเย็น';
+        Swal.fire({
+            title: `ยืนยันการส่งการแจ้งเตือน (${roundText})`,
+            text: `คุณต้องการส่งการแจ้งเตือนสรุปรายการจองของ${roundText}ทันทีใช่หรือไม่?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'ส่งทันที',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#f59e0b',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                    url: `../cron/notify_bookings_daily.php?round=${round}`,
+                    method: 'GET',
+                    dataType: 'json'
+                }).then(response => {
+                    return response;
+                }).catch(error => {
+                    Swal.showValidationMessage(`เกิดข้อผิดพลาด: ${error.statusText || 'ไม่สามารถเชื่อมต่อได้'}`);
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const res = result.value;
+                if (res && res.success) {
+                    let detailMsg = `ส่งการแจ้งเตือนสำเร็จ!\n`;
+                    if (res.room_notifications) {
+                        if (res.room_notifications.line && res.room_notifications.line.sent) {
+                            detailMsg += `- LINE ห้องประชุม: สำเร็จ (HTTP ${res.room_notifications.line.http_code})\n`;
+                        } else if (res.room_notifications.status) {
+                            detailMsg += `- ห้องประชุม: ${res.room_notifications.status}\n`;
+                        }
+                    }
+                    if (res.car_notifications) {
+                        if (res.car_notifications.line && res.car_notifications.line.sent) {
+                            detailMsg += `- LINE จองรถ: สำเร็จ (HTTP ${res.car_notifications.line.http_code})\n`;
+                        } else if (res.car_notifications.status) {
+                            detailMsg += `- จองรถ: ${res.car_notifications.status}\n`;
+                        }
+                    }
+                    Swal.fire({
+                        title: 'สำเร็จ',
+                        html: `<pre class="text-left text-xs bg-gray-50 dark:bg-slate-900 p-3 rounded-lg overflow-x-auto whitespace-pre-wrap">${detailMsg}</pre>`,
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire('ล้มเหลว', res.message || 'เกิดข้อผิดพลาดในการส่งการแจ้งเตือน', 'error');
+                }
+            }
+        });
+    }
 </script>
 
 <style>
