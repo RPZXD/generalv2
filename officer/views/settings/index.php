@@ -160,6 +160,64 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- LINE Group ID & Status Settings -->
+                        <div class="p-5 bg-green-50/50 dark:bg-slate-700/30 rounded-2xl border border-green-100 dark:border-slate-700 md:col-span-2 space-y-4">
+                            <h3 class="text-lg font-bold text-green-700 dark:text-green-400 mb-2 flex items-center gap-2">
+                                💬 การตั้งค่า LINE Group ID และการแจ้งเตือน (เก็บใน Database)
+                            </h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">* LINE Channel Access Token จะดึงค่าร่วมกับระบบที่ส่วนกลางตั้งค่าไว้</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Room LINE Group -->
+                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🏢 ห้องประชุม (Room Booking)</label>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
+                                        <input type="text" name="room_group_id" value="<?php echo htmlspecialchars($dbSettings['room_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="เช่น Ca3d...">
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2">
+                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="room_line_enabled" value="1" <?php echo ($config['notifications']['room_line_enabled'] ?? true) ? 'checked' : ''; ?> class="sr-only peer">
+                                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Car LINE Group -->
+                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🚗 จองรถยนต์ (Car Booking)</label>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
+                                        <input type="text" name="car_group_id" value="<?php echo htmlspecialchars($dbSettings['car_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="ระบุ Group ID สำหรับจองรถ">
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2">
+                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="line_enabled" value="1" <?php echo ($config['notifications']['line_enabled'] ?? false) ? 'checked' : ''; ?> class="sr-only peer">
+                                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Driver LINE Group -->
+                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🚐 กลุ่มคนขับรถ (Driver Group)</label>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
+                                        <input type="text" name="driver_group_id" value="<?php echo htmlspecialchars($dbSettings['driver_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="ระบุ Group ID สำหรับคนขับรถ">
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2">
+                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="driver_line_enabled" value="1" <?php echo ($config['notifications']['driver_line_enabled'] ?? false) ? 'checked' : ''; ?> class="sr-only peer">
+                                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex justify-end pt-4">
@@ -696,7 +754,13 @@ $('#notificationSettingsForm').on('submit', function(e) {
         notify_morning_advance_days: $('select[name="notify_morning_advance_days"]').val(),
         notify_evening_enabled: $('input[name="notify_evening_enabled"]').is(':checked') ? '1' : '0',
         notify_evening_time: $('input[name="notify_evening_time"]').val(),
-        notify_evening_advance_days: $('select[name="notify_evening_advance_days"]').val()
+        notify_evening_advance_days: $('select[name="notify_evening_advance_days"]').val(),
+        room_group_id: $('input[name="room_group_id"]').val(),
+        room_line_enabled: $('input[name="room_line_enabled"]').is(':checked') ? '1' : '0',
+        car_group_id: $('input[name="car_group_id"]').val(),
+        line_enabled: $('input[name="line_enabled"]').is(':checked') ? '1' : '0',
+        driver_group_id: $('input[name="driver_group_id"]').val(),
+        driver_line_enabled: $('input[name="driver_line_enabled"]').is(':checked') ? '1' : '0'
     };
     
     $.post('api/save_notification_settings.php', data, function(response) {

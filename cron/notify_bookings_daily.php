@@ -359,19 +359,33 @@ try {
             ];
         }
 
-        // LINE Notify Notification
-        $lineToken = $dbSettings['car_line_token'] ?? '';
+        // LINE Bot Push Notification for Car Booking
+        $channelAccessToken = $dbSettings['room_line_token'] ?? '';
+        $groupId = $dbSettings['car_group_id'] ?? '';
         $isLineEnabled = $config['notifications']['line_enabled'] ?? false;
 
-        if ($isLineEnabled && !empty($lineToken)) {
-            $ch = curl_init('https://notify-api.line.me/api/notify');
+        if ($isLineEnabled && !empty($channelAccessToken) && !empty($groupId)) {
+            $lineUrl = "https://api.line.me/v2/bot/message/push";
+            $lineHeaders = [
+                "Content-Type: application/json; charset=UTF-8",
+                "Authorization: Bearer {$channelAccessToken}",
+                "User-Agent: PHP LINE Bot"
+            ];
+            $lineBody = [
+                "to" => $groupId,
+                "messages" => [
+                    [
+                        "type" => "text",
+                        "text" => $carMessage
+                    ]
+                ]
+            ];
+
+            $ch = curl_init($lineUrl);
             curl_setopt_array($ch, [
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => http_build_query(['message' => "\n" . $carMessage]),
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: application/x-www-form-urlencoded',
-                    'Authorization: Bearer ' . $lineToken
-                ],
+                CURLOPT_POSTFIELDS => json_encode($lineBody, JSON_UNESCAPED_UNICODE),
+                CURLOPT_HTTPHEADER => $lineHeaders,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_TIMEOUT => 15,
                 CURLOPT_SSL_VERIFYPEER => false
@@ -384,6 +398,11 @@ try {
                 'sent' => true,
                 'http_code' => $lineCode,
                 'response' => json_decode($lineRes, true) ?: $lineRes
+            ];
+        } else {
+            $results['car_notifications']['line'] = [
+                'sent' => false,
+                'reason' => 'Disabled or credentials missing'
             ];
         }
 

@@ -188,32 +188,33 @@ if (!isset($config)) {
                     </div>
                 </div>
 
-                <!-- LINE Notify Settings -->
+                <!-- LINE Bot Settings for Car Booking & Drivers -->
                 <div class="p-6 bg-green-50 dark:bg-green-900/10 rounded-3xl border border-green-100 dark:border-green-900/20">
-                    <h4 class="text-lg font-bold text-green-800 dark:text-green-300 mb-4 flex items-center gap-2">
-                        Line Notify (เก็บใน Database)
+                    <h4 class="text-lg font-bold text-green-800 dark:text-green-300 mb-2 flex items-center gap-2">
+                        💬 การแจ้งเตือนการจองรถและคนขับ (เก็บใน Database)
                     </h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">* LINE Channel Access Token จะดึงค่าร่วมกับ "ระบบห้องประชุม" อัตโนมัติ</p>
                     <div class="space-y-6">
                         <div class="space-y-4">
                             <div class="space-y-2">
-                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Token สำหรับแจ้งบุคลากรทั่วไป (จองรถ/แจ้งซ่อม)</label>
-                                <input type="text" name="db_settings[car_line_token]" value="<?php echo htmlspecialchars($dbSettings['car_line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Token ของ Line Notify">
+                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Line Group ID สำหรับการจองรถ</label>
+                                <input type="text" name="db_settings[car_group_id]" value="<?php echo htmlspecialchars($dbSettings['car_group_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Line Group ID สำหรับส่งแจ้งจองรถ">
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="hidden" name="notifications[line_enabled]" value="false">
                                 <input type="checkbox" id="line-enabled" name="notifications[line_enabled]" value="true" <?php echo ($config['notifications']['line_enabled'] ?? false) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
-                                <label for="line-enabled" class="text-sm text-gray-600 dark:text-gray-400">เปิดใช้งานการแจ้งเตือนผ่าน Line (ทั่วไป)</label>
+                                <label for="line-enabled" class="text-sm text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">เปิดใช้งานการแจ้งเตือนการจองรถผ่าน Line</label>
                             </div>
                         </div>
                         <div class="space-y-4 border-t border-gray-100 dark:border-gray-800 pt-6">
                             <div class="space-y-2">
-                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Token สำหรับกลุ่มคนขับรถ (สรุปงานรายวัน)</label>
-                                <input type="text" name="db_settings[driver_line_token]" value="<?php echo htmlspecialchars($dbSettings['driver_line_token'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Token ของ Line Notify">
+                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Line Group ID สำหรับกลุ่มคนขับรถ (สรุปงานรายวัน)</label>
+                                <input type="text" name="db_settings[driver_group_id]" value="<?php echo htmlspecialchars($dbSettings['driver_group_id'] ?? ''); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all" placeholder="ระบุ Line Group ID สำหรับส่งตารางคนขับ">
                             </div>
                             <div class="flex items-center space-x-3">
                                 <input type="hidden" name="notifications[driver_line_enabled]" value="false">
                                 <input type="checkbox" id="driver-line-enabled" name="notifications[driver_line_enabled]" value="true" <?php echo ($config['notifications']['driver_line_enabled'] ?? false) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
-                                <label for="driver-line-enabled" class="text-sm text-gray-600 dark:text-gray-400">เปิดใช้งานการแจ้งเตือนผ่าน Line (กลุ่มคนขับ)</label>
+                                <label for="driver-line-enabled" class="text-sm text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">เปิดใช้งานการแจ้งเตือนตารางคนขับผ่าน Line</label>
                             </div>
                         </div>
                     </div>
@@ -264,6 +265,64 @@ if (!isset($config)) {
                                     <input type="checkbox" id="telegram-driver-enabled" name="notifications[telegram_driver_enabled]" value="true" <?php echo ($config['notifications']['telegram_driver_enabled'] ?? false) ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
                                     <label for="telegram-driver-enabled" class="text-sm text-gray-600 dark:text-gray-400">เปิดใช้งาน Telegram (คนขับ)</label>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Notification Rounds (เวลาการแจ้งเตือน) -->
+                <div class="p-6 bg-pink-50 dark:bg-pink-900/10 rounded-3xl border border-pink-100 dark:border-pink-900/20">
+                    <h4 class="text-lg font-bold text-pink-800 dark:text-pink-300 mb-4 flex items-center gap-2">
+                        ⏰ รอบเวลาการแจ้งเตือนประจำวัน (เก็บใน Database)
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Morning Round -->
+                        <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-gray-700 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-bold text-gray-700 dark:text-gray-300">🌅 รอบเช้า (Morning Round)</label>
+                                <div class="flex items-center">
+                                    <input type="hidden" name="db_settings[notify_morning_enabled]" value="0">
+                                    <input type="checkbox" id="notify-morning-enabled" name="db_settings[notify_morning_enabled]" value="1" <?php echo ($dbSettings['notify_morning_enabled'] ?? '1') === '1' ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
+                                    <label for="notify-morning-enabled" class="ml-2 text-sm text-gray-600 dark:text-gray-400 font-bold uppercase">เปิดใช้งาน</label>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase">เวลาแจ้งเตือน</label>
+                                <input type="time" name="db_settings[notify_morning_time]" value="<?php echo htmlspecialchars($dbSettings['notify_morning_time'] ?? '05:00'); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase">แจ้งล่วงหน้า (วัน)</label>
+                                <select name="db_settings[notify_morning_advance_days]" class="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                                    <option value="0" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '0' ? 'selected' : ''; ?>>วันนี้ (Today)</option>
+                                    <option value="1" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '1' ? 'selected' : ''; ?>>วันพรุ่งนี้ (Tomorrow)</option>
+                                    <option value="2" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
+                                    <option value="3" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Evening Round -->
+                        <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-gray-700 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-bold text-gray-700 dark:text-gray-300">🌆 รอบเย็น (Evening Round)</label>
+                                <div class="flex items-center">
+                                    <input type="hidden" name="db_settings[notify_evening_enabled]" value="0">
+                                    <input type="checkbox" id="notify-evening-enabled" name="db_settings[notify_evening_enabled]" value="1" <?php echo ($dbSettings['notify_evening_enabled'] ?? '1') === '1' ? 'checked' : ''; ?> class="w-5 h-5 rounded border-gray-300 text-fuchsia-600 focus:ring-fuchsia-500">
+                                    <label for="notify-evening-enabled" class="ml-2 text-sm text-gray-600 dark:text-gray-400 font-bold uppercase">เปิดใช้งาน</label>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase">เวลาแจ้งเตือน</label>
+                                <input type="time" name="db_settings[notify_evening_time]" value="<?php echo htmlspecialchars($dbSettings['notify_evening_time'] ?? '18:00'); ?>" class="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase">แจ้งล่วงหน้า (วัน)</label>
+                                <select name="db_settings[notify_evening_advance_days]" class="w-full px-4 py-3 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-fuchsia-500 outline-none transition-all">
+                                    <option value="0" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '0' ? 'selected' : ''; ?>>วันนี้ (Today)</option>
+                                    <option value="1" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '1' ? 'selected' : ''; ?>>วันพรุ่งนี้ (Tomorrow)</option>
+                                    <option value="2" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
+                                    <option value="3" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
+                                </select>
                             </div>
                         </div>
                     </div>

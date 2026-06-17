@@ -71,17 +71,35 @@ try {
         $results['discord'] = true;
     }
 
-    // 2. Send to Line Notify Driver Group
-    $driverLineToken = $dbSettings['driver_line_token'] ?? '';
-    if (($notif['driver_line_enabled'] ?? false) && !empty($driverLineToken)) {
-        $ch = curl_init('https://notify-api.line.me/api/notify');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['message' => "\n" . $msg]));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded',
-            'Authorization: Bearer ' . $driverLineToken
+    // 2. Send to Line Bot Driver Group
+    $channelAccessToken = $dbSettings['room_line_token'] ?? '';
+    $driverGroupId = $dbSettings['driver_group_id'] ?? '';
+    if (($notif['driver_line_enabled'] ?? false) && !empty($channelAccessToken) && !empty($driverGroupId)) {
+        $lineUrl = "https://api.line.me/v2/bot/message/push";
+        $lineHeaders = [
+            "Content-Type: application/json; charset=UTF-8",
+            "Authorization: Bearer {$channelAccessToken}",
+            "User-Agent: PHP LINE Bot"
+        ];
+        $lineBody = [
+            "to" => $driverGroupId,
+            "messages" => [
+                [
+                    "type" => "text",
+                    "text" => $msg
+                ]
+            ]
+        ];
+
+        $ch = curl_init($lineUrl);
+        curl_setopt($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($lineBody, JSON_UNESCAPED_UNICODE),
+            CURLOPT_HTTPHEADER => $lineHeaders,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_SSL_VERIFYPEER => false
         ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);
         curl_close($ch);
         $results['line'] = true;
