@@ -180,50 +180,71 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <!-- Room LINE Group -->
-                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700">
-                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🏢 ห้องประชุม (Room Booking)</label>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
-                                        <input type="text" name="room_group_id" value="<?php echo htmlspecialchars($dbSettings['room_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="เช่น Ca3d...">
+                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+                                    <div class="space-y-3">
+                                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🏢 ห้องประชุม (Room Booking)</label>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
+                                            <input type="text" name="room_group_id" value="<?php echo htmlspecialchars($dbSettings['room_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="เช่น Ca3d...">
+                                        </div>
+                                        <div class="flex items-center justify-between pt-2">
+                                            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" name="room_line_enabled" value="1" <?php echo ($config['notifications']['room_line_enabled'] ?? true) ? 'checked' : ''; ?> class="sr-only peer">
+                                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center justify-between pt-2">
-                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="room_line_enabled" value="1" <?php echo ($config['notifications']['room_line_enabled'] ?? true) ? 'checked' : ''; ?> class="sr-only peer">
-                                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                                        </label>
+                                    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
+                                        <button type="button" onclick="testNotification('room')" class="w-full py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-emerald-200 dark:border-emerald-900/30">
+                                            <i class="fas fa-paper-plane text-[10px]"></i> ทดสอบส่งแจ้งเตือน
+                                        </button>
                                     </div>
                                 </div>
 
                                 <!-- Car LINE Group -->
-                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700">
-                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🚗 จองรถยนต์ (Car Booking)</label>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
-                                        <input type="text" name="car_group_id" value="<?php echo htmlspecialchars($dbSettings['car_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="ระบุ Group ID สำหรับจองรถ">
+                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+                                    <div class="space-y-3">
+                                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🚗 จองรถยนต์ (Car Booking)</label>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
+                                            <input type="text" name="car_group_id" value="<?php echo htmlspecialchars($dbSettings['car_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="ระบุ Group ID สำหรับจองรถ">
+                                        </div>
+                                        <div class="flex items-center justify-between pt-2">
+                                            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" name="line_enabled" value="1" <?php echo ($config['notifications']['line_enabled'] ?? false) ? 'checked' : ''; ?> class="sr-only peer">
+                                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center justify-between pt-2">
-                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="line_enabled" value="1" <?php echo ($config['notifications']['line_enabled'] ?? false) ? 'checked' : ''; ?> class="sr-only peer">
-                                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                                        </label>
+                                    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
+                                        <button type="button" onclick="testNotification('car')" class="w-full py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-emerald-200 dark:border-emerald-900/30">
+                                            <i class="fas fa-paper-plane text-[10px]"></i> ทดสอบส่งแจ้งเตือน
+                                        </button>
                                     </div>
                                 </div>
 
                                 <!-- Driver LINE Group -->
-                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700">
-                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🚐 กลุ่มคนขับรถ (Driver Group)</label>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
-                                        <input type="text" name="driver_group_id" value="<?php echo htmlspecialchars($dbSettings['driver_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="ระบุ Group ID สำหรับคนขับรถ">
+                                <div class="space-y-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+                                    <div class="space-y-3">
+                                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">🚐 กลุ่มคนขับรถ (Driver Group)</label>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-500 mb-1">LINE Group ID</label>
+                                            <input type="text" name="driver_group_id" value="<?php echo htmlspecialchars($dbSettings['driver_group_id'] ?? ''); ?>" class="w-full px-4 py-2 bg-white dark:bg-slate-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition-all text-sm" placeholder="ระบุ Group ID สำหรับคนขับรถ">
+                                        </div>
+                                        <div class="flex items-center justify-between pt-2">
+                                            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" name="driver_line_enabled" value="1" <?php echo ($config['notifications']['driver_line_enabled'] ?? false) ? 'checked' : ''; ?> class="sr-only peer">
+                                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center justify-between pt-2">
-                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">เปิดใช้งาน Line</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="driver_line_enabled" value="1" <?php echo ($config['notifications']['driver_line_enabled'] ?? false) ? 'checked' : ''; ?> class="sr-only peer">
-                                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                                        </label>
+                                    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
+                                        <button type="button" onclick="testNotification('driver')" class="w-full py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-emerald-200 dark:border-emerald-900/30">
+                                            <i class="fas fa-paper-plane text-[10px]"></i> ทดสอบส่งแจ้งเตือน
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -834,6 +855,13 @@ function triggerManualNotify(round) {
                         detailMsg += `- จองรถ: ${res.car_notifications.status}\n`;
                     }
                 }
+                if (res.driver_notifications) {
+                    if (res.driver_notifications.line && res.driver_notifications.line.sent) {
+                        detailMsg += `- LINE คนขับรถ: สำเร็จ (HTTP ${res.driver_notifications.line.http_code})\n`;
+                    } else if (res.driver_notifications.status) {
+                        detailMsg += `- กลุ่มคนขับรถ: ${res.driver_notifications.status}\n`;
+                    }
+                }
                 Swal.fire({
                     title: 'สำเร็จ',
                     html: `<pre class="text-left text-xs bg-gray-50 dark:bg-slate-900 p-3 rounded-lg overflow-x-auto whitespace-pre-wrap">${detailMsg}</pre>`,
@@ -841,6 +869,72 @@ function triggerManualNotify(round) {
                 });
             } else {
                 Swal.fire('ล้มเหลว', res.message || 'เกิดข้อผิดพลาดในการส่งการแจ้งเตือน', 'error');
+            }
+        }
+    });
+}
+
+function testNotification(target) {
+    const targetText = {
+        'room': 'ห้องประชุม',
+        'car': 'จองรถยนต์',
+        'driver': 'กลุ่มคนขับรถ'
+    }[target] || '';
+    
+    const groupId = $(`input[name="${target}_group_id"]`).val().trim();
+
+    if (!groupId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'กรุณากรอก Group ID',
+            text: `กรุณากรอก LINE Group ID ของกลุ่ม${targetText}ก่อนทำการทดสอบ`
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: `ทดสอบระบบแจ้งเตือน (${targetText})`,
+        text: `ระบบจะส่งข้อความทดสอบไปยัง LINE Group ID: "${groupId}" ต้องการส่งใช่หรือไม่?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'ส่งข้อความทดสอบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#10b981',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return $.ajax({
+                url: 'api/test_notification.php',
+                method: 'POST',
+                data: {
+                    target: target,
+                    group_id: groupId
+                },
+                dataType: 'json'
+            }).then(response => {
+                return response;
+            }).catch(error => {
+                const errorMsg = error.responseJSON && error.responseJSON.message 
+                    ? error.responseJSON.message 
+                    : (error.statusText || 'ไม่สามารถเชื่อมต่อได้');
+                Swal.showValidationMessage(`เกิดข้อผิดพลาด: ${errorMsg}`);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const res = result.value;
+            if (res && res.success) {
+                Swal.fire({
+                    title: 'ส่งทดสอบสำเร็จ!',
+                    text: res.message || 'ส่งการแจ้งเตือนทดสอบไปยังกลุ่ม LINE เรียบร้อยแล้ว',
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire({
+                    title: 'ส่งไม่สำเร็จ',
+                    text: (res && res.message) ? res.message : 'เกิดข้อผิดพลาดในการส่งข้อความทดสอบ',
+                    icon: 'error'
+                });
             }
         }
     });

@@ -28,15 +28,16 @@
         "driver_discord_webhook": "",
         "driver_discord_enabled": 0,
         "line_token": "",
-        "line_enabled": 0,
+        "line_enabled": false,
         "driver_line_token": "",
-        "driver_line_enabled": 0,
+        "driver_line_enabled": true,
         "telegram_bot_token": "",
         "telegram_chat_id": "",
         "telegram_enabled": 0,
         "telegram_repair_chat_id": "",
         "telegram_repair_enabled": 1,
         "telegram_driver_chat_id": "",
-        "telegram_driver_enabled": 0
+        "telegram_driver_enabled": 0,
+        "room_line_enabled": true
     }
 }

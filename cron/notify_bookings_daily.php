@@ -130,7 +130,8 @@ try {
         'start_date' => $startDate,
         'end_date' => $endDate,
         'room_notifications' => [],
-        'car_notifications' => []
+        'car_notifications' => [],
+        'driver_notifications' => []
     ];
 
     // Load config.json
@@ -436,6 +437,161 @@ try {
         }
     } else {
         $results['car_notifications']['status'] = "No bookings found for target date range";
+    }
+
+    // --- SECTION 3: DRIVER GROUP NOTIFICATIONS ---
+    // Filter approved bookings from the already fetched car bookings
+    $driverBookings = [];
+    if (!empty($carBookings)) {
+        $driverBookings = array_filter($carBookings, function($b) {
+            return $b['status'] === 'approved';
+        });
+    }
+
+    if (!empty($driverBookings)) {
+        // Build Driver Summary Message
+        $driverMessage = "-----------------------------\n"
+                      . "🚐 สรุปตารางงานใช้รถยนต์ (กลุ่มคนขับรถ)\n"
+                      . "สำหรับ{$dayLabel}\n"
+                      . "-----------------------------\n";
+
+        // Group by date
+        $groupedDriverBookings = [];
+        foreach ($driverBookings as $booking) {
+            $groupedDriverBookings[$booking['booking_date']][] = $booking;
+        }
+
+        foreach ($groupedDriverBookings as $bookingDate => $dayBookings) {
+            $driverMessage .= "📅 วันที่ " . thaiDate($bookingDate) . "\n";
+            foreach ($dayBookings as $index => $booking) {
+                $carDesc = $booking['car_model'] 
+                    ? "{$booking['car_model']} ({$booking['license_plate']})" 
+                    : $booking['car_id'];
+                
+                $driverMessage .= "  " . ($index + 1) . ". ⏰ เวลา: " . date('H:i', strtotime($booking['start_time'])) . " - " . date('H:i', strtotime($booking['end_time'])) . " น.\n"
+                               . "     👤 ผู้จอง: {$booking['teacher_name']} ({$booking['teacher_position']})\n"
+                               . "     📍 ปลายทาง: {$booking['destination']}\n"
+                               . "     🚐 รถ: {$carDesc}\n";
+            }
+            $driverMessage .= "-----------------------------\n";
+        }
+
+        // 1. Discord Driver Group Notification
+        $driverDiscordWebhook = $dbSettings['driver_discord_webhook'] ?? '';
+        $driverDiscordEnabled = $config['notifications']['driver_discord_enabled'] ?? false;
+
+        if ($driverDiscordEnabled && !empty($driverDiscordWebhook)) {
+            $discordBody = [
+                "content" => $driverMessage,
+                "username" => "ระบบแจ้งเตือนตารางงานคนขับรถ",
+                "avatar_url" => "https://cdn-icons-png.flaticon.com/512/2111/2111615.png"
+            ];
+            $ch = curl_init($driverDiscordWebhook);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode($discordBody, JSON_UNESCAPED_UNICODE),
+                CURLOPT_HTTPHEADER => ["Content-Type: application/json; charset=UTF-8"],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+            curl_exec($ch);
+            $discordCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            $results['driver_notifications']['discord'] = [
+                'sent' => true,
+                'http_code' => $discordCode
+            ];
+        } else {
+            $results['driver_notifications']['discord'] = [
+                'sent' => false,
+                'reason' => 'Disabled or credentials missing'
+            ];
+        }
+
+        // 2. LINE Bot Push Notification for Driver Group
+        $channelAccessToken = $dbSettings['room_line_token'] ?? '';
+        $driverGroupId = $dbSettings['driver_group_id'] ?? '';
+        $driverLineEnabled = $config['notifications']['driver_line_enabled'] ?? false;
+
+        if ($driverLineEnabled && !empty($channelAccessToken) && !empty($driverGroupId)) {
+            $lineUrl = "https://api.line.me/v2/bot/message/push";
+            $lineHeaders = [
+                "Content-Type: application/json; charset=UTF-8",
+                "Authorization: Bearer {$channelAccessToken}",
+                "User-Agent: PHP LINE Bot"
+            ];
+            $lineBody = [
+                "to" => $driverGroupId,
+                "messages" => [
+                    [
+                        "type" => "text",
+                        "text" => $driverMessage
+                    ]
+                ]
+            ];
+
+            $ch = curl_init($lineUrl);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode($lineBody, JSON_UNESCAPED_UNICODE),
+                CURLOPT_HTTPHEADER => $lineHeaders,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+            $lineRes = curl_exec($ch);
+            $lineCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $results['driver_notifications']['line'] = [
+                'sent' => true,
+                'http_code' => $lineCode,
+                'response' => json_decode($lineRes, true) ?: $lineRes
+            ];
+        } else {
+            $results['driver_notifications']['line'] = [
+                'sent' => false,
+                'reason' => 'Disabled or credentials missing'
+            ];
+        }
+
+        // 3. Telegram Notification for Driver Group
+        $tgToken = $dbSettings['telegram_bot_token'] ?? '';
+        $tgDriverChatId = $dbSettings['telegram_driver_chat_id'] ?? '';
+        $driverTgEnabled = $config['notifications']['telegram_driver_enabled'] ?? false;
+
+        if ($driverTgEnabled && !empty($tgToken) && !empty($tgDriverChatId)) {
+            $tgUrl = "https://api.telegram.org/bot{$tgToken}/sendMessage";
+            $ch = curl_init($tgUrl);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => http_build_query([
+                    'chat_id' => $tgDriverChatId,
+                    'text' => $driverMessage
+                ]),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_SSL_VERIFYPEER => false
+            ]);
+            $tgRes = curl_exec($ch);
+            $tgCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $results['driver_notifications']['telegram'] = [
+                'sent' => true,
+                'http_code' => $tgCode,
+                'response' => json_decode($tgRes, true) ?: $tgRes
+            ];
+        } else {
+            $results['driver_notifications']['telegram'] = [
+                'sent' => false,
+                'reason' => 'Disabled or credentials missing'
+            ];
+        }
+    } else {
+        $results['driver_notifications']['status'] = "No approved bookings found for driver schedule";
     }
 
 } catch (Exception $e) {
