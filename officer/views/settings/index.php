@@ -124,11 +124,6 @@
                                         <option value="1" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '1' ? 'selected' : ''; ?>>วันพรุ่งนี้ (Tomorrow)</option>
                                         <option value="2" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
                                         <option value="3" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
-                                        <option value="4" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '4' ? 'selected' : ''; ?>>+4 วันล่วงหน้า</option>
-                                        <option value="5" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '5' ? 'selected' : ''; ?>>+5 วันล่วงหน้า</option>
-                                        <option value="6" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '6' ? 'selected' : ''; ?>>+6 วันล่วงหน้า</option>
-                                        <option value="7" <?php echo ($dbSettings['notify_morning_advance_days'] ?? '0') == '7' ? 'selected' : ''; ?>>+7 วันล่วงหน้า</option>
-                                        
                                     </select>
                                 </div>
                                 <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
@@ -166,6 +161,10 @@
                                         <option value="1" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '1' ? 'selected' : ''; ?>>วันพรุ่งนี้ (Tomorrow)</option>
                                         <option value="2" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '2' ? 'selected' : ''; ?>>วันมะรืนนี้ (+2 วันล่วงหน้า)</option>
                                         <option value="3" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '3' ? 'selected' : ''; ?>>+3 วันล่วงหน้า</option>
+                                        <option value="4" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '4' ? 'selected' : ''; ?>>+4 วันล่วงหน้า</option>
+                                        <option value="5" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '5' ? 'selected' : ''; ?>>+5 วันล่วงหน้า</option>
+                                        <option value="6" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '6' ? 'selected' : ''; ?>>+6 วันล่วงหน้า</option>
+                                        <option value="7" <?php echo ($dbSettings['notify_evening_advance_days'] ?? '1') == '7' ? 'selected' : ''; ?>>+7 วันล่วงหน้า</option>
                                     </select>
                                 </div>
                                 <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
